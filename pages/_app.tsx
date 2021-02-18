@@ -4,6 +4,7 @@ import { AppProps } from 'next/app';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../themes';
+import '../styles/globals.css';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 export default function MyApp(props: AppProps) {
