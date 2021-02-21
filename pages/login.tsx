@@ -1,16 +1,18 @@
 import {
   FormControl,
   Grid,
-  Input,
-  InputLabel,
   Typography,
   Button,
   Link,
   CircularProgress,
+  TextField,
 } from '@material-ui/core';
 import Layout from '../components/Layout';
 import { gql, useLazyQuery } from '@apollo/client';
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { parseUserFromToken, UserContext } from '../context/UserContext';
+import { useRouter } from 'next/router';
 
 const LOGIN = gql`
   query Login($email: String!, $password: String!) {
@@ -19,12 +21,37 @@ const LOGIN = gql`
 `;
 
 export default function Login() {
-  const [formState, setFormState] = useState({
-    email: '',
-    password: '',
-  });
+  interface IFormInput {
+    email: string;
+    password: string;
+  }
 
-  const [login, { loading, error, data }]: any = useLazyQuery(LOGIN);
+  const { user, setUser } = React.useContext(UserContext);
+
+  const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
+
+  const [login, { loading, error, data }] = useLazyQuery(LOGIN);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log('data', data);
+    if (typeof window !== 'undefined' && data?.login) {
+      console.log('set user');
+      localStorage.setItem('token', data.login);
+      setUser(parseUserFromToken());
+      router.push('/');
+    }
+  }, [data]);
+
+  const onSubmit = (data: IFormInput) => {
+    login({
+      variables: {
+        email: data.email,
+        password: data.password,
+      },
+    });
+  };
 
   return (
     <Layout>
@@ -36,17 +63,7 @@ export default function Login() {
       >
         Login
       </Typography>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          login({
-            variables: {
-              email: formState.email,
-              password: formState.password,
-            },
-          });
-        }}
-      >
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Grid
           container
           alignContent="center"
@@ -58,32 +75,30 @@ export default function Login() {
             <Grid spacing={1} container direction="row">
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor="email" required={true}>
-                    Email Address
-                  </InputLabel>
-                  <Input
-                    id="email"
+                  <TextField
+                    name="email"
                     type="email"
-                    value={formState.email}
-                    onChange={(e) =>
-                      setFormState({ ...formState, email: e.target.value })
-                    }
-                  ></Input>
+                    label="Email"
+                    inputProps={{ maxLength: 75 }}
+                    inputRef={register({ required: 'Email required' })}
+                    error={!!errors.email}
+                    helperText={errors.email?.message}
+                  ></TextField>
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth>
-                  <InputLabel htmlFor="password" required={true}>
-                    Password
-                  </InputLabel>
-                  <Input
-                    id="password"
+                  <TextField
+                    name="password"
                     type="password"
-                    value={formState.password}
-                    onChange={(e) =>
-                      setFormState({ ...formState, password: e.target.value })
-                    }
-                  ></Input>
+                    label="Password"
+                    inputProps={{ maxLength: 75 }}
+                    inputRef={register({
+                      required: 'Password required',
+                    })}
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                  ></TextField>
                 </FormControl>
               </Grid>
               <Grid item md={4}>
@@ -121,7 +136,6 @@ export default function Login() {
           </Grid>
         </Grid>
       </form>
-      {data?.login && localStorage.setItem('token', data.login)}
     </Layout>
   );
 }

@@ -8,8 +8,9 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React from 'react';
 import Layout from '../components/Layout';
+import { useForm } from 'react-hook-form';
 
 interface UserInput {
   first_name: string;
@@ -27,26 +28,30 @@ const ADD_USER = gql`
 `;
 
 export default function CreateUser() {
-  const [formState, setFormState] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    password: '',
-    confirm_password: '',
-  });
-
   const [addUser, { loading, error, data }] = useMutation(ADD_USER);
 
-  const [validationState, setValidationState] = useState({
-    first_name: true,
-    last_name: true,
-    email: true,
-    password: true,
-    confirm_password: true,
-  });
+  interface IFormInput {
+    firstname: string;
+    lastname: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }
 
-  const formValid = () =>
-    Object.values(validationState).every((x) => x === true);
+  const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
+
+  const onSubmit = (data: IFormInput) => {
+    addUser({
+      variables: {
+        data: {
+          first_name: data.firstname,
+          last_name: data.lastname,
+          email: data.email,
+          password: data.password,
+        },
+      },
+    });
+  };
 
   return (
     <Layout>
@@ -58,24 +63,7 @@ export default function CreateUser() {
       >
         Sign Up
       </Typography>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          if (formValid()) {
-            addUser({
-              variables: {
-                data: {
-                  first_name: formState.first_name,
-                  last_name: formState.last_name,
-                  email: formState.email,
-                  password: formState.password,
-                },
-              },
-            });
-          }
-        }}
-      >
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Grid
           container
           alignContent="center"
@@ -88,26 +76,12 @@ export default function CreateUser() {
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <TextField
-                    id="first-name"
+                    name="firstname"
                     label="First Name"
-                    value={formState.first_name}
-                    required
-                    onChange={(e) => {
-                      setFormState({
-                        ...formState,
-                        first_name: e.target.value,
-                      });
-                      setValidationState({
-                        ...validationState,
-                        first_name: !!e.target.value,
-                      });
-                    }}
-                    error={!validationState.first_name}
-                    helperText={
-                      !validationState.first_name
-                        ? 'First Name Required.'
-                        : null
-                    }
+                    inputProps={{ maxLength: 50 }}
+                    inputRef={register({ required: 'First name required' })}
+                    error={!!errors.firstname}
+                    helperText={errors.firstname?.message}
                   ></TextField>
                 </FormControl>
               </Grid>
@@ -115,93 +89,57 @@ export default function CreateUser() {
                 <FormControl fullWidth>
                   <TextField
                     label="Last Name"
-                    id="last-name"
-                    value={formState.last_name}
-                    required
-                    onChange={(e) => {
-                      setFormState({ ...formState, last_name: e.target.value });
-                      setValidationState({
-                        ...validationState,
-                        last_name: !!e.target.value,
-                      });
-                    }}
-                    error={!validationState.last_name}
-                    helperText={
-                      !validationState.last_name ? 'Last Name Required.' : null
-                    }
+                    name="lastname"
+                    inputProps={{ maxLength: 50 }}
+                    inputRef={register({ required: 'Last name required' })}
+                    error={!!errors.lastname}
+                    helperText={errors.lastname?.message}
                   ></TextField>
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <TextField
-                    id="email"
                     label="Email"
+                    name="email"
                     type="email"
-                    value={formState.email}
-                    required
-                    onChange={(e) => {
-                      setFormState({ ...formState, email: e.target.value });
-                      setValidationState({
-                        ...validationState,
-                        email: !!e.target.value,
-                      });
-                    }}
-                    error={!validationState.email}
-                    helperText={
-                      !validationState.email ? 'Email Required.' : null
-                    }
+                    inputProps={{ maxLength: 75 }}
+                    inputRef={register({ required: 'Email required' })}
+                    error={!!errors.email}
+                    helperText={errors.email?.message}
                   ></TextField>
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <TextField
-                    id="password"
                     label="Password"
+                    name="password"
                     type="password"
-                    value={formState.password}
-                    required
-                    onChange={(e) => {
-                      setFormState({ ...formState, password: e.target.value });
-                      setValidationState({
-                        ...validationState,
-                        password: !!e.target.value,
-                        confirm_password:
-                          e.target.value === formState.confirm_password,
-                      });
-                    }}
-                    error={!validationState.password}
-                    helperText={
-                      !validationState.password ? 'Password Required.' : null
-                    }
+                    inputProps={{ maxLength: 75 }}
+                    inputRef={register({
+                      required: 'Password required',
+                    })}
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
                   ></TextField>
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <TextField
-                    id="confirm-password"
+                    name="confirmPassword"
                     label="Confirm Password"
                     type="password"
-                    value={formState.confirm_password}
-                    required
-                    onChange={(e) => {
-                      setFormState({
-                        ...formState,
-                        confirm_password: e.target.value,
-                      });
-                      setValidationState({
-                        ...validationState,
-                        confirm_password: e.target.value === formState.password,
-                      });
-                    }}
-                    error={!validationState.confirm_password}
-                    helperText={
-                      !validationState.confirm_password
-                        ? 'Must Match Password.'
-                        : null
-                    }
+                    inputProps={{ maxLength: 75 }}
+                    inputRef={register({
+                      required: 'Confirm password required',
+                      validate: (value) =>
+                        value === getValues('password') ||
+                        'Passwords do not match',
+                    })}
+                    error={!!errors.confirmPassword}
+                    helperText={errors.confirmPassword?.message}
                   ></TextField>
                 </FormControl>
               </Grid>

@@ -8,6 +8,9 @@ import { Divider, Drawer, Link, List, ListItem } from '@material-ui/core';
 import React from 'react';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { UserContext } from '../context/UserContext';
+import PersonIcon from '@material-ui/icons/Person';
+import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,6 +22,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function NavBar() {
   const [open, setOpen] = React.useState(false);
+
+  const { user, setUser } = React.useContext(UserContext);
+
+  const router = useRouter();
+
+  const logout = () => {
+    console.log('logout');
+    localStorage.clear();
+    setUser(null);
+    router.push('/');
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -45,9 +59,24 @@ export default function NavBar() {
           <Typography style={{ flexGrow: 1 }} variant="h6">
             PIPA
           </Typography>
-          <Button color="inherit" href="/login">
-            Login
-          </Button>
+          {user ? (
+            <>
+              <PersonIcon></PersonIcon> Welcome {user.first_name}
+              <Button type="button" color="inherit" onClick={logout}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button color="inherit" href="/login">
+                Login
+              </Button>
+              OR
+              <Button color="inherit" href="/sign-up">
+                Sign Up
+              </Button>
+            </>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer
