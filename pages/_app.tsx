@@ -6,7 +6,11 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../themes';
 import '../styles/globals.css';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import { parseUserFromToken, UserContext } from '../context/UserContext';
+import {
+  IUser,
+  setUserFromLocalStorage,
+  UserContext,
+} from '../context/UserContext';
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
@@ -16,11 +20,11 @@ export default function MyApp(props: AppProps) {
     cache: new InMemoryCache(),
   });
 
-  const [user, setUser] = React.useState<any>(null);
+  const [user, setUser] = React.useState<IUser | null>(null);
 
-  const value = React.useMemo(() => ({ user, setUser }), [user, setUser]);
+  //const value = React.useMemo(() => ({ user, setUser }), [user, setUser]);
 
-  React.useEffect(() => setUser(parseUserFromToken()), []);
+  React.useEffect(() => setUser(setUserFromLocalStorage), []);
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -44,7 +48,7 @@ export default function MyApp(props: AppProps) {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <ApolloProvider client={client}>
-          <UserContext.Provider value={value}>
+          <UserContext.Provider value={{ user, setUser }}>
             <Component {...pageProps} />
           </UserContext.Provider>
         </ApolloProvider>

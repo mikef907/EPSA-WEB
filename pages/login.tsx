@@ -26,7 +26,7 @@ export default function Login() {
     password: string;
   }
 
-  const { user, setUser } = React.useContext(UserContext);
+  const userContext = React.useContext(UserContext);
 
   const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
 
@@ -39,7 +39,7 @@ export default function Login() {
     if (typeof window !== 'undefined' && data?.login) {
       console.log('set user');
       localStorage.setItem('token', data.login);
-      setUser(parseUserFromToken());
+      userContext.setUser(parseUserFromToken(data.login));
       router.push('/');
     }
   }, [data]);

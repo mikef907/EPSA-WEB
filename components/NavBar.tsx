@@ -23,14 +23,14 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function NavBar() {
   const [open, setOpen] = React.useState(false);
 
-  const { user, setUser } = React.useContext(UserContext);
+  const userContext = React.useContext(UserContext);
 
   const router = useRouter();
 
   const logout = () => {
     console.log('logout');
     localStorage.clear();
-    setUser(null);
+    userContext.setUser(null);
     router.push('/');
   };
 
@@ -59,9 +59,9 @@ export default function NavBar() {
           <Typography style={{ flexGrow: 1 }} variant="h6">
             PIPA
           </Typography>
-          {user ? (
+          {userContext.user ? (
             <>
-              <PersonIcon></PersonIcon> Welcome {user.first_name}
+              <PersonIcon></PersonIcon> Welcome {userContext.user.first_name}
               <Button type="button" color="inherit" onClick={logout}>
                 Logout
               </Button>
