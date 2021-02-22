@@ -2,7 +2,7 @@ import { Box, Typography } from '@material-ui/core';
 import React from 'react';
 import Layout from '../components/Layout';
 
-export default function About() {
+const About: React.FC = () => {
   return (
     <Layout>
       <Box>
@@ -27,4 +27,6 @@ export default function About() {
       </Box>
     </Layout>
   );
-}
+};
+
+export default About;

@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Layout from '../components/Layout';
 
-export default function Index() {
+const Index: React.FC = () => {
   return (
     <Layout>
       <Box>
@@ -28,4 +28,6 @@ export default function Index() {
       </Box>
     </Layout>
   );
-}
+};
+
+export default Index;

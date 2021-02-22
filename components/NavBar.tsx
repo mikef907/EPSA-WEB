@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function NavBar() {
+const NavBar: React.FC = () => {
   const [open, setOpen] = React.useState(false);
 
   const userContext = React.useContext(UserContext);
@@ -109,4 +109,6 @@ export default function NavBar() {
       </Drawer>
     </React.Fragment>
   );
-}
+};
+
+export default NavBar;

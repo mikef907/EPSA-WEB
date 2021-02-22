@@ -122,7 +122,7 @@ export default function Login() {
           <Grid item>
             <Grid spacing={4} container>
               <Grid item>
-                <Link>Forgot Password?</Link>
+                <Link href="forgot-password">Forgot Password?</Link>
               </Grid>
               <Grid item>
                 <Link href="sign-up">Sign Up</Link>

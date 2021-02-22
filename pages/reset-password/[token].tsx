@@ -8,45 +8,32 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
+import { NextPage } from 'next';
 import React from 'react';
-import Layout from '../components/Layout';
 import { useForm } from 'react-hook-form';
+import Layout from '../../components/Layout';
 
-interface UserInput {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-}
-
-const ADD_USER = gql`
-  mutation AddUser($data: UserInput!) {
-    addUser(data: $data) {
-      id
-    }
+const RESET_PASSOWRD = gql`
+  mutation ResetPassword($input: UserResetPassword!) {
+    resetPassword(input: $input)
   }
 `;
 
-const CreateUser: React.FC = () => {
-  const [addUser, { loading, error, data }] = useMutation(ADD_USER);
-
+const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
   interface IFormInput {
-    firstname: string;
-    lastname: string;
-    email: string;
     password: string;
     confirmPassword: string;
   }
 
   const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
 
+  const [resetPassword, { loading, error, data }] = useMutation(RESET_PASSOWRD);
+
   const onSubmit = (data: IFormInput) => {
-    addUser({
+    resetPassword({
       variables: {
-        data: {
-          first_name: data.firstname,
-          last_name: data.lastname,
-          email: data.email,
+        input: {
+          nonce: token,
           password: data.password,
         },
       },
@@ -61,7 +48,7 @@ const CreateUser: React.FC = () => {
         style={{ textAlign: 'center' }}
         gutterBottom
       >
-        Sign Up
+        Reset Password
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid
@@ -71,45 +58,8 @@ const CreateUser: React.FC = () => {
           direction="column"
           spacing={2}
         >
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12}>
             <Grid spacing={1} container direction="row">
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    name="firstname"
-                    label="First Name"
-                    inputProps={{ maxLength: 50 }}
-                    inputRef={register({ required: 'First name required' })}
-                    error={!!errors.firstname}
-                    helperText={errors.firstname?.message}
-                  ></TextField>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    label="Last Name"
-                    name="lastname"
-                    inputProps={{ maxLength: 50 }}
-                    inputRef={register({ required: 'Last name required' })}
-                    error={!!errors.lastname}
-                    helperText={errors.lastname?.message}
-                  ></TextField>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    label="Email"
-                    name="email"
-                    type="email"
-                    inputProps={{ maxLength: 75 }}
-                    inputRef={register({ required: 'Email required' })}
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                  ></TextField>
-                </FormControl>
-              </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth>
                   <TextField
@@ -150,7 +100,7 @@ const CreateUser: React.FC = () => {
                   disabled={loading}
                   variant="contained"
                 >
-                  Sign Up
+                  Reset Password
                 </Button>
                 {loading && (
                   <CircularProgress
@@ -161,25 +111,14 @@ const CreateUser: React.FC = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} md={4}>
-            <Grid spacing={4} container>
-              <Grid item>
-                <Link>Forgot Password?</Link>
-              </Grid>
-              <Grid item>
-                <Link href="login">Login</Link>
-              </Grid>
-            </Grid>
-            {error && (
-              <Grid>
-                <p style={{ color: 'red' }}>{error.message} 🙁</p>
-              </Grid>
-            )}
-          </Grid>
         </Grid>
       </form>
     </Layout>
   );
 };
 
-export default CreateUser;
+ResetPassword.getInitialProps = ({ query }) => {
+  return { token: query.token as string };
+};
+
+export default ResetPassword;
