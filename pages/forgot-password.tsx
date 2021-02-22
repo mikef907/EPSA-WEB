@@ -77,22 +77,17 @@ const ForgotPassword: React.FC = () => {
             </Button>
           </Grid>
         </Grid>
-        <Grid
-          container
-          alignContent="center"
-          justify="center"
-          direction="row"
-          spacing={2}
-        >
+        <Grid container justify="center" direction="row" spacing={2}>
           <Grid item>
             {data && data.forgotPassword && (
               <p style={{ color: 'green' }}>
                 Check your email for further instructions! 👍
               </p>
             )}
-            {error && (
-              <p style={{ color: 'red' }}>Unable to process request 🙁</p>
-            )}
+            {error &&
+              error.graphQLErrors.map(({ message }, i) => (
+                <p style={{ color: 'red' }}>{message} 🙁</p>
+              ))}
           </Grid>
         </Grid>
       </form>

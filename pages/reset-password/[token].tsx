@@ -55,10 +55,10 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
           container
           alignContent="center"
           justify="center"
-          direction="column"
+          direction="row"
           spacing={2}
         >
-          <Grid item xs={12}>
+          <Grid item md={4}>
             <Grid spacing={1} container direction="row">
               <Grid item xs={12}>
                 <FormControl fullWidth>
@@ -93,7 +93,7 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
                   ></TextField>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item xs={12}>
                 <Button
                   type="submit"
                   style={{ alignSelf: 'flex-end' }}
@@ -108,6 +108,14 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
                     style={{ position: 'relative', left: '-50px', top: '8px' }}
                   />
                 )}
+              </Grid>
+              <Grid item md={4}>
+                {error &&
+                  error.graphQLErrors.map(({ message }, i) => (
+                    <p style={{ color: 'red' }} key={i}>
+                      {message} 🙁
+                    </p>
+                  ))}
               </Grid>
             </Grid>
           </Grid>

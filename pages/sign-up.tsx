@@ -164,10 +164,7 @@ const CreateUser: React.FC = () => {
           <Grid item xs={12} md={4}>
             <Grid spacing={4} container>
               <Grid item>
-                <Link>Forgot Password?</Link>
-              </Grid>
-              <Grid item>
-                <Link href="login">Login</Link>
+                <Link href="login">Already a member?</Link>
               </Grid>
             </Grid>
             {error && (

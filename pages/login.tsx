@@ -125,14 +125,15 @@ export default function Login() {
                 <Link href="forgot-password">Forgot Password?</Link>
               </Grid>
               <Grid item>
-                <Link href="sign-up">Sign Up</Link>
+                <Link href="sign-up">New member?</Link>
               </Grid>
             </Grid>
-            {error && (
-              <Grid>
-                <p style={{ color: 'red' }}>{error.message} 🙁</p>
-              </Grid>
-            )}
+            <Grid>
+              {error &&
+                error.graphQLErrors.map(({ message }, i) => (
+                  <p style={{ color: 'red' }}>{message} 🙁</p>
+                ))}
+            </Grid>
           </Grid>
         </Grid>
       </form>
