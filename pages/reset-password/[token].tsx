@@ -12,6 +12,7 @@ import { NextPage } from 'next';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import Layout from '../../components/Layout';
+import Login from '../../components/Login';
 
 const RESET_PASSOWRD = gql`
   mutation ResetPassword($input: UserResetPassword!) {
@@ -50,77 +51,84 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
       >
         Reset Password
       </Typography>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid
-          container
-          alignContent="center"
-          justify="center"
-          direction="row"
-          spacing={2}
-        >
-          <Grid item md={4}>
-            <Grid spacing={1} container direction="row">
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    label="Password"
-                    name="password"
-                    type="password"
-                    inputProps={{ maxLength: 75 }}
-                    inputRef={register({
-                      required: 'Password required',
-                    })}
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
-                  ></TextField>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    name="confirmPassword"
-                    label="Confirm Password"
-                    type="password"
-                    inputProps={{ maxLength: 75 }}
-                    inputRef={register({
-                      required: 'Confirm password required',
-                      validate: (value) =>
-                        value === getValues('password') ||
-                        'Passwords do not match',
-                    })}
-                    error={!!errors.confirmPassword}
-                    helperText={errors.confirmPassword?.message}
-                  ></TextField>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  style={{ alignSelf: 'flex-end' }}
-                  disabled={loading}
-                  variant="contained"
-                >
-                  Reset Password
-                </Button>
-                {loading && (
-                  <CircularProgress
-                    size={24}
-                    style={{ position: 'relative', left: '-50px', top: '8px' }}
-                  />
-                )}
-              </Grid>
-              <Grid item md={4}>
-                {error &&
-                  error.graphQLErrors.map(({ message }, i) => (
-                    <p style={{ color: 'red' }} key={i}>
-                      {message} 🙁
-                    </p>
-                  ))}
+      {data?.resetPassword && <Login message="Password reset success"></Login>}
+      {!data?.resetPassword && (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid
+            container
+            alignContent="center"
+            justify="center"
+            direction="row"
+            spacing={2}
+          >
+            <Grid item md={4}>
+              <Grid spacing={1} container direction="row">
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <TextField
+                      label="Password"
+                      name="password"
+                      type="password"
+                      inputProps={{ maxLength: 75 }}
+                      inputRef={register({
+                        required: 'Password required',
+                      })}
+                      error={!!errors.password}
+                      helperText={errors.password?.message}
+                    ></TextField>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <TextField
+                      name="confirmPassword"
+                      label="Confirm Password"
+                      type="password"
+                      inputProps={{ maxLength: 75 }}
+                      inputRef={register({
+                        required: 'Confirm password required',
+                        validate: (value) =>
+                          value === getValues('password') ||
+                          'Passwords do not match',
+                      })}
+                      error={!!errors.confirmPassword}
+                      helperText={errors.confirmPassword?.message}
+                    ></TextField>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    type="submit"
+                    style={{ alignSelf: 'flex-end' }}
+                    disabled={loading}
+                    variant="contained"
+                  >
+                    Reset Password
+                  </Button>
+                  {loading && (
+                    <CircularProgress
+                      size={24}
+                      style={{
+                        position: 'relative',
+                        left: '-50px',
+                        top: '8px',
+                      }}
+                    />
+                  )}
+                </Grid>
+                <Grid item md={4}>
+                  {error &&
+                    error.graphQLErrors.map(({ message }, i) => (
+                      <p style={{ color: 'red' }} key={i}>
+                        {message} 🙁
+                      </p>
+                    ))}
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </form>
+        </form>
+      )}
     </Layout>
   );
 };

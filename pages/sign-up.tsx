@@ -8,27 +8,32 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useForm } from 'react-hook-form';
-
-interface UserInput {
-  first_name: string;
-  last_name: string;
-  email: string;
-  password: string;
-}
+import { parseUserFromToken, UserContext } from '../context/UserContext';
+import router from 'next/router';
 
 const ADD_USER = gql`
   mutation AddUser($data: UserInput!) {
-    addUser(data: $data) {
-      id
-    }
+    addUser(data: $data)
   }
 `;
 
 const CreateUser: React.FC = () => {
+  const { user, setUser } = React.useContext(UserContext);
+
   const [addUser, { loading, error, data }] = useMutation(ADD_USER);
+
+  useEffect(() => {
+    console.log('data', data);
+    if (typeof window !== 'undefined' && data?.addUser) {
+      console.log('set user');
+      localStorage.setItem('token', data.addUser);
+      setUser(parseUserFromToken(data.addUser));
+      router.push('/');
+    }
+  }, [data]);
 
   interface IFormInput {
     firstname: string;
@@ -63,118 +68,124 @@ const CreateUser: React.FC = () => {
       >
         Sign Up
       </Typography>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid
-          container
-          alignContent="center"
-          justify="center"
-          direction="column"
-          spacing={2}
-        >
-          <Grid item xs={12} md={4}>
-            <Grid spacing={1} container direction="row">
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    name="firstname"
-                    label="First Name"
-                    inputProps={{ maxLength: 50 }}
-                    inputRef={register({ required: 'First name required' })}
-                    error={!!errors.firstname}
-                    helperText={errors.firstname?.message}
-                  ></TextField>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    label="Last Name"
-                    name="lastname"
-                    inputProps={{ maxLength: 50 }}
-                    inputRef={register({ required: 'Last name required' })}
-                    error={!!errors.lastname}
-                    helperText={errors.lastname?.message}
-                  ></TextField>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    label="Email"
-                    name="email"
-                    type="email"
-                    inputProps={{ maxLength: 75 }}
-                    inputRef={register({ required: 'Email required' })}
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                  ></TextField>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    label="Password"
-                    name="password"
-                    type="password"
-                    inputProps={{ maxLength: 75 }}
-                    inputRef={register({
-                      required: 'Password required',
-                    })}
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
-                  ></TextField>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <TextField
-                    name="confirmPassword"
-                    label="Confirm Password"
-                    type="password"
-                    inputProps={{ maxLength: 75 }}
-                    inputRef={register({
-                      required: 'Confirm password required',
-                      validate: (value) =>
-                        value === getValues('password') ||
-                        'Passwords do not match',
-                    })}
-                    error={!!errors.confirmPassword}
-                    helperText={errors.confirmPassword?.message}
-                  ></TextField>
-                </FormControl>
-              </Grid>
-              <Grid item md={4}>
-                <Button
-                  type="submit"
-                  style={{ alignSelf: 'flex-end' }}
-                  disabled={loading}
-                  variant="contained"
-                >
-                  Sign Up
-                </Button>
-                {loading && (
-                  <CircularProgress
-                    size={24}
-                    style={{ position: 'relative', left: '-50px', top: '8px' }}
-                  />
-                )}
+      {!user && (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid
+            container
+            alignContent="center"
+            justify="center"
+            direction="column"
+            spacing={2}
+          >
+            <Grid item xs={12} md={4}>
+              <Grid spacing={1} container direction="row">
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <TextField
+                      name="firstname"
+                      label="First Name"
+                      inputProps={{ maxLength: 50 }}
+                      inputRef={register({ required: 'First name required' })}
+                      error={!!errors.firstname}
+                      helperText={errors.firstname?.message}
+                    ></TextField>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <TextField
+                      label="Last Name"
+                      name="lastname"
+                      inputProps={{ maxLength: 50 }}
+                      inputRef={register({ required: 'Last name required' })}
+                      error={!!errors.lastname}
+                      helperText={errors.lastname?.message}
+                    ></TextField>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <TextField
+                      label="Email"
+                      name="email"
+                      type="email"
+                      inputProps={{ maxLength: 75 }}
+                      inputRef={register({ required: 'Email required' })}
+                      error={!!errors.email}
+                      helperText={errors.email?.message}
+                    ></TextField>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <TextField
+                      label="Password"
+                      name="password"
+                      type="password"
+                      inputProps={{ maxLength: 75 }}
+                      inputRef={register({
+                        required: 'Password required',
+                      })}
+                      error={!!errors.password}
+                      helperText={errors.password?.message}
+                    ></TextField>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <TextField
+                      name="confirmPassword"
+                      label="Confirm Password"
+                      type="password"
+                      inputProps={{ maxLength: 75 }}
+                      inputRef={register({
+                        required: 'Confirm password required',
+                        validate: (value) =>
+                          value === getValues('password') ||
+                          'Passwords do not match',
+                      })}
+                      error={!!errors.confirmPassword}
+                      helperText={errors.confirmPassword?.message}
+                    ></TextField>
+                  </FormControl>
+                </Grid>
+                <Grid item md={4}>
+                  <Button
+                    type="submit"
+                    style={{ alignSelf: 'flex-end' }}
+                    disabled={loading}
+                    variant="contained"
+                  >
+                    Sign Up
+                  </Button>
+                  {loading && (
+                    <CircularProgress
+                      size={24}
+                      style={{
+                        position: 'relative',
+                        left: '-50px',
+                        top: '8px',
+                      }}
+                    />
+                  )}
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Grid spacing={4} container>
-              <Grid item>
-                <Link href="login">Already a member?</Link>
+            <Grid item xs={12} md={4}>
+              <Grid spacing={4} container>
+                <Grid item>
+                  <Link href="login">Already a member?</Link>
+                </Grid>
               </Grid>
+              {error && (
+                <Grid>
+                  <p style={{ color: 'red' }}>{error.message} 🙁</p>
+                </Grid>
+              )}
             </Grid>
-            {error && (
-              <Grid>
-                <p style={{ color: 'red' }}>{error.message} 🙁</p>
-              </Grid>
-            )}
           </Grid>
-        </Grid>
-      </form>
+        </form>
+      )}
     </Layout>
   );
 };
