@@ -1,4 +1,4 @@
-import { gql, useLazyQuery } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import {
   Grid,
   FormControl,
@@ -8,12 +8,12 @@ import {
   Link,
 } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { UserContext, parseUserFromToken } from '../context/UserContext';
 
 const LOGIN = gql`
-  query Login($email: String!, $password: String!) {
+  mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password)
   }
 `;
@@ -28,23 +28,19 @@ interface IProps {
 }
 
 const Login: React.FC<IProps> = ({ message }) => {
-  const userContext = React.useContext(UserContext);
-
-  const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
-
-  const [login, { loading, error, data, client }] = useLazyQuery(LOGIN);
-
   const router = useRouter();
 
-  useEffect(() => {
-    console.log('data', data);
-    if (typeof window !== 'undefined' && data?.login) {
-      console.log('set user');
-      localStorage.setItem('token', data.login);
-      userContext.setUser(parseUserFromToken(data.login));
+  const userContext = React.useContext(UserContext);
+
+  const { register, handleSubmit, errors } = useForm<IFormInput>();
+
+  const [login, { loading, error }] = useMutation(LOGIN, {
+    onCompleted({ login }) {
+      localStorage.setItem('token', login);
+      userContext.setUser(parseUserFromToken(login));
       router.push('/');
-    }
-  }, [data]);
+    },
+  });
 
   const onSubmit = (data: IFormInput) => {
     login({
@@ -126,7 +122,7 @@ const Login: React.FC<IProps> = ({ message }) => {
           </Grid>
           <Grid>
             {error &&
-              error.graphQLErrors.map(({ message }, i) => (
+              error.graphQLErrors.map(({ message }) => (
                 <p style={{ color: 'red' }}>{message} 🙁</p>
               ))}
           </Grid>
