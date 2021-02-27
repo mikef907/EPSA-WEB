@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React from 'react';
 import Layout from '../components/Layout';
 import { useForm } from 'react-hook-form';
 import { parseUserFromToken, UserContext } from '../context/UserContext';
@@ -20,28 +20,24 @@ const ADD_USER = gql`
   }
 `;
 
+interface IFormInput {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
 const CreateUser: React.FC = () => {
   const { user, setUser } = React.useContext(UserContext);
 
-  const [addUser, { loading, error, data }] = useMutation(ADD_USER);
-
-  useEffect(() => {
-    console.log('data', data);
-    if (typeof window !== 'undefined' && data?.addUser) {
-      console.log('set user');
-      localStorage.setItem('token', data.addUser);
-      setUser(parseUserFromToken(data.addUser));
+  const [addUser, { loading, error }] = useMutation(ADD_USER, {
+    onCompleted({ addUser }) {
+      localStorage.setItem('token', addUser);
+      setUser(parseUserFromToken(addUser));
       router.push('/');
-    }
-  }, [data]);
-
-  interface IFormInput {
-    firstname: string;
-    lastname: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  }
+    },
+  });
 
   const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
 
@@ -177,11 +173,14 @@ const CreateUser: React.FC = () => {
                   <Link href="login">Already a member?</Link>
                 </Grid>
               </Grid>
-              {error && (
-                <Grid>
-                  <p style={{ color: 'red' }}>{error.message} 🙁</p>
-                </Grid>
-              )}
+              <Grid>
+                {error &&
+                  error.graphQLErrors.map(({ message }, i) => (
+                    <Typography color="error" component="p">
+                      {message} 🙁
+                    </Typography>
+                  ))}
+              </Grid>
             </Grid>
           </Grid>
         </form>

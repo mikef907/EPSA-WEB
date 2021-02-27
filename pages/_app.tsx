@@ -9,15 +9,29 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import {
   IUser,
   setUserFromLocalStorage,
+  checkRoles,
   UserContext,
 } from '../context/UserContext';
+import { getStoreKeyName } from '@apollo/client/utilities';
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
 
+  const IS_SERVER = typeof window === 'undefined';
+
+  const setToken = () => {
+    if (!IS_SERVER) return `Bearer ${localStorage.getItem('token')}` || '';
+  };
+
   const client = new ApolloClient({
     uri: 'http://localhost:4000/graphql',
     cache: new InMemoryCache(),
+    headers: {
+      Authorization:
+        !IS_SERVER && localStorage.getItem('token')
+          ? `Bearer ${localStorage.getItem('token')}`
+          : '',
+    },
   });
 
   const [user, setUser] = React.useState<IUser | null>(null);
@@ -48,7 +62,7 @@ export default function MyApp(props: AppProps) {
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
         <ApolloProvider client={client}>
-          <UserContext.Provider value={{ user, setUser }}>
+          <UserContext.Provider value={{ user, setUser, checkRoles }}>
             <Component {...pageProps} />
           </UserContext.Provider>
         </ApolloProvider>

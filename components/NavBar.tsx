@@ -23,14 +23,14 @@ const useStyles = makeStyles((theme: Theme) =>
 const NavBar: React.FC = () => {
   const [open, setOpen] = React.useState(false);
 
-  const userContext = React.useContext(UserContext);
+  const { user, setUser, checkRoles } = React.useContext(UserContext);
 
   const router = useRouter();
 
   const logout = () => {
     console.log('logout');
     localStorage.clear();
-    userContext.setUser(null);
+    setUser(null);
     router.push('/');
   };
 
@@ -59,9 +59,9 @@ const NavBar: React.FC = () => {
           <Typography style={{ flexGrow: 1 }} variant="h6">
             PIPA
           </Typography>
-          {userContext.user ? (
+          {user ? (
             <>
-              <PersonIcon></PersonIcon> Welcome {userContext.user.first_name}
+              <PersonIcon></PersonIcon> Welcome {user.first_name}
               <Button type="button" color="inherit" onClick={logout}>
                 Logout
               </Button>
@@ -106,6 +106,27 @@ const NavBar: React.FC = () => {
             </Link>
           </ListItem>
         </List>
+        {checkRoles(user, 'Admin', 'Staff') && (
+          <>
+            <Divider />
+            <List>
+              <ListItem>
+                <Typography
+                  style={{ flexGrow: 1, display: 'flex', margin: 'auto' }}
+                  variant="button"
+                  component="p"
+                >
+                  Admin
+                </Typography>
+              </ListItem>
+              <ListItem>
+                <Link href="/admin/users" variant="button">
+                  Users
+                </Link>
+              </ListItem>
+            </List>
+          </>
+        )}
       </Drawer>
     </React.Fragment>
   );

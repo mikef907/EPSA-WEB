@@ -24,10 +24,11 @@ interface IFormInput {
 }
 
 interface IProps {
-  message?: string;
+  message?: JSX.Element;
+  redirect?: string | false;
 }
 
-const Login: React.FC<IProps> = ({ message }) => {
+const Login: React.FC<IProps> = ({ message, redirect }) => {
   const router = useRouter();
 
   const userContext = React.useContext(UserContext);
@@ -38,7 +39,9 @@ const Login: React.FC<IProps> = ({ message }) => {
     onCompleted({ login }) {
       localStorage.setItem('token', login);
       userContext.setUser(parseUserFromToken(login));
-      router.push('/');
+
+      if (redirect === undefined) router.push('/');
+      else if (redirect) router.push(redirect);
     },
   });
 
@@ -61,9 +64,7 @@ const Login: React.FC<IProps> = ({ message }) => {
         spacing={2}
       >
         <Grid item xs={12}>
-          <Grid item>
-            {message && <p style={{ color: 'green' }}>{message}</p>}
-          </Grid>
+          {message && <Grid item>{message}</Grid>}
           <Grid spacing={1} container direction="row">
             <Grid item xs={12} md={6}>
               <FormControl fullWidth>

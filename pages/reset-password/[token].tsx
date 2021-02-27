@@ -51,7 +51,13 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
       >
         Reset Password
       </Typography>
-      {data?.resetPassword && <Login message="Password reset success"></Login>}
+      {data?.resetPassword && (
+        <Login
+          message={
+            <Typography color="textPrimary">Password reset success"</Typography>
+          }
+        ></Login>
+      )}
       {!data?.resetPassword && (
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid
