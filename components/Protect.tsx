@@ -1,5 +1,4 @@
 import { Typography } from '@material-ui/core';
-import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import Login from './Login';
