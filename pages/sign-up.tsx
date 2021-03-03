@@ -13,12 +13,7 @@ import Layout from '../components/Layout';
 import { useForm } from 'react-hook-form';
 import { parseUserFromToken, UserContext } from '../context/UserContext';
 import router from 'next/router';
-
-const ADD_USER = gql`
-  mutation AddUser($data: UserInput!) {
-    addUser(data: $data)
-  }
-`;
+import { useAddUserMutation } from '../generated/graphql';
 
 interface IFormInput {
   firstname: string;
@@ -31,27 +26,26 @@ interface IFormInput {
 const CreateUser: React.FC = () => {
   const { user, setUser } = React.useContext(UserContext);
 
-  const [addUser, { loading, error }] = useMutation(ADD_USER, {
-    onCompleted({ addUser }) {
-      localStorage.setItem('token', addUser);
-      setUser(parseUserFromToken(addUser));
-      router.push('/');
-    },
-  });
+  const [addUser, { loading, error, data }] = useAddUserMutation();
 
   const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
 
-  const onSubmit = (data: IFormInput) => {
-    addUser({
+  const onSubmit = async (input: IFormInput) => {
+    const result = await addUser({
       variables: {
         data: {
-          first_name: data.firstname,
-          last_name: data.lastname,
-          email: data.email,
-          password: data.password,
+          first_name: input.firstname,
+          last_name: input.lastname,
+          email: input.email,
+          password: input.password,
         },
       },
     });
+    console.log(result);
+    if (result.data?.addUser) {
+      setUser(parseUserFromToken(result.data?.addUser));
+      router.push('/');
+    }
   };
 
   return (

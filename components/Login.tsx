@@ -11,12 +11,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { UserContext, parseUserFromToken } from '../context/UserContext';
-
-const LOGIN = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password)
-  }
-`;
+import { useLoginMutation } from '../generated/graphql';
 
 interface IFormInput {
   email: string;
@@ -35,23 +30,21 @@ const Login: React.FC<IProps> = ({ message, redirect }) => {
 
   const { register, handleSubmit, errors } = useForm<IFormInput>();
 
-  const [login, { loading, error }] = useMutation(LOGIN, {
-    onCompleted({ login }) {
-      localStorage.setItem('token', login);
-      userContext.setUser(parseUserFromToken(login));
+  const [login, { loading, error }] = useLoginMutation();
 
-      if (redirect === undefined) router.push('/');
-      else if (redirect) router.push(redirect);
-    },
-  });
-
-  const onSubmit = (data: IFormInput) => {
-    login({
+  const onSubmit = async (data: IFormInput) => {
+    const result = await login({
       variables: {
         email: data.email,
         password: data.password,
       },
     });
+    if (result.data) {
+      userContext.setUser(parseUserFromToken(result.data.login));
+
+      if (redirect === undefined) router.push('/');
+      else if (redirect) router.push(redirect);
+    }
   };
 
   return (

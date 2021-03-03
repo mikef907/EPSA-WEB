@@ -1,0 +1,11 @@
+query Events {
+  events {
+    id
+    parentId
+    name
+    description
+    start
+    end
+    allDay
+  }
+}

@@ -9,27 +9,23 @@ import {
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import Layout from '../components/Layout';
+import { useForgotPasswordMutation } from '../generated/graphql';
 
-const FORGOT_PASSWORD = gql`
-  mutation ForgotPassword($email: String!) {
-    forgotPassword(email: $email)
-  }
-`;
+interface IFormInput {
+  email: string;
+  password: string;
+}
 
 const ForgotPassword: React.FC = () => {
-  interface IFormInput {
-    email: string;
-    password: string;
-  }
-
-  const [forgotPassword, { loading, error, data }] = useMutation(
-    FORGOT_PASSWORD
-  );
+  const [
+    forgotPassword,
+    { loading, error, data },
+  ] = useForgotPasswordMutation();
 
   const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
 
-  const onSubmit = (data: IFormInput) => {
-    forgotPassword({
+  const onSubmit = async (data: IFormInput) => {
+    await forgotPassword({
       variables: {
         email: data.email,
       },

@@ -4,20 +4,7 @@ import React from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
-
-const EVENTS = gql`
-  query Events {
-    events {
-      id
-      parentId
-      name
-      description
-      start
-      end
-      allDay
-    }
-  }
-`;
+import { useEventsQuery } from '../../generated/graphql';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Title', width: 160 },
@@ -28,7 +15,7 @@ const columns: GridColDef[] = [
 ];
 
 const Events: React.FC = () => {
-  const { loading, error, data } = useQuery(EVENTS);
+  const { loading, error, data } = useEventsQuery();
 
   return (
     <Layout>

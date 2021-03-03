@@ -13,12 +13,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import Layout from '../../components/Layout';
 import Login from '../../components/Login';
-
-const RESET_PASSOWRD = gql`
-  mutation ResetPassword($input: UserResetPassword!) {
-    resetPassword(input: $input)
-  }
-`;
+import { useResetPasswordMutation } from '../../generated/graphql';
 
 const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
   interface IFormInput {
@@ -28,10 +23,10 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
 
   const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
 
-  const [resetPassword, { loading, error, data }] = useMutation(RESET_PASSOWRD);
+  const [resetPassword, { loading, error, data }] = useResetPasswordMutation();
 
-  const onSubmit = (data: IFormInput) => {
-    resetPassword({
+  const onSubmit = async (data: IFormInput) => {
+    await resetPassword({
       variables: {
         input: {
           nonce: token,

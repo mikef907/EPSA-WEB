@@ -1,0 +1,15 @@
+mutation ResetPassword($input: UserResetPassword!) {
+  resetPassword(input: $input)
+}
+
+mutation ForgotPassword($email: String!) {
+  forgotPassword(email: $email)
+}
+
+mutation AddUser($data: UserInput!) {
+  addUser(data: $data)
+}
+
+mutation Login($email: String!, $password: String!) {
+  login(email: $email, password: $password)
+}

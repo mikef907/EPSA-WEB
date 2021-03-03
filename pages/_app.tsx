@@ -60,104 +60,104 @@ const MyApp = (props: AppProps) => {
   //   link,
   // });
 
-  const typeDefs = gql`
-    directive @specifiedBy(url: String!) on SCALAR
-    scalar DateTime
+  // const typeDefs = gql`
+  //   directive @specifiedBy(url: String!) on SCALAR
+  //   scalar DateTime
 
-    input EventInput {
-      parentId: Float
-      name: String!
-      description: String!
-      allDay: Boolean
-      start: DateTime!
-      end: DateTime
-    }
+  //   input EventInput {
+  //     parentId: Float
+  //     name: String!
+  //     description: String!
+  //     allDay: Boolean
+  //     start: DateTime!
+  //     end: DateTime
+  //   }
 
-    type EventQuery {
-      id: ID!
-      parentId: Float
-      name: String!
-      description: String!
-      allDay: Boolean
-      start: DateTime!
-      end: DateTime
-      created_at: DateTime!
-      updated_at: DateTime!
-    }
+  //   type EventQuery {
+  //     id: ID!
+  //     parentId: Float
+  //     name: String!
+  //     description: String!
+  //     allDay: Boolean
+  //     start: DateTime!
+  //     end: DateTime
+  //     created_at: DateTime!
+  //     updated_at: DateTime!
+  //   }
 
-    type Mutation {
-      resetPassword(input: UserResetPassword!): Boolean!
-      forgotPassword(email: String!): Boolean!
-      addUser(data: UserInput!): String!
-      login(email: String!, password: String!): String!
-      addEvent(event: EventInput!): EventQuery!
-    }
+  //   type Mutation {
+  //     resetPassword(input: UserResetPassword!): Boolean!
+  //     forgotPassword(email: String!): Boolean!
+  //     addUser(data: UserInput!): String!
+  //     login(email: String!, password: String!): String!
+  //     addEvent(event: EventInput!): EventQuery!
+  //   }
 
-    type Query {
-      users: [UserQuery!]!
-      user(id: Float!): UserQuery!
-      events: [EventQuery!]!
-      event(id: Float!): EventQuery!
-    }
+  //   type Query {
+  //     users: [UserQuery!]!
+  //     user(id: Float!): UserQuery!
+  //     events: [EventQuery!]!
+  //     event(id: Float!): EventQuery!
+  //   }
 
-    type RoleQuery {
-      id: ID!
-      name: String!
-    }
+  //   type RoleQuery {
+  //     id: ID!
+  //     name: String!
+  //   }
 
-    input UserInput {
-      first_name: String!
-      last_name: String!
-      email: String!
-      password: String!
-    }
+  //   input UserInput {
+  //     first_name: String!
+  //     last_name: String!
+  //     email: String!
+  //     password: String!
+  //   }
 
-    type UserQuery {
-      id: ID!
-      first_name: String!
-      last_name: String!
-      email: String!
-      roles: [RoleQuery!]!
-    }
+  //   type UserQuery {
+  //     id: ID!
+  //     first_name: String!
+  //     last_name: String!
+  //     email: String!
+  //     roles: [RoleQuery!]!
+  //   }
 
-    input UserResetPassword {
-      nonce: String!
-      password: String!
-    }
-  `;
+  //   input UserResetPassword {
+  //     nonce: String!
+  //     password: String!
+  //   }
+  // `;
 
-  const resolvers = {
-    Date: {
-      name: 'Date',
-      description: 'Date custom scalar type',
-      parseValue(value: any) {
-        return new Date(value); // value from the client
-      },
-      serialize(value: any) {
-        return value.getTime(); // value sent to the client
-      },
-      parseLiteral(ast: any) {
-        if (ast.kind === Kind.INT) {
-          return new Date(+ast.value); // ast value is always in string format
-        }
-        return null;
-      },
-    },
-  };
+  // const resolvers = {
+  //   Date: {
+  //     name: 'Date',
+  //     description: 'Date custom scalar type',
+  //     parseValue(value: any) {
+  //       return new Date(value); // value from the client
+  //     },
+  //     serialize(value: any) {
+  //       return value.getTime(); // value sent to the client
+  //     },
+  //     parseLiteral(ast: any) {
+  //       if (ast.kind === Kind.INT) {
+  //         return new Date(+ast.value); // ast value is always in string format
+  //       }
+  //       return null;
+  //     },
+  //   },
+  // };
 
-  const schema = makeExecutableSchema({
-    typeDefs,
-  });
+  // const schema = makeExecutableSchema({
+  //   typeDefs,
+  // });
 
-  const link = ApolloLink.from([
-    withScalars({ schema, resolvers }),
-    new HttpLink({ uri: 'http://example.org/graphql' }),
-  ]);
+  // const link = ApolloLink.from([
+  //   withScalars({ schema, resolvers }),
+  //   new HttpLink({ uri: 'http://example.org/graphql' }),
+  // ]);
 
   const client = new ApolloClient({
     uri: 'http://localhost:4000/graphql',
     cache: new InMemoryCache(),
-    link,
+    //link,
     headers: {
       Authorization:
         !IS_SERVER && localStorage.getItem('token')

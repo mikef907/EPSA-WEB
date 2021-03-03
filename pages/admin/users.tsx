@@ -5,17 +5,7 @@ import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
 import { IUser } from '../../context/UserContext';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
-
-const USERS = gql`
-  query Users {
-    users {
-      id
-      first_name
-      last_name
-      email
-    }
-  }
-`;
+import { useUsersQuery } from '../../generated/graphql';
 
 const columns: GridColDef[] = [
   { field: 'first_name', headerName: 'First Name', width: 160 },
@@ -24,7 +14,7 @@ const columns: GridColDef[] = [
 ];
 
 const Users: React.FC = () => {
-  const { loading, error, data } = useQuery(USERS);
+  const { loading, error, data } = useUsersQuery();
 
   return (
     <Layout>
