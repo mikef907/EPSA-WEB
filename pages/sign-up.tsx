@@ -1,4 +1,3 @@
-import { gql, useMutation } from '@apollo/client';
 import {
   Button,
   CircularProgress,
@@ -26,7 +25,7 @@ interface IFormInput {
 const CreateUser: React.FC = () => {
   const { user, setUser } = React.useContext(UserContext);
 
-  const [addUser, { loading, error, data }] = useAddUserMutation();
+  const [addUser, { loading, error }] = useAddUserMutation();
 
   const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
 
@@ -169,7 +168,7 @@ const CreateUser: React.FC = () => {
               </Grid>
               <Grid>
                 {error &&
-                  error.graphQLErrors.map(({ message }, i) => (
+                  error.graphQLErrors.map(({ message }) => (
                     <Typography color="error" component="p">
                       {message} 🙁
                     </Typography>

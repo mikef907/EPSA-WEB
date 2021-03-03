@@ -1,4 +1,3 @@
-import { gql, useLazyQuery, useMutation } from '@apollo/client';
 import {
   Button,
   FormControl,
@@ -22,7 +21,7 @@ const ForgotPassword: React.FC = () => {
     { loading, error, data },
   ] = useForgotPasswordMutation();
 
-  const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
+  const { register, handleSubmit, errors } = useForm<IFormInput>();
 
   const onSubmit = async (data: IFormInput) => {
     await forgotPassword({
@@ -81,7 +80,7 @@ const ForgotPassword: React.FC = () => {
               </Typography>
             )}
             {error &&
-              error.graphQLErrors.map(({ message }, i) => (
+              error.graphQLErrors.map(({ message }) => (
                 <Typography color="error" component="p">
                   {message} 🙁
                 </Typography>

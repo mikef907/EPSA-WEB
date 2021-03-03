@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import React from 'react';
 import Layout from '../../components/Layout';
@@ -15,7 +14,7 @@ const columns: GridColDef[] = [
 ];
 
 const Events: React.FC = () => {
-  const { loading, error, data } = useEventsQuery();
+  const { data } = useEventsQuery();
 
   return (
     <Layout>

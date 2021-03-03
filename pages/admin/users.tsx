@@ -1,9 +1,7 @@
-import { gql, useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import React from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
-import { IUser } from '../../context/UserContext';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
 import { useUsersQuery } from '../../generated/graphql';
 
@@ -14,7 +12,7 @@ const columns: GridColDef[] = [
 ];
 
 const Users: React.FC = () => {
-  const { loading, error, data } = useUsersQuery();
+  const { data } = useUsersQuery();
 
   return (
     <Layout>

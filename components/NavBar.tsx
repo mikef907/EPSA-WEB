@@ -124,6 +124,11 @@ const NavBar: React.FC = () => {
                   Users
                 </Link>
               </ListItem>
+              <ListItem>
+                <Link href="/admin/events" variant="button">
+                  Events
+                </Link>
+              </ListItem>
             </List>
           </>
         )}
