@@ -170,6 +170,19 @@ export type EventsQuery = (
   )> }
 );
 
+export type EventByIdQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type EventByIdQuery = (
+  { __typename?: 'Query' }
+  & { event: (
+    { __typename?: 'EventQuery' }
+    & Pick<EventQuery, 'id' | 'parentId' | 'name' | 'description' | 'start' | 'end' | 'allDay'>
+  ) }
+);
+
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -341,6 +354,45 @@ export function useEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Eve
 export type EventsQueryHookResult = ReturnType<typeof useEventsQuery>;
 export type EventsLazyQueryHookResult = ReturnType<typeof useEventsLazyQuery>;
 export type EventsQueryResult = Apollo.QueryResult<EventsQuery, EventsQueryVariables>;
+export const EventByIdDocument = gql`
+    query EventById($id: Float!) {
+  event(id: $id) {
+    id
+    parentId
+    name
+    description
+    start
+    end
+    allDay
+  }
+}
+    `;
+
+/**
+ * __useEventByIdQuery__
+ *
+ * To run a query within a React component, call `useEventByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEventByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEventByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useEventByIdQuery(baseOptions: Apollo.QueryHookOptions<EventByIdQuery, EventByIdQueryVariables>) {
+        return Apollo.useQuery<EventByIdQuery, EventByIdQueryVariables>(EventByIdDocument, baseOptions);
+      }
+export function useEventByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventByIdQuery, EventByIdQueryVariables>) {
+          return Apollo.useLazyQuery<EventByIdQuery, EventByIdQueryVariables>(EventByIdDocument, baseOptions);
+        }
+export type EventByIdQueryHookResult = ReturnType<typeof useEventByIdQuery>;
+export type EventByIdLazyQueryHookResult = ReturnType<typeof useEventByIdLazyQuery>;
+export type EventByIdQueryResult = Apollo.QueryResult<EventByIdQuery, EventByIdQueryVariables>;
 export const UsersDocument = gql`
     query Users {
   users {
