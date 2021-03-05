@@ -1,4 +1,5 @@
 import {
+  Button,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -6,13 +7,16 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useEventByIdLazyQuery } from '../generated/graphql';
+import {
+  useEventByIdLazyQuery,
+  useUpdateEventMutation,
+} from '../generated/graphql';
 import Layout from './Layout';
 import Protect from './Protect';
-import * as dayjs from 'dayjs';
-import { CheckBox } from '@material-ui/icons';
+import dayjs from 'dayjs';
+import CheckBox from '@material-ui/core/Checkbox';
 
 interface IProps {
   id?: number;
@@ -27,7 +31,11 @@ interface IFormInput {
 }
 
 const EventForm: React.FC<IProps> = ({ id }) => {
+  const [allDay, setAllDay] = useState<boolean>();
+
   const [eventQuery, { data }] = useEventByIdLazyQuery();
+
+  const [eventUpdate, { loading }] = useUpdateEventMutation();
 
   const {
     register,
@@ -37,7 +45,20 @@ const EventForm: React.FC<IProps> = ({ id }) => {
     errors,
   } = useForm<IFormInput>();
 
-  const onSubmit = () => {};
+  const onSubmit = async (input: IFormInput) => {
+    await eventUpdate({
+      variables: {
+        event: {
+          id: id as number,
+          name: input.name,
+          description: input.description || '',
+          start: input.start,
+          end: input.end,
+          allDay: input.allDay,
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     if (id) {
@@ -49,10 +70,10 @@ const EventForm: React.FC<IProps> = ({ id }) => {
     reset({
       name: data?.event.name,
       description: data?.event.description,
-      start: dayjs(data?.event.start).format('YYYY-MM-DDTHH:mm:ss'),
-      end: dayjs(data?.event.end).format('YYYY-MM-DDTHH:mm:ss'),
-      allDay: data?.event.allDay,
+      start: dayjs(data?.event.start).format('YYYY-MM-DDTHH:mm'),
+      end: dayjs(data?.event.end).format('YYYY-MM-DDTHH:mm'),
     });
+    setAllDay(data?.event.allDay || false);
   }, [data]);
 
   return (
@@ -77,7 +98,9 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                       name="name"
                       label="Name"
                       inputProps={{ maxLength: 50 }}
-                      inputRef={register({ required: 'Event name required' })}
+                      inputRef={register({
+                        required: 'Event name required',
+                      })}
                       error={!!errors.name}
                       helperText={errors.name?.message}
                     ></TextField>
@@ -128,10 +151,29 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                     <FormGroup>
                       <FormControlLabel
                         label="All Day"
-                        control={<CheckBox name="allDay"></CheckBox>}
+                        control={
+                          <CheckBox
+                            name="allDay"
+                            checked={allDay}
+                            onChange={(event) => {
+                              setAllDay(event.target.checked);
+                            }}
+                            inputRef={register()}
+                          ></CheckBox>
+                        }
                       ></FormControlLabel>
                     </FormGroup>
                   </FormControl>
+                </Grid>
+                <Grid item>
+                  <Button
+                    type="submit"
+                    style={{ alignSelf: 'flex-end' }}
+                    disabled={loading}
+                    variant="contained"
+                  >
+                    Save
+                  </Button>
                 </Grid>
               </Grid>
             </Grid>

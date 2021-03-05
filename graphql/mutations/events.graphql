@@ -1,0 +1,23 @@
+mutation AddEvent($event: EventInput!) {
+  addEvent(event: $event) {
+    id
+    parentId
+    name
+    description
+    allDay
+    start
+    end
+  }
+}
+
+mutation UpdateEvent($event: EventInput!) {
+  updateEvent(event: $event) {
+    id
+    parentId
+    name
+    description
+    allDay
+    start
+    end
+  }
+}

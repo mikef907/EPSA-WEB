@@ -69,6 +69,7 @@ export type Mutation = {
   addUser: Scalars['String'];
   login: Scalars['String'];
   addEvent: EventQuery;
+  updateEvent: EventQuery;
 };
 
 
@@ -97,6 +98,11 @@ export type MutationAddEventArgs = {
   event: EventInput;
 };
 
+
+export type MutationUpdateEventArgs = {
+  event: EventInput;
+};
+
 export type UserResetPassword = {
   nonce: Scalars['String'];
   password: Scalars['String'];
@@ -110,6 +116,7 @@ export type UserInput = {
 };
 
 export type EventInput = {
+  id: Scalars['Float'];
   parentId?: Maybe<Scalars['Float']>;
   name: Scalars['String'];
   description: Scalars['String'];
@@ -117,6 +124,32 @@ export type EventInput = {
   start: Scalars['DateTime'];
   end?: Maybe<Scalars['DateTime']>;
 };
+
+export type AddEventMutationVariables = Exact<{
+  event: EventInput;
+}>;
+
+
+export type AddEventMutation = (
+  { __typename?: 'Mutation' }
+  & { addEvent: (
+    { __typename?: 'EventQuery' }
+    & Pick<EventQuery, 'id' | 'parentId' | 'name' | 'description' | 'allDay' | 'start' | 'end'>
+  ) }
+);
+
+export type UpdateEventMutationVariables = Exact<{
+  event: EventInput;
+}>;
+
+
+export type UpdateEventMutation = (
+  { __typename?: 'Mutation' }
+  & { updateEvent: (
+    { __typename?: 'EventQuery' }
+    & Pick<EventQuery, 'id' | 'parentId' | 'name' | 'description' | 'allDay' | 'start' | 'end'>
+  ) }
+);
 
 export type ResetPasswordMutationVariables = Exact<{
   input: UserResetPassword;
@@ -195,6 +228,82 @@ export type UsersQuery = (
 );
 
 
+export const AddEventDocument = gql`
+    mutation AddEvent($event: EventInput!) {
+  addEvent(event: $event) {
+    id
+    parentId
+    name
+    description
+    allDay
+    start
+    end
+  }
+}
+    `;
+export type AddEventMutationFn = Apollo.MutationFunction<AddEventMutation, AddEventMutationVariables>;
+
+/**
+ * __useAddEventMutation__
+ *
+ * To run a mutation, you first call `useAddEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addEventMutation, { data, loading, error }] = useAddEventMutation({
+ *   variables: {
+ *      event: // value for 'event'
+ *   },
+ * });
+ */
+export function useAddEventMutation(baseOptions?: Apollo.MutationHookOptions<AddEventMutation, AddEventMutationVariables>) {
+        return Apollo.useMutation<AddEventMutation, AddEventMutationVariables>(AddEventDocument, baseOptions);
+      }
+export type AddEventMutationHookResult = ReturnType<typeof useAddEventMutation>;
+export type AddEventMutationResult = Apollo.MutationResult<AddEventMutation>;
+export type AddEventMutationOptions = Apollo.BaseMutationOptions<AddEventMutation, AddEventMutationVariables>;
+export const UpdateEventDocument = gql`
+    mutation UpdateEvent($event: EventInput!) {
+  updateEvent(event: $event) {
+    id
+    parentId
+    name
+    description
+    allDay
+    start
+    end
+  }
+}
+    `;
+export type UpdateEventMutationFn = Apollo.MutationFunction<UpdateEventMutation, UpdateEventMutationVariables>;
+
+/**
+ * __useUpdateEventMutation__
+ *
+ * To run a mutation, you first call `useUpdateEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEventMutation, { data, loading, error }] = useUpdateEventMutation({
+ *   variables: {
+ *      event: // value for 'event'
+ *   },
+ * });
+ */
+export function useUpdateEventMutation(baseOptions?: Apollo.MutationHookOptions<UpdateEventMutation, UpdateEventMutationVariables>) {
+        return Apollo.useMutation<UpdateEventMutation, UpdateEventMutationVariables>(UpdateEventDocument, baseOptions);
+      }
+export type UpdateEventMutationHookResult = ReturnType<typeof useUpdateEventMutation>;
+export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
+export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<UpdateEventMutation, UpdateEventMutationVariables>;
 export const ResetPasswordDocument = gql`
     mutation ResetPassword($input: UserResetPassword!) {
   resetPassword(input: $input)
