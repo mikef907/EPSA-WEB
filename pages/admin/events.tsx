@@ -1,8 +1,8 @@
-import { Typography } from '@material-ui/core';
+import { Link, Typography } from '@material-ui/core';
 import React from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
-import { DataGrid, GridColDef } from '@material-ui/data-grid';
+import { DataGrid, GridCellParams, GridColDef } from '@material-ui/data-grid';
 import { useEventsQuery } from '../../generated/graphql';
 
 const columns: GridColDef[] = [
@@ -11,6 +11,14 @@ const columns: GridColDef[] = [
   { field: 'start', headerName: 'Start', width: 160, type: 'dateTime' },
   { field: 'end', headerName: 'End', width: 160, type: 'dateTime' },
   { field: 'allDay', headerName: 'All Day', width: 160, type: 'bool' },
+  {
+    field: 'id',
+    headerName: 'Edit',
+    renderCell: (params: GridCellParams) => {
+      const link = `/admin/event/${params.value}`;
+      return <Link href={link}>Edit</Link>;
+    },
+  },
 ];
 
 const Events: React.FC = () => {
@@ -27,6 +35,7 @@ const Events: React.FC = () => {
         >
           Events
         </Typography>
+        <Link href="/admin/event">Add Event</Link>
         {data && (
           <DataGrid
             columns={columns}

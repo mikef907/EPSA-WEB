@@ -116,7 +116,7 @@ export type UserInput = {
 };
 
 export type EventInput = {
-  id: Scalars['Float'];
+  id?: Maybe<Scalars['Float']>;
   parentId?: Maybe<Scalars['Float']>;
   name: Scalars['String'];
   description: Scalars['String'];

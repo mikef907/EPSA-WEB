@@ -12,11 +12,13 @@ import { useForm } from 'react-hook-form';
 import {
   useEventByIdLazyQuery,
   useUpdateEventMutation,
+  useAddEventMutation,
 } from '../generated/graphql';
 import Layout from './Layout';
 import Protect from './Protect';
 import dayjs from 'dayjs';
 import CheckBox from '@material-ui/core/Checkbox';
+import { useRouter } from 'next/router';
 
 interface IProps {
   id?: number;
@@ -30,34 +32,52 @@ interface IFormInput {
   allDay: boolean | null;
 }
 
+interface IEvent extends IFormInput {
+  id: string;
+}
+
 const EventForm: React.FC<IProps> = ({ id }) => {
-  const [allDay, setAllDay] = useState<boolean>();
+  const router = useRouter();
+
+  const [event, setEvent] = useState<Partial<IEvent>>({});
 
   const [eventQuery, { data }] = useEventByIdLazyQuery();
 
   const [eventUpdate, { loading }] = useUpdateEventMutation();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setValue,
-    errors,
-  } = useForm<IFormInput>();
+  const [eventAdd] = useAddEventMutation();
+
+  const { register, handleSubmit, reset, errors } = useForm<IFormInput>();
 
   const onSubmit = async (input: IFormInput) => {
-    await eventUpdate({
-      variables: {
-        event: {
-          id: id as number,
-          name: input.name,
-          description: input.description || '',
-          start: input.start,
-          end: input.end,
-          allDay: input.allDay,
+    if (event.id)
+      await eventUpdate({
+        variables: {
+          event: {
+            id: parseInt(event.id),
+            name: input.name,
+            description: input.description || '',
+            start: input.start,
+            end: input.end,
+            allDay: input.allDay,
+          },
         },
-      },
-    });
+      });
+    else {
+      const result = await eventAdd({
+        variables: {
+          event: {
+            name: input.name,
+            description: input.description || '',
+            start: input.start,
+            end: input.end,
+            allDay: input.allDay,
+          },
+        },
+      });
+      router.push(`${result.data?.addEvent.id}`, undefined, { shallow: true });
+      setEvent({ ...event, id: result.data?.addEvent.id });
+    }
   };
 
   useEffect(() => {
@@ -67,13 +87,18 @@ const EventForm: React.FC<IProps> = ({ id }) => {
   }, []);
 
   useEffect(() => {
-    reset({
-      name: data?.event.name,
-      description: data?.event.description,
-      start: dayjs(data?.event.start).format('YYYY-MM-DDTHH:mm'),
-      end: dayjs(data?.event.end).format('YYYY-MM-DDTHH:mm'),
-    });
-    setAllDay(data?.event.allDay || false);
+    if (data?.event) {
+      setEvent({
+        ...data.event,
+      });
+
+      reset({
+        name: data.event.name,
+        description: data.event.description,
+        start: dayjs(data.event.start).format('YYYY-MM-DDTHH:mm'),
+        end: dayjs(data.event.end).format('YYYY-MM-DDTHH:mm'),
+      });
+    }
   }, [data]);
 
   return (
@@ -85,7 +110,7 @@ const EventForm: React.FC<IProps> = ({ id }) => {
           style={{ textAlign: 'center' }}
           gutterBottom
         >
-          Edit Event
+          {event.id ? 'Edit Event' : 'Add Event'}
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container justify="center">
@@ -126,7 +151,9 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                       type="datetime-local"
                       name="start"
                       label="Start"
-                      inputRef={register()}
+                      inputRef={register({
+                        required: 'Start datetime is required',
+                      })}
                       error={!!errors.start}
                       helperText={errors.start?.message}
                     ></TextField>
@@ -154,9 +181,12 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                         control={
                           <CheckBox
                             name="allDay"
-                            checked={allDay}
-                            onChange={(event) => {
-                              setAllDay(event.target.checked);
+                            checked={event?.allDay || false}
+                            onChange={(input) => {
+                              setEvent({
+                                ...event,
+                                allDay: input.target.checked,
+                              });
                             }}
                             inputRef={register()}
                           ></CheckBox>
