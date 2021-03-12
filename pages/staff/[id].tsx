@@ -1,18 +1,28 @@
 import {
+  Avatar,
   Button,
+  createStyles,
   FormControl,
   Grid,
+  makeStyles,
   TextareaAutosize,
   TextField,
+  Theme,
   Typography,
 } from '@material-ui/core';
 import dayjs from 'dayjs';
 import { NextPage, NextPageContext } from 'next';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
-import { useUserByIdQuery } from '../../generated/graphql';
+import { UserContext } from '../../context/UserContext';
+import {
+  useStaffByIdQuery,
+  useUpdateStaffMutation,
+  useUserByIdQuery,
+} from '../../generated/graphql';
+import theme from '../../themes';
 
 interface Context extends NextPageContext {
   query: {
@@ -28,56 +38,99 @@ interface IFormInput {
   firstname: string;
   lastname: string;
   email: string;
-  description?: string;
-  img?: string;
+  description: string;
+  imgfile: string;
+  start: Date;
+}
+
+interface IUser {
+  first_name: string;
+  last_name: string;
+  email: string;
 }
 
 interface IStaff {
   id: number;
   userId: number;
-  date: Date;
+  start: Date;
   description?: string;
   img?: string;
+  user: IUser;
 }
 
-interface IUser {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  staff: Partial<IStaff>;
-}
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    large: {
+      width: 200,
+      height: 200,
+    },
+  })
+);
 
 const StaffPage: NextPage<IProps> = ({ id }) => {
-  const [user, setUser] = useState<Partial<IUser>>();
+  const { user, checkRoles } = useContext(UserContext);
 
-  const { register, errors, reset, handleSubmit } = useForm();
+  const [description, setDescription] = useState<string>('');
 
-  const { data, loading } = useUserByIdQuery({ variables: { id } });
+  const {
+    register,
+    errors,
+    reset,
+    handleSubmit,
+    setValue,
+    getValues,
+  } = useForm();
 
-  const onSubmit = async (input: IFormInput) => {};
+  const { data, loading } = useStaffByIdQuery({ variables: { id } });
 
-  useEffect(() => {
-    if (data?.user) {
-      console.log(data.user);
+  const [updateStaff] = useUpdateStaffMutation();
 
-      setUser({
-        first_name: data.user.first_name,
-        last_name: data.user.last_name,
-        email: data.user.email,
-        staff: {
-          img: data.user.staff?.img as string | undefined,
-          description: data.user.staff?.description as string | undefined,
+  const onSubmit = async (input: IFormInput) => {
+    if (data) {
+      updateStaff({
+        variables: {
+          staff: {
+            id: data.staff.id,
+            userId: data.staff.userId,
+            description,
+            start: input.start,
+            user: {
+              first_name: input.firstname,
+              last_name: input.lastname,
+              email: input.email,
+            },
+          },
         },
       });
+    }
+  };
+
+  const classes = useStyles();
+
+  useEffect(() => {
+    if (data?.staff) {
+      console.log(data.staff);
+
+      // setStaff({
+      //   img: data.staff?.img as string | undefined,
+      //   description: data.staff?.description as string | undefined,
+      //   start: data.staff.start,
+      //   user: {
+      //     first_name: data.staff.user.first_name,
+      //     last_name: data.staff.user.last_name,
+      //     email: data.staff.user.email,
+      //   },
+      // });
+
+      setDescription(data.staff.description || '');
 
       reset({
-        firstname: data.user.first_name,
-        lastname: data.user.last_name,
-        email: data.user.email,
-        img: data.user.staff?.img,
-        description: data.user.staff?.description,
-        start: dayjs(data.user.staff?.start).format('YYYY-MM-DD'),
+        firstname: data.staff.user.first_name,
+        lastname: data.staff.user.last_name,
+        email: data.staff.user.email,
+        img: data.staff.img,
+        description: data.staff.description,
+        start: dayjs(data.staff.start).format('YYYY-MM-DD'),
       });
     }
   }, [data]);
@@ -91,12 +144,25 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
           style={{ textAlign: 'center' }}
           gutterBottom
         >
-          {data?.user.first_name} {data?.user.last_name}
+          {data?.staff.user?.first_name} {data?.staff.user?.last_name}
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container justify="center">
-            <Grid item>
-              <Grid container direction="row" spacing={2}>
+            <Grid item md={6}>
+              <Grid container direction="row" justify="center" spacing={2}>
+                <Grid container direction="column" alignItems="center">
+                  <Grid item md={12}>
+                    <Avatar className={classes.large}></Avatar>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="caption">
+                      Upload avatar here
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <input type="file"></input>
+                  </Grid>
+                </Grid>
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth>
                     <TextField
@@ -152,14 +218,23 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
                       inputRef={register({
                         required: 'Start is required',
                       })}
+                      disabled={!checkRoles(user, 'Admin')}
                       error={!!errors.start}
                       helperText={errors.start?.message}
                     ></TextField>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12}>
+                  <Typography variant="caption">Description</Typography>
                   <FormControl fullWidth>
-                    <TextareaAutosize name="description"></TextareaAutosize>
+                    <TextareaAutosize
+                      name="description"
+                      rowsMin="4"
+                      value={description}
+                      onChange={(e) => {
+                        setDescription(e.target.value);
+                      }}
+                    ></TextareaAutosize>
                   </FormControl>
                 </Grid>
                 <Grid item>

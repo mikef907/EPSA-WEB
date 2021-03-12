@@ -1,0 +1,30 @@
+query AllStaff {
+  allStaff {
+    id
+    start
+    description
+    img
+    user {
+      id
+      first_name
+      last_name
+      email
+    }
+  }
+}
+
+query StaffById($id: Float!) {
+  staff(id: $id) {
+    id
+    userId
+    start
+    description
+    img
+    user {
+      id
+      first_name
+      last_name
+      email
+    }
+  }
+}

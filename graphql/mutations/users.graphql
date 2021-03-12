@@ -6,8 +6,8 @@ mutation ForgotPassword($email: String!) {
   forgotPassword(email: $email)
 }
 
-mutation AddUser($data: UserInput!) {
-  addUser(data: $data)
+mutation AddUser($newUser: NewUserInput!) {
+  addUser(newUser: $newUser)
 }
 
 mutation Login($email: String!, $password: String!) {

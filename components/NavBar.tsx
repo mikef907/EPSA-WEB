@@ -4,12 +4,18 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Divider, Drawer, Link, List, ListItem } from '@material-ui/core';
+import {
+  Avatar,
+  Divider,
+  Drawer,
+  Link,
+  List,
+  ListItem,
+} from '@material-ui/core';
 import React from 'react';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { UserContext } from '../context/UserContext';
-import PersonIcon from '@material-ui/icons/Person';
 import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -61,7 +67,8 @@ const NavBar: React.FC = () => {
           </Typography>
           {user ? (
             <>
-              <PersonIcon></PersonIcon> Welcome {user.first_name}
+              <Avatar style={{ marginRight: 10 }}></Avatar> Welcome{' '}
+              {user.first_name}
               <Button type="button" color="inherit" onClick={logout}>
                 Logout
               </Button>
@@ -122,6 +129,11 @@ const NavBar: React.FC = () => {
               <ListItem>
                 <Link href="/admin/users" variant="button">
                   Users
+                </Link>
+              </ListItem>
+              <ListItem>
+                <Link href="/admin/staff" variant="button">
+                  Staff
                 </Link>
               </ListItem>
               <ListItem>

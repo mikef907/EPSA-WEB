@@ -15,7 +15,7 @@ export interface IRole {
 export type User = {
   user: IUser | null;
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
-  checkRoles: (user: IUser | null, ...roles: string[]) => Boolean;
+  checkRoles: (user: IUser | null, ...roles: string[]) => boolean;
 };
 
 const token = () => localStorage.getItem('token');
@@ -36,7 +36,7 @@ export const parseUserFromToken = (token: string) => {
 };
 
 export const checkRoles = (user: IUser | null, ...roles: string[]) => {
-  if (user) return user?.roles.some((role) => roles.includes(role.name));
+  if (user) return user.roles.some((role) => roles.includes(role.name));
   else return false;
 };
 

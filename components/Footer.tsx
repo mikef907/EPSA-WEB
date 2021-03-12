@@ -10,6 +10,8 @@ const Footer: React.FC = () => {
       justify="center"
       alignContent="center"
       alignItems="center"
+      spacing={1}
+      style={{ marginTop: 50 }}
     >
       <Grid item>
         <Typography variant="h5">Connect with us!</Typography>

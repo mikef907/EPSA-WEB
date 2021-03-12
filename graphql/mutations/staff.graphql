@@ -1,0 +1,3 @@
+mutation UpdateStaff($staff: StaffInput!) {
+  updateStaff(staff: $staff)
+}

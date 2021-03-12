@@ -21,6 +21,8 @@ export type Query = {
   user: UserQuery;
   events: Array<EventQuery>;
   event: EventQuery;
+  allStaff: Array<StaffQuery>;
+  staff: StaffQuery;
 };
 
 
@@ -33,6 +35,11 @@ export type QueryEventArgs = {
   id: Scalars['Float'];
 };
 
+
+export type QueryStaffArgs = {
+  id: Scalars['Float'];
+};
+
 export type UserQuery = {
   __typename?: 'UserQuery';
   id: Scalars['ID'];
@@ -40,7 +47,6 @@ export type UserQuery = {
   last_name: Scalars['String'];
   email: Scalars['String'];
   roles: Array<RoleQuery>;
-  staff?: Maybe<StaffQuery>;
 };
 
 export type RoleQuery = {
@@ -48,16 +54,6 @@ export type RoleQuery = {
   id: Scalars['ID'];
   name: Scalars['String'];
 };
-
-export type StaffQuery = {
-  __typename?: 'StaffQuery';
-  id: Scalars['ID'];
-  userId: Scalars['Float'];
-  start: Scalars['DateTime'];
-  description?: Maybe<Scalars['String']>;
-  img?: Maybe<Scalars['String']>;
-};
-
 
 export type EventQuery = {
   __typename?: 'EventQuery';
@@ -72,14 +68,29 @@ export type EventQuery = {
   updated_at: Scalars['DateTime'];
 };
 
+
+export type StaffQuery = {
+  __typename?: 'StaffQuery';
+  id: Scalars['ID'];
+  userId: Scalars['Float'];
+  start: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']>;
+  img?: Maybe<Scalars['String']>;
+  user: UserQuery;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   resetPassword: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
   addUser: Scalars['String'];
+  updateUser: Scalars['String'];
   login: Scalars['String'];
   addEvent: EventQuery;
   updateEvent: EventQuery;
+  addStaff: StaffQuery;
+  updateStaff: Scalars['Boolean'];
+  removeStaff: Scalars['Boolean'];
 };
 
 
@@ -94,6 +105,11 @@ export type MutationForgotPasswordArgs = {
 
 
 export type MutationAddUserArgs = {
+  newUser: NewUserInput;
+};
+
+
+export type MutationUpdateUserArgs = {
   data: UserInput;
 };
 
@@ -113,16 +129,33 @@ export type MutationUpdateEventArgs = {
   event: EventInput;
 };
 
+
+export type MutationAddStaffArgs = {
+  staff: StaffInput;
+};
+
+
+export type MutationUpdateStaffArgs = {
+  staff: StaffInput;
+};
+
 export type UserResetPassword = {
   nonce: Scalars['String'];
   password: Scalars['String'];
 };
 
-export type UserInput = {
+export type NewUserInput = {
   first_name: Scalars['String'];
   last_name: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type UserInput = {
+  first_name?: Maybe<Scalars['String']>;
+  last_name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
 };
 
 export type EventInput = {
@@ -133,6 +166,14 @@ export type EventInput = {
   allDay?: Maybe<Scalars['Boolean']>;
   start: Scalars['DateTime'];
   end?: Maybe<Scalars['DateTime']>;
+};
+
+export type StaffInput = {
+  id: Scalars['ID'];
+  userId: Scalars['Float'];
+  start?: Maybe<Scalars['DateTime']>;
+  description?: Maybe<Scalars['String']>;
+  user: UserInput;
 };
 
 export type AddEventMutationVariables = Exact<{
@@ -161,6 +202,16 @@ export type UpdateEventMutation = (
   ) }
 );
 
+export type UpdateStaffMutationVariables = Exact<{
+  staff: StaffInput;
+}>;
+
+
+export type UpdateStaffMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateStaff'>
+);
+
 export type ResetPasswordMutationVariables = Exact<{
   input: UserResetPassword;
 }>;
@@ -182,7 +233,7 @@ export type ForgotPasswordMutation = (
 );
 
 export type AddUserMutationVariables = Exact<{
-  data: UserInput;
+  newUser: NewUserInput;
 }>;
 
 
@@ -226,6 +277,38 @@ export type EventByIdQuery = (
   ) }
 );
 
+export type AllStaffQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllStaffQuery = (
+  { __typename?: 'Query' }
+  & { allStaff: Array<(
+    { __typename?: 'StaffQuery' }
+    & Pick<StaffQuery, 'id' | 'start' | 'description' | 'img'>
+    & { user: (
+      { __typename?: 'UserQuery' }
+      & Pick<UserQuery, 'id' | 'first_name' | 'last_name' | 'email'>
+    ) }
+  )> }
+);
+
+export type StaffByIdQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type StaffByIdQuery = (
+  { __typename?: 'Query' }
+  & { staff: (
+    { __typename?: 'StaffQuery' }
+    & Pick<StaffQuery, 'id' | 'userId' | 'start' | 'description' | 'img'>
+    & { user: (
+      { __typename?: 'UserQuery' }
+      & Pick<UserQuery, 'id' | 'first_name' | 'last_name' | 'email'>
+    ) }
+  ) }
+);
+
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -247,10 +330,6 @@ export type UserByIdQuery = (
   & { user: (
     { __typename?: 'UserQuery' }
     & Pick<UserQuery, 'id' | 'first_name' | 'last_name' | 'email'>
-    & { staff?: Maybe<(
-      { __typename?: 'StaffQuery' }
-      & Pick<StaffQuery, 'userId' | 'start' | 'description' | 'img'>
-    )> }
   ) }
 );
 
@@ -331,6 +410,36 @@ export function useUpdateEventMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateEventMutationHookResult = ReturnType<typeof useUpdateEventMutation>;
 export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
 export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<UpdateEventMutation, UpdateEventMutationVariables>;
+export const UpdateStaffDocument = gql`
+    mutation UpdateStaff($staff: StaffInput!) {
+  updateStaff(staff: $staff)
+}
+    `;
+export type UpdateStaffMutationFn = Apollo.MutationFunction<UpdateStaffMutation, UpdateStaffMutationVariables>;
+
+/**
+ * __useUpdateStaffMutation__
+ *
+ * To run a mutation, you first call `useUpdateStaffMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateStaffMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateStaffMutation, { data, loading, error }] = useUpdateStaffMutation({
+ *   variables: {
+ *      staff: // value for 'staff'
+ *   },
+ * });
+ */
+export function useUpdateStaffMutation(baseOptions?: Apollo.MutationHookOptions<UpdateStaffMutation, UpdateStaffMutationVariables>) {
+        return Apollo.useMutation<UpdateStaffMutation, UpdateStaffMutationVariables>(UpdateStaffDocument, baseOptions);
+      }
+export type UpdateStaffMutationHookResult = ReturnType<typeof useUpdateStaffMutation>;
+export type UpdateStaffMutationResult = Apollo.MutationResult<UpdateStaffMutation>;
+export type UpdateStaffMutationOptions = Apollo.BaseMutationOptions<UpdateStaffMutation, UpdateStaffMutationVariables>;
 export const ResetPasswordDocument = gql`
     mutation ResetPassword($input: UserResetPassword!) {
   resetPassword(input: $input)
@@ -392,8 +501,8 @@ export type ForgotPasswordMutationHookResult = ReturnType<typeof useForgotPasswo
 export type ForgotPasswordMutationResult = Apollo.MutationResult<ForgotPasswordMutation>;
 export type ForgotPasswordMutationOptions = Apollo.BaseMutationOptions<ForgotPasswordMutation, ForgotPasswordMutationVariables>;
 export const AddUserDocument = gql`
-    mutation AddUser($data: UserInput!) {
-  addUser(data: $data)
+    mutation AddUser($newUser: NewUserInput!) {
+  addUser(newUser: $newUser)
 }
     `;
 export type AddUserMutationFn = Apollo.MutationFunction<AddUserMutation, AddUserMutationVariables>;
@@ -411,7 +520,7 @@ export type AddUserMutationFn = Apollo.MutationFunction<AddUserMutation, AddUser
  * @example
  * const [addUserMutation, { data, loading, error }] = useAddUserMutation({
  *   variables: {
- *      data: // value for 'data'
+ *      newUser: // value for 'newUser'
  *   },
  * });
  */
@@ -529,6 +638,90 @@ export function useEventByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type EventByIdQueryHookResult = ReturnType<typeof useEventByIdQuery>;
 export type EventByIdLazyQueryHookResult = ReturnType<typeof useEventByIdLazyQuery>;
 export type EventByIdQueryResult = Apollo.QueryResult<EventByIdQuery, EventByIdQueryVariables>;
+export const AllStaffDocument = gql`
+    query AllStaff {
+  allStaff {
+    id
+    start
+    description
+    img
+    user {
+      id
+      first_name
+      last_name
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllStaffQuery__
+ *
+ * To run a query within a React component, call `useAllStaffQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllStaffQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllStaffQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllStaffQuery(baseOptions?: Apollo.QueryHookOptions<AllStaffQuery, AllStaffQueryVariables>) {
+        return Apollo.useQuery<AllStaffQuery, AllStaffQueryVariables>(AllStaffDocument, baseOptions);
+      }
+export function useAllStaffLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllStaffQuery, AllStaffQueryVariables>) {
+          return Apollo.useLazyQuery<AllStaffQuery, AllStaffQueryVariables>(AllStaffDocument, baseOptions);
+        }
+export type AllStaffQueryHookResult = ReturnType<typeof useAllStaffQuery>;
+export type AllStaffLazyQueryHookResult = ReturnType<typeof useAllStaffLazyQuery>;
+export type AllStaffQueryResult = Apollo.QueryResult<AllStaffQuery, AllStaffQueryVariables>;
+export const StaffByIdDocument = gql`
+    query StaffById($id: Float!) {
+  staff(id: $id) {
+    id
+    userId
+    start
+    description
+    img
+    user {
+      id
+      first_name
+      last_name
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useStaffByIdQuery__
+ *
+ * To run a query within a React component, call `useStaffByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStaffByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStaffByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useStaffByIdQuery(baseOptions: Apollo.QueryHookOptions<StaffByIdQuery, StaffByIdQueryVariables>) {
+        return Apollo.useQuery<StaffByIdQuery, StaffByIdQueryVariables>(StaffByIdDocument, baseOptions);
+      }
+export function useStaffByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StaffByIdQuery, StaffByIdQueryVariables>) {
+          return Apollo.useLazyQuery<StaffByIdQuery, StaffByIdQueryVariables>(StaffByIdDocument, baseOptions);
+        }
+export type StaffByIdQueryHookResult = ReturnType<typeof useStaffByIdQuery>;
+export type StaffByIdLazyQueryHookResult = ReturnType<typeof useStaffByIdLazyQuery>;
+export type StaffByIdQueryResult = Apollo.QueryResult<StaffByIdQuery, StaffByIdQueryVariables>;
 export const UsersDocument = gql`
     query Users {
   users {
@@ -571,12 +764,6 @@ export const UserByIdDocument = gql`
     first_name
     last_name
     email
-    staff {
-      userId
-      start
-      description
-      img
-    }
   }
 }
     `;
