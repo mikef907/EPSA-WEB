@@ -32,7 +32,7 @@ const CreateUser: React.FC = () => {
   const onSubmit = async (input: IFormInput) => {
     const result = await addUser({
       variables: {
-        data: {
+        newUser: {
           first_name: input.firstname,
           last_name: input.lastname,
           email: input.email,

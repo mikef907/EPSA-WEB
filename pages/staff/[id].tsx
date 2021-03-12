@@ -23,6 +23,8 @@ import {
   useUserByIdQuery,
 } from '../../generated/graphql';
 import theme from '../../themes';
+import { KeyboardDatePicker } from '@material-ui/pickers';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 interface Context extends NextPageContext {
   query: {
@@ -68,18 +70,17 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const StaffPage: NextPage<IProps> = ({ id }) => {
+  const classes = useStyles();
+
   const { user, checkRoles } = useContext(UserContext);
 
   const [description, setDescription] = useState<string>('');
 
-  const {
-    register,
-    errors,
-    reset,
-    handleSubmit,
-    setValue,
-    getValues,
-  } = useForm();
+  const [startDate, setStartDate] = useState<MaterialUiPickersDate>(null);
+
+  const { register, errors, reset, handleSubmit, setValue, watch } = useForm();
+
+  const startDateValue = watch('start') as Date;
 
   const { data, loading } = useStaffByIdQuery({ variables: { id } });
 
@@ -105,22 +106,17 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
     }
   };
 
-  const classes = useStyles();
+  useEffect(() => register('start', { required: 'Start date required' }), [
+    register,
+  ]);
+
+  useEffect(() => {
+    setStartDate(startDateValue || null);
+  }, [setStartDate, startDateValue]);
 
   useEffect(() => {
     if (data?.staff) {
       console.log(data.staff);
-
-      // setStaff({
-      //   img: data.staff?.img as string | undefined,
-      //   description: data.staff?.description as string | undefined,
-      //   start: data.staff.start,
-      //   user: {
-      //     first_name: data.staff.user.first_name,
-      //     last_name: data.staff.user.last_name,
-      //     email: data.staff.user.email,
-      //   },
-      // });
 
       setDescription(data.staff.description || '');
 
@@ -130,7 +126,7 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
         email: data.staff.user.email,
         img: data.staff.img,
         description: data.staff.description,
-        start: dayjs(data.staff.start).format('YYYY-MM-DD'),
+        start: data.staff.start,
       });
     }
   }, [data]);
@@ -210,18 +206,25 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth>
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
-                      type="date"
-                      name="start"
-                      label="Start"
-                      inputRef={register({
-                        required: 'Start is required',
-                      })}
+                    <KeyboardDatePicker
+                      disableToolbar
+                      variant="inline"
+                      format="MM/dd/yyyy"
+                      label="Start Date"
+                      value={startDate}
+                      onChange={(date) =>
+                        setValue('start', date, {
+                          shouldValidate: true,
+                          shouldDirty: true,
+                        })
+                      }
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
                       disabled={!checkRoles(user, 'Admin')}
                       error={!!errors.start}
                       helperText={errors.start?.message}
-                    ></TextField>
+                    ></KeyboardDatePicker>
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>

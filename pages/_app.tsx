@@ -21,6 +21,8 @@ import {
 import { buildClientSchema } from 'graphql';
 import { withScalars } from 'apollo-link-scalars';
 import introspectionResults from '../graphql.schema.json';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 const MyApp = (props: AppProps) => {
   const { Component, pageProps } = props;
@@ -86,7 +88,9 @@ const MyApp = (props: AppProps) => {
         <CssBaseline />
         <ApolloProvider client={client}>
           <UserContext.Provider value={{ user, setUser, checkRoles }}>
-            <Component {...pageProps} />
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <Component {...pageProps} />
+            </MuiPickersUtilsProvider>
           </UserContext.Provider>
         </ApolloProvider>
       </ThemeProvider>
