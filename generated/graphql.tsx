@@ -13,6 +13,8 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Query = {
@@ -91,6 +93,7 @@ export type Mutation = {
   addStaff: StaffQuery;
   updateStaff: Scalars['Boolean'];
   removeStaff: Scalars['Boolean'];
+  uploadAvatar: Scalars['Boolean'];
 };
 
 
@@ -139,6 +142,12 @@ export type MutationUpdateStaffArgs = {
   staff: StaffInput;
 };
 
+
+export type MutationUploadAvatarArgs = {
+  userId: Scalars['Float'];
+  file: Scalars['Upload'];
+};
+
 export type UserResetPassword = {
   nonce: Scalars['String'];
   password: Scalars['String'];
@@ -176,6 +185,7 @@ export type StaffInput = {
   user: UserInput;
 };
 
+
 export type AddEventMutationVariables = Exact<{
   event: EventInput;
 }>;
@@ -210,6 +220,17 @@ export type UpdateStaffMutationVariables = Exact<{
 export type UpdateStaffMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'updateStaff'>
+);
+
+export type UploadAvatarMutationVariables = Exact<{
+  file: Scalars['Upload'];
+  userId: Scalars['Float'];
+}>;
+
+
+export type UploadAvatarMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'uploadAvatar'>
 );
 
 export type ResetPasswordMutationVariables = Exact<{
@@ -440,6 +461,37 @@ export function useUpdateStaffMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateStaffMutationHookResult = ReturnType<typeof useUpdateStaffMutation>;
 export type UpdateStaffMutationResult = Apollo.MutationResult<UpdateStaffMutation>;
 export type UpdateStaffMutationOptions = Apollo.BaseMutationOptions<UpdateStaffMutation, UpdateStaffMutationVariables>;
+export const UploadAvatarDocument = gql`
+    mutation UploadAvatar($file: Upload!, $userId: Float!) {
+  uploadAvatar(file: $file, userId: $userId)
+}
+    `;
+export type UploadAvatarMutationFn = Apollo.MutationFunction<UploadAvatarMutation, UploadAvatarMutationVariables>;
+
+/**
+ * __useUploadAvatarMutation__
+ *
+ * To run a mutation, you first call `useUploadAvatarMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadAvatarMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadAvatarMutation, { data, loading, error }] = useUploadAvatarMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUploadAvatarMutation(baseOptions?: Apollo.MutationHookOptions<UploadAvatarMutation, UploadAvatarMutationVariables>) {
+        return Apollo.useMutation<UploadAvatarMutation, UploadAvatarMutationVariables>(UploadAvatarDocument, baseOptions);
+      }
+export type UploadAvatarMutationHookResult = ReturnType<typeof useUploadAvatarMutation>;
+export type UploadAvatarMutationResult = Apollo.MutationResult<UploadAvatarMutation>;
+export type UploadAvatarMutationOptions = Apollo.BaseMutationOptions<UploadAvatarMutation, UploadAvatarMutationVariables>;
 export const ResetPasswordDocument = gql`
     mutation ResetPassword($input: UserResetPassword!) {
   resetPassword(input: $input)

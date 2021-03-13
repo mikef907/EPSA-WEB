@@ -10,17 +10,16 @@ import {
   Theme,
   Typography,
 } from '@material-ui/core';
-import dayjs from 'dayjs';
 import { NextPage, NextPageContext } from 'next';
 import React, { useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
-import { UserContext } from '../../context/UserContext';
+import { getUserImgLink, UserContext } from '../../context/UserContext';
 import {
   useStaffByIdQuery,
   useUpdateStaffMutation,
-  useUserByIdQuery,
+  useUploadAvatarMutation,
 } from '../../generated/graphql';
 import theme from '../../themes';
 import { KeyboardDatePicker } from '@material-ui/pickers';
@@ -41,7 +40,6 @@ interface IFormInput {
   lastname: string;
   email: string;
   description: string;
-  imgfile: string;
   start: Date;
 }
 
@@ -72,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const StaffPage: NextPage<IProps> = ({ id }) => {
   const classes = useStyles();
 
-  const { user, checkRoles } = useContext(UserContext);
+  const { user, checkRoles, setUser } = useContext(UserContext);
 
   const [description, setDescription] = useState<string>('');
 
@@ -85,6 +83,8 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
   const { data, loading } = useStaffByIdQuery({ variables: { id } });
 
   const [updateStaff] = useUpdateStaffMutation();
+
+  const [uploadAvatar] = useUploadAvatarMutation();
 
   const onSubmit = async (input: IFormInput) => {
     if (data) {
@@ -103,6 +103,19 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
           },
         },
       });
+    }
+  };
+
+  const fileUpload = async ({
+    target: {
+      validity,
+      files: [file],
+    },
+  }: any) => {
+    if (file && data && user) {
+      await uploadAvatar({ variables: { file, userId: data.staff.userId } });
+      setUser({ ...user, img: file.name });
+      localStorage.setItem(process.env.tmpImgKey as string, file.name);
     }
   };
 
@@ -148,7 +161,10 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
               <Grid container direction="row" justify="center" spacing={2}>
                 <Grid container direction="column" alignItems="center">
                   <Grid item md={12}>
-                    <Avatar className={classes.large}></Avatar>
+                    <Avatar
+                      className={classes.large}
+                      src={getUserImgLink(user)}
+                    ></Avatar>
                   </Grid>
                   <Grid item>
                     <Typography variant="caption">
@@ -156,7 +172,7 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <input type="file"></input>
+                    <input type="file" onChange={fileUpload}></input>
                   </Grid>
                 </Grid>
                 <Grid item xs={12} md={6}>

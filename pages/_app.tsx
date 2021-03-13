@@ -9,7 +9,6 @@ import {
   ApolloClient,
   ApolloLink,
   ApolloProvider,
-  HttpLink,
   InMemoryCache,
 } from '@apollo/client';
 import {
@@ -23,6 +22,7 @@ import { withScalars } from 'apollo-link-scalars';
 import introspectionResults from '../graphql.schema.json';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { createUploadLink } from 'apollo-upload-client';
 
 const MyApp = (props: AppProps) => {
   const { Component, pageProps } = props;
@@ -43,8 +43,8 @@ const MyApp = (props: AppProps) => {
 
   const link = ApolloLink.from([
     withScalars({ schema, typesMap }),
-    new HttpLink({
-      uri: 'http://localhost:4000/graphql',
+    createUploadLink({
+      uri: `${process.env.api}/graphql`,
       headers: {
         Authorization:
           !IS_SERVER && localStorage.getItem('token')

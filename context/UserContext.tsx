@@ -1,10 +1,13 @@
-import { createContext } from 'react';
+import React, { createContext } from 'react';
 import jwt_decode from 'jwt-decode';
+import { userInfo } from 'node:os';
+import { ThemeProvider } from '@material-ui/styles';
 
 export interface IUser {
   first_name: string;
   last_name: string;
   email: string;
+  img: string;
   roles: IRole[];
 }
 
@@ -19,12 +22,13 @@ export type User = {
 };
 
 const token = () => localStorage.getItem('token');
+const tmpImg = () => localStorage.getItem(process.env.tmpImgKey as string);
 
 export const setUserFromLocalStorage = () => {
   const val = token();
 
   if (val) {
-    return (jwt_decode(token() as string) as any).user as IUser;
+    return getUserFromToken();
   }
 
   return null;
@@ -32,8 +36,11 @@ export const setUserFromLocalStorage = () => {
 
 export const parseUserFromToken = (token: string) => {
   localStorage.setItem('token', token);
-  return (jwt_decode(token) as any).user as IUser;
+  return getUserFromToken();
 };
+
+export const getUserImgLink = (user: IUser | null) =>
+  user?.img ? `${process.env.api}/images/${user.img}` : '';
 
 export const checkRoles = (user: IUser | null, ...roles: string[]) => {
   if (user) return user.roles.some((role) => roles.includes(role.name));
@@ -45,3 +52,13 @@ export const UserContext = createContext<User>({
   setUser: () => null,
   checkRoles: () => false,
 });
+
+const getUserFromToken = () => {
+  const decoded = jwt_decode(token() as string) as any;
+  const user = decoded.user as IUser;
+
+  if (tmpImg()) user.img = tmpImg() as string;
+  else if (decoded.img) user.img = decoded.img;
+
+  return user;
+};

@@ -15,7 +15,7 @@ import {
 import React from 'react';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { UserContext } from '../context/UserContext';
+import { getUserImgLink, UserContext } from '../context/UserContext';
 import { useRouter } from 'next/router';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -67,8 +67,11 @@ const NavBar: React.FC = () => {
           </Typography>
           {user ? (
             <>
-              <Avatar style={{ marginRight: 10 }}></Avatar> Welcome{' '}
-              {user.first_name}
+              <Avatar
+                style={{ marginRight: 10 }}
+                src={getUserImgLink(user)}
+              ></Avatar>{' '}
+              Welcome {user.first_name}
               <Button type="button" color="inherit" onClick={logout}>
                 Logout
               </Button>
