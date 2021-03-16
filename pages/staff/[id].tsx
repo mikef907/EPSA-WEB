@@ -78,7 +78,7 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
 
   const startDateValue = watch('start') as Date;
 
-  const { data, loading } = useStaffByIdQuery({ variables: { id } });
+  const { data, loading } = useStaffByIdQuery({ variables: { id: id } });
 
   const [updateStaff] = useUpdateStaffMutation();
 
@@ -273,7 +273,8 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
 };
 
 StaffPage.getInitialProps = (ctx: Context) => {
-  return { id: parseInt(ctx.query.id) };
+  const id = parseInt(ctx.query.id);
+  return { id: isNaN(id) ? 0 : id };
 };
 
 export default StaffPage;
