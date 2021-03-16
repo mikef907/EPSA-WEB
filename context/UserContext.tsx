@@ -1,7 +1,5 @@
 import React, { createContext } from 'react';
 import jwt_decode from 'jwt-decode';
-import { userInfo } from 'node:os';
-import { ThemeProvider } from '@material-ui/styles';
 
 export interface IUser {
   first_name: string;

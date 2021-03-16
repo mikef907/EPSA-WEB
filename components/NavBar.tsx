@@ -14,11 +14,11 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { getUserImgLink, UserContext } from '../context/UserContext';
 import { useRouter } from 'next/router';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     drawerPaper: {
       width: 200,

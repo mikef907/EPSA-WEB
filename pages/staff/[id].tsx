@@ -7,7 +7,6 @@ import {
   makeStyles,
   TextareaAutosize,
   TextField,
-  Theme,
   Typography,
 } from '@material-ui/core';
 import { NextPage, NextPageContext } from 'next';
@@ -21,7 +20,6 @@ import {
   useUpdateStaffMutation,
   useUploadAvatarMutation,
 } from '../../generated/graphql';
-import theme from '../../themes';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
@@ -43,22 +41,22 @@ interface IFormInput {
   start: Date;
 }
 
-interface IUser {
-  first_name: string;
-  last_name: string;
-  email: string;
-}
+// interface IUser {
+//   first_name: string;
+//   last_name: string;
+//   email: string;
+// }
 
-interface IStaff {
-  id: number;
-  userId: number;
-  start: Date;
-  description?: string;
-  img?: string;
-  user: IUser;
-}
+// interface IStaff {
+//   id: number;
+//   userId: number;
+//   start: Date;
+//   description?: string;
+//   img?: string;
+//   user: IUser;
+// }
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     large: {
       width: 200,
@@ -108,7 +106,6 @@ const StaffPage: NextPage<IProps> = ({ id }) => {
 
   const fileUpload = async ({
     target: {
-      validity,
       files: [file],
     },
   }: any) => {
