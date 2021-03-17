@@ -1,6 +1,6 @@
 module.exports = {
   env: {
-    api: 'http://localhost:4000',
+    api: 'https://149.248.35.223',
     tmpImgKey: 'tmp:img',
   },
 };
