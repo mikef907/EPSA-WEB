@@ -28,6 +28,12 @@ export type Query = {
 };
 
 
+export type QueryUsersArgs = {
+  inRoles?: Maybe<Array<Scalars['String']>>;
+  notInRoles?: Maybe<Array<Scalars['String']>>;
+};
+
+
 export type QueryUserArgs = {
   id: Scalars['Float'];
 };
@@ -90,7 +96,7 @@ export type Mutation = {
   login: Scalars['String'];
   addEvent: EventQuery;
   updateEvent: EventQuery;
-  addStaff: StaffQuery;
+  addStaff: Scalars['Float'];
   updateStaff: Scalars['Boolean'];
   removeStaff: Scalars['Boolean'];
   uploadAvatar: Scalars['Boolean'];
@@ -134,7 +140,7 @@ export type MutationUpdateEventArgs = {
 
 
 export type MutationAddStaffArgs = {
-  staff: StaffInput;
+  staff: NewStaffInput;
 };
 
 
@@ -175,6 +181,13 @@ export type EventInput = {
   allDay?: Maybe<Scalars['Boolean']>;
   start: Scalars['DateTime'];
   end?: Maybe<Scalars['DateTime']>;
+};
+
+export type NewStaffInput = {
+  userId: Scalars['Float'];
+  start: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']>;
+  user: UserInput;
 };
 
 export type StaffInput = {
@@ -231,6 +244,16 @@ export type UploadAvatarMutationVariables = Exact<{
 export type UploadAvatarMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'uploadAvatar'>
+);
+
+export type AddStaffMutationVariables = Exact<{
+  staff: NewStaffInput;
+}>;
+
+
+export type AddStaffMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addStaff'>
 );
 
 export type ResetPasswordMutationVariables = Exact<{
@@ -330,14 +353,21 @@ export type StaffByIdQuery = (
   ) }
 );
 
-export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
+export type UserListQueryVariables = Exact<{
+  inRoles?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+  notInRoles?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
 
 
-export type UsersQuery = (
+export type UserListQuery = (
   { __typename?: 'Query' }
   & { users: Array<(
     { __typename?: 'UserQuery' }
     & Pick<UserQuery, 'id' | 'first_name' | 'last_name' | 'email'>
+    & { roles: Array<(
+      { __typename?: 'RoleQuery' }
+      & Pick<RoleQuery, 'id' | 'name'>
+    )> }
   )> }
 );
 
@@ -492,6 +522,36 @@ export function useUploadAvatarMutation(baseOptions?: Apollo.MutationHookOptions
 export type UploadAvatarMutationHookResult = ReturnType<typeof useUploadAvatarMutation>;
 export type UploadAvatarMutationResult = Apollo.MutationResult<UploadAvatarMutation>;
 export type UploadAvatarMutationOptions = Apollo.BaseMutationOptions<UploadAvatarMutation, UploadAvatarMutationVariables>;
+export const AddStaffDocument = gql`
+    mutation AddStaff($staff: NewStaffInput!) {
+  addStaff(staff: $staff)
+}
+    `;
+export type AddStaffMutationFn = Apollo.MutationFunction<AddStaffMutation, AddStaffMutationVariables>;
+
+/**
+ * __useAddStaffMutation__
+ *
+ * To run a mutation, you first call `useAddStaffMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddStaffMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addStaffMutation, { data, loading, error }] = useAddStaffMutation({
+ *   variables: {
+ *      staff: // value for 'staff'
+ *   },
+ * });
+ */
+export function useAddStaffMutation(baseOptions?: Apollo.MutationHookOptions<AddStaffMutation, AddStaffMutationVariables>) {
+        return Apollo.useMutation<AddStaffMutation, AddStaffMutationVariables>(AddStaffDocument, baseOptions);
+      }
+export type AddStaffMutationHookResult = ReturnType<typeof useAddStaffMutation>;
+export type AddStaffMutationResult = Apollo.MutationResult<AddStaffMutation>;
+export type AddStaffMutationOptions = Apollo.BaseMutationOptions<AddStaffMutation, AddStaffMutationVariables>;
 export const ResetPasswordDocument = gql`
     mutation ResetPassword($input: UserResetPassword!) {
   resetPassword(input: $input)
@@ -774,41 +834,47 @@ export function useStaffByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type StaffByIdQueryHookResult = ReturnType<typeof useStaffByIdQuery>;
 export type StaffByIdLazyQueryHookResult = ReturnType<typeof useStaffByIdLazyQuery>;
 export type StaffByIdQueryResult = Apollo.QueryResult<StaffByIdQuery, StaffByIdQueryVariables>;
-export const UsersDocument = gql`
-    query Users {
-  users {
+export const UserListDocument = gql`
+    query UserList($inRoles: [String!] = [], $notInRoles: [String!] = []) {
+  users(inRoles: $inRoles, notInRoles: $notInRoles) {
     id
     first_name
     last_name
     email
+    roles {
+      id
+      name
+    }
   }
 }
     `;
 
 /**
- * __useUsersQuery__
+ * __useUserListQuery__
  *
- * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useUserListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserListQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useUsersQuery({
+ * const { data, loading, error } = useUserListQuery({
  *   variables: {
+ *      inRoles: // value for 'inRoles'
+ *      notInRoles: // value for 'notInRoles'
  *   },
  * });
  */
-export function useUsersQuery(baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
-        return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, baseOptions);
+export function useUserListQuery(baseOptions?: Apollo.QueryHookOptions<UserListQuery, UserListQueryVariables>) {
+        return Apollo.useQuery<UserListQuery, UserListQueryVariables>(UserListDocument, baseOptions);
       }
-export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
-          return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, baseOptions);
+export function useUserListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserListQuery, UserListQueryVariables>) {
+          return Apollo.useLazyQuery<UserListQuery, UserListQueryVariables>(UserListDocument, baseOptions);
         }
-export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
-export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
-export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export type UserListQueryHookResult = ReturnType<typeof useUserListQuery>;
+export type UserListLazyQueryHookResult = ReturnType<typeof useUserListLazyQuery>;
+export type UserListQueryResult = Apollo.QueryResult<UserListQuery, UserListQueryVariables>;
 export const UserByIdDocument = gql`
     query UserById($id: Float!) {
   user(id: $id) {

@@ -1,17 +1,6 @@
 import React, { createContext } from 'react';
 import jwt_decode from 'jwt-decode';
-
-export interface IUser {
-  first_name: string;
-  last_name: string;
-  email: string;
-  img: string;
-  roles: IRole[];
-}
-
-export interface IRole {
-  name: string;
-}
+import { IUser } from '../interfaces/IUser';
 
 export type User = {
   user: IUser | null;
@@ -41,7 +30,7 @@ export const getUserImgLink = (user: IUser | null) =>
   user?.img ? `${process.env.api}/images/${user.img}` : '';
 
 export const checkRoles = (user: IUser | null, ...roles: string[]) => {
-  if (user) return user.roles.some((role) => roles.includes(role.name));
+  if (user) return user.roles?.some((role) => roles.includes(role.name));
   else return false;
 };
 

@@ -57,7 +57,7 @@ const StaffMembers: React.FC = () => {
         >
           Staff
         </Typography>
-        <Link href="/admin/event">Add Staff</Link>
+        <Link href="/staff">Add Staff</Link>
         {data && (
           <DataGrid
             columns={columns}

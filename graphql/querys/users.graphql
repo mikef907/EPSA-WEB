@@ -1,9 +1,26 @@
-query Users {
-  users {
+# query Users {
+#   users {
+#     id
+#     first_name
+#     last_name
+#     email
+#     roles {
+#       id
+#       name
+#     }
+#   }
+# }
+
+query UserList($inRoles: [String!] = [], $notInRoles: [String!] = []) {
+  users(inRoles: $inRoles, notInRoles: $notInRoles) {
     id
     first_name
     last_name
     email
+    roles {
+      id
+      name
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 module.exports = {
   env: {
-    api: 'https://api.epsaak.org/graphql',
+    api: 'http://localhost:4000/graphql',
+    // api: 'https://api.epsaak.org/graphql',
     tmpImgKey: 'tmp:img',
   },
 };

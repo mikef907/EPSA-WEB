@@ -5,3 +5,7 @@ mutation UpdateStaff($staff: StaffInput!) {
 mutation UploadAvatar($file: Upload!, $userId: Float!) {
   uploadAvatar(file: $file, userId: $userId)
 }
+
+mutation AddStaff($staff: NewStaffInput!) {
+  addStaff(staff: $staff)
+}
