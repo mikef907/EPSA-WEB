@@ -1,13 +1,7 @@
-import classes from '*.module.css';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { NextPageContext } from 'next';
-import React, { Context, useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  getUserImgLink,
-  checkRoles,
-  UserContext,
-} from '../context/UserContext';
+import { getUserImgLink, UserContext } from '../context/UserContext';
 import {
   Avatar,
   Button,
@@ -21,7 +15,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import {
-  StaffQuery,
   useStaffByIdLazyQuery,
   useUpdateStaffMutation,
   useUploadAvatarMutation,
@@ -74,7 +67,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
   const [addStaff] = useAddStaffMutation();
 
   const onSubmit = async (input: IFormInput) => {
-    if (data) {
+    if (id && data) {
       updateStaff({
         variables: {
           staff: {
@@ -90,7 +83,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
           },
         },
       });
-    } else if (newStaff) {
+    } else if (!id && newStaff) {
       addStaff({
         variables: {
           staff: {
@@ -124,8 +117,13 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
   };
 
   useEffect(() => {
+    console.log('use effect');
     if (id !== undefined) staffById({ variables: { id } });
-  });
+  }, []);
+
+  useEffect(() => register('start', { required: 'Start date required' }), [
+    register,
+  ]);
 
   useEffect(() => {
     if (data?.staff) {
@@ -144,32 +142,34 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
     }
   }, [data]);
 
-  useEffect(() => register('start', { required: 'Start date required' }), [
-    register,
-  ]);
-
   useEffect(() => {
     setStartDate(startDateValue || null);
   }, [setStartDate, startDateValue]);
 
   useEffect(() => {
-    console.log('user selected', newStaff);
-    if (newStaff)
+    if (!id && newStaff) {
+      console.log('user selected', newStaff);
       reset({
         firstname: newStaff.first_name,
         lastname: newStaff.last_name,
         email: newStaff.email,
       });
+    }
   }, [newStaff]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container justify="center">
         <Grid item md={6}>
-          <Grid container direction="row" justify="center" spacing={2}>
-            {data && (
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            spacing={2}
+            style={{ margin: 0 }}
+          >
+            {id && (
               <Grid container direction="column" alignItems="center">
-                (
                 <>
                   <Grid item md={12}>
                     <Avatar
@@ -187,10 +187,9 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
                     <input type="file" onChange={fileUpload}></input>
                   </Grid>
                 </>
-                )
               </Grid>
             )}
-            {!data && (
+            {!id && (
               <Grid item xs={12} md={12}>
                 <FormControl fullWidth>
                   <InputLabel id="user-label">Select user to assign</InputLabel>
@@ -251,6 +250,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
               <FormControl fullWidth>
                 <KeyboardDatePicker
                   disableToolbar
+                  autoOk
                   variant="inline"
                   format="MM/dd/yyyy"
                   label="Start Date"
