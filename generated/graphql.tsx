@@ -149,6 +149,11 @@ export type MutationUpdateStaffArgs = {
 };
 
 
+export type MutationRemoveStaffArgs = {
+  id: Scalars['Float'];
+};
+
+
 export type MutationUploadAvatarArgs = {
   userId: Scalars['Float'];
   file: Scalars['Upload'];
@@ -254,6 +259,16 @@ export type AddStaffMutationVariables = Exact<{
 export type AddStaffMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'addStaff'>
+);
+
+export type RemoveStaffMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type RemoveStaffMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'removeStaff'>
 );
 
 export type ResetPasswordMutationVariables = Exact<{
@@ -552,6 +567,36 @@ export function useAddStaffMutation(baseOptions?: Apollo.MutationHookOptions<Add
 export type AddStaffMutationHookResult = ReturnType<typeof useAddStaffMutation>;
 export type AddStaffMutationResult = Apollo.MutationResult<AddStaffMutation>;
 export type AddStaffMutationOptions = Apollo.BaseMutationOptions<AddStaffMutation, AddStaffMutationVariables>;
+export const RemoveStaffDocument = gql`
+    mutation RemoveStaff($id: Float!) {
+  removeStaff(id: $id)
+}
+    `;
+export type RemoveStaffMutationFn = Apollo.MutationFunction<RemoveStaffMutation, RemoveStaffMutationVariables>;
+
+/**
+ * __useRemoveStaffMutation__
+ *
+ * To run a mutation, you first call `useRemoveStaffMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveStaffMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeStaffMutation, { data, loading, error }] = useRemoveStaffMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveStaffMutation(baseOptions?: Apollo.MutationHookOptions<RemoveStaffMutation, RemoveStaffMutationVariables>) {
+        return Apollo.useMutation<RemoveStaffMutation, RemoveStaffMutationVariables>(RemoveStaffDocument, baseOptions);
+      }
+export type RemoveStaffMutationHookResult = ReturnType<typeof useRemoveStaffMutation>;
+export type RemoveStaffMutationResult = Apollo.MutationResult<RemoveStaffMutation>;
+export type RemoveStaffMutationOptions = Apollo.BaseMutationOptions<RemoveStaffMutation, RemoveStaffMutationVariables>;
 export const ResetPasswordDocument = gql`
     mutation ResetPassword($input: UserResetPassword!) {
   resetPassword(input: $input)

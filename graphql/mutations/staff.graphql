@@ -9,3 +9,7 @@ mutation UploadAvatar($file: Upload!, $userId: Float!) {
 mutation AddStaff($staff: NewStaffInput!) {
   addStaff(staff: $staff)
 }
+
+mutation RemoveStaff($id: Float!) {
+  removeStaff(id: $id)
+}

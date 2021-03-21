@@ -12,7 +12,6 @@ import {
   InMemoryCache,
 } from '@apollo/client';
 import {
-  IUser,
   setUserFromLocalStorage,
   checkRoles,
   UserContext,
@@ -23,6 +22,7 @@ import introspectionResults from '../graphql.schema.json';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { createUploadLink } from 'apollo-upload-client';
+import { IUser } from '../interfaces/IUser';
 
 const MyApp = (props: AppProps) => {
   const { Component, pageProps } = props;
@@ -55,7 +55,17 @@ const MyApp = (props: AppProps) => {
   ]);
 
   const client = new ApolloClient({
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            allStaff: {
+              merge: false,
+            },
+          },
+        },
+      },
+    }),
     link,
   });
 

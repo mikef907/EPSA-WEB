@@ -30,7 +30,8 @@ export const getUserImgLink = (user: IUser | null) =>
   user?.img ? `${process.env.api}/images/${user.img}` : '';
 
 export const checkRoles = (user: IUser | null, ...roles: string[]) => {
-  if (user) return user.roles?.some((role) => roles.includes(role.name));
+  if (user)
+    return user.roles?.some((role) => roles.includes(role.name)) || false;
   else return false;
 };
 

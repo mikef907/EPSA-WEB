@@ -23,6 +23,7 @@ import {
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { IUser } from '../interfaces/IUser';
 import UsersDDL from './UsersDDL';
+import { useRouter } from 'next/router';
 
 interface IProps {
   id?: number;
@@ -47,6 +48,8 @@ const useStyles = makeStyles(() =>
 
 const StaffForm: React.FC<IProps> = ({ id }) => {
   const classes = useStyles();
+
+  const router = useRouter();
 
   const { user, checkRoles, setUser } = useContext(UserContext);
 
@@ -84,7 +87,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
         },
       });
     } else if (!id && newStaff) {
-      addStaff({
+      await addStaff({
         variables: {
           staff: {
             userId: newStaff.id,
@@ -97,6 +100,8 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
           },
         },
       });
+
+      router.push(`/admin/staff`);
     }
   };
 
