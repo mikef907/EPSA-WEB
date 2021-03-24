@@ -144,6 +144,7 @@ const CreateUser: React.FC = () => {
                     style={{ alignSelf: 'flex-end' }}
                     disabled={loading}
                     variant="contained"
+                    color="primary"
                   >
                     Sign Up
                   </Button>

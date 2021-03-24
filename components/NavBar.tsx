@@ -2,21 +2,24 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import {
   Avatar,
+  Box,
   Divider,
   Drawer,
   Link,
   List,
   ListItem,
+  Switch,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useContext } from 'react';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { getUserImgLink, UserContext } from '../context/UserContext';
 import { useRouter } from 'next/router';
+import { ThemeContext } from '../context/ThemeContext';
+import { useWindowSize } from '../hooks/windowSize';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -27,11 +30,15 @@ const useStyles = makeStyles(() =>
 );
 
 const NavBar: React.FC = () => {
+  const windowSize = useWindowSize();
+
   const [open, setOpen] = React.useState(false);
 
-  const { user, setUser, checkRoles } = React.useContext(UserContext);
+  const { user, setUser, checkRoles } = useContext(UserContext);
 
   const router = useRouter();
+
+  const darkTheme = useContext(ThemeContext);
 
   const logout = () => {
     console.log('logout');
@@ -46,6 +53,10 @@ const NavBar: React.FC = () => {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleThemeChange = () => {
+    darkTheme.setState(!darkTheme.state);
   };
 
   const classes = useStyles();
@@ -63,30 +74,35 @@ const NavBar: React.FC = () => {
             <MenuIcon />
           </IconButton>
           <Typography style={{ flexGrow: 1 }} variant="h6">
-            PIPA
+            {(windowSize.width > 600 && 'Early Parenting Support Alaska') ||
+              'EPSA'}
           </Typography>
           {user ? (
             <>
-              <Avatar
-                style={{ marginRight: 10 }}
-                src={getUserImgLink(user)}
-              ></Avatar>{' '}
-              Welcome {user.first_name}
-              <Button type="button" color="inherit" onClick={logout}>
-                Logout
-              </Button>
+              <Box marginRight="10px">
+                <Typography>Welcome {user.first_name}</Typography>
+                <Link color="inherit" component="button" onClick={logout}>
+                  Logout
+                </Link>
+              </Box>
+              <Avatar src={getUserImgLink(user)}></Avatar>
             </>
           ) : (
             <>
-              <Button color="inherit" href="/login">
+              <Link color="textPrimary" href="/login">
                 Login
-              </Button>
-              OR
-              <Button color="inherit" href="/sign-up">
+              </Link>
+              <Divider
+                orientation="vertical"
+                variant="middle"
+                style={{ height: '24px' }}
+              ></Divider>
+              <Link color="textPrimary" href="/sign-up">
                 Sign Up
-              </Button>
+              </Link>
             </>
           )}
+          <Switch checked={darkTheme.state} onChange={handleThemeChange} />
         </Toolbar>
       </AppBar>
       <Drawer
@@ -95,7 +111,7 @@ const NavBar: React.FC = () => {
         classes={{ paper: classes.drawerPaper }}
       >
         <IconButton onClick={handleDrawerClose}>
-          <Typography style={{ flexGrow: 1, display: 'flex' }}>PIPA</Typography>
+          <Typography style={{ flexGrow: 1, display: 'flex' }}>EPSA</Typography>
           <ChevronLeftIcon style={{ justifyContent: 'flex-end' }} />
         </IconButton>
         <Divider />

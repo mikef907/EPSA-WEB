@@ -201,6 +201,7 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                     style={{ alignSelf: 'flex-end' }}
                     disabled={loading}
                     variant="contained"
+                    color="primary"
                   >
                     Save
                   </Button>

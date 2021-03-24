@@ -5,6 +5,8 @@ import {
   Button,
   CircularProgress,
   Link,
+  useTheme,
+  Typography,
 } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -23,6 +25,8 @@ interface IProps {
 }
 
 const Login: React.FC<IProps> = ({ message, redirect }) => {
+  const theme = useTheme();
+
   const router = useRouter();
 
   const userContext = React.useContext(UserContext);
@@ -89,9 +93,12 @@ const Login: React.FC<IProps> = ({ message, redirect }) => {
             <Grid item md={4}>
               <Button
                 type="submit"
-                style={{ alignSelf: 'flex-end' }}
+                style={{
+                  alignSelf: 'flex-end',
+                }}
                 disabled={loading}
                 variant="contained"
+                color="primary"
               >
                 Login
               </Button>
@@ -116,7 +123,9 @@ const Login: React.FC<IProps> = ({ message, redirect }) => {
           <Grid>
             {error &&
               error.graphQLErrors.map(({ message }) => (
-                <p style={{ color: 'red' }}>{message} 🙁</p>
+                <Typography color="error" component="p">
+                  {message} 🙁
+                </Typography>
               ))}
           </Grid>
         </Grid>

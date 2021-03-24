@@ -118,9 +118,9 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
                 <Grid item md={4}>
                   {error &&
                     error.graphQLErrors.map(({ message }, i) => (
-                      <p style={{ color: 'red' }} key={i}>
+                      <Typography component="p" color="error">
                         {message} 🙁
-                      </p>
+                      </Typography>
                     ))}
                 </Grid>
               </Grid>

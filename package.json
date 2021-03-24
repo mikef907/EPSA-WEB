@@ -21,6 +21,7 @@
     "@material-ui/data-grid": "^4.0.0-alpha.21",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/pickers": "^3.3.10",
+    "@material-ui/styles": "^4.11.3",
     "apollo-link-http": "^1.5.17",
     "apollo-link-scalars": "^2.1.1",
     "apollo-upload-client": "^14.1.3",

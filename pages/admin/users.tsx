@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
-import { useUsersQuery } from '../../generated/graphql';
+import { useUserListQuery } from '../../generated/graphql';
 
 const columns: GridColDef[] = [
   { field: 'first_name', headerName: 'First Name', width: 160 },
@@ -12,7 +12,7 @@ const columns: GridColDef[] = [
 ];
 
 const Users: React.FC = () => {
-  const { data } = useUsersQuery();
+  const { data } = useUserListQuery();
 
   return (
     <Layout>

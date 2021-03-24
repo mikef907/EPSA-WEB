@@ -1,8 +1,10 @@
-import { Box, Typography, Grid } from '@material-ui/core';
+import { Box, Typography, Grid, useTheme } from '@material-ui/core';
 import { Instagram, Facebook, Email } from '@material-ui/icons';
 import React from 'react';
 
 const Footer: React.FC = () => {
+  const theme = useTheme();
+
   return (
     <Grid
       container
@@ -11,7 +13,7 @@ const Footer: React.FC = () => {
       alignContent="center"
       alignItems="center"
       spacing={1}
-      style={{ marginTop: 50 }}
+      style={{ backgroundColor: theme.palette.primary.light }}
     >
       <Grid item>
         <Typography variant="h5">Connect with us!</Typography>
