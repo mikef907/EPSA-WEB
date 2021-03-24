@@ -69,7 +69,7 @@ const MyApp = (props: AppProps) => {
   const link = ApolloLink.from([
     withScalars({ schema, typesMap }),
     createUploadLink({
-      uri: `${process.env.api}/graphql`,
+      uri: `${process.env.api}`,
       headers: {
         Authorization:
           !IS_SERVER && localStorage.getItem('token')
