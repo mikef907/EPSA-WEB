@@ -13,7 +13,7 @@ import {
   ListItem,
   Switch,
 } from '@material-ui/core';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { getUserImgLink, UserContext } from '../context/UserContext';
@@ -32,7 +32,7 @@ const useStyles = makeStyles(() =>
 const NavBar: React.FC = () => {
   const windowSize = useWindowSize();
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const { user, setUser, checkRoles } = useContext(UserContext);
 

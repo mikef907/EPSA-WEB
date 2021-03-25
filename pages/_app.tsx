@@ -27,6 +27,7 @@ import { ThemeContext } from '../context/ThemeContext';
 import { IS_SERVER } from '../constants';
 
 const MyApp = (props: AppProps) => {
+  const [isMounted, setIsMounted] = useState(false);
   const [darkState, setDarkState] = useState(false);
   const palletType = darkState ? 'dark' : 'light';
   const mainPrimaryColor = darkState ? deepOrange[300] : cyan[400];
@@ -94,19 +95,21 @@ const MyApp = (props: AppProps) => {
     link,
   });
 
-  const [user, setUser] = React.useState<IUser | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
 
   //const value = React.useMemo(() => ({ user, setUser }), [user, setUser]);
 
-  React.useEffect(() => setUser(setUserFromLocalStorage), []);
+  useEffect(() => setUser(setUserFromLocalStorage), []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles) {
       jssStyles.parentElement!.removeChild(jssStyles);
     }
   }, []);
+
+  useEffect(() => setIsMounted(true), []);
 
   return (
     <React.Fragment>
@@ -123,13 +126,13 @@ const MyApp = (props: AppProps) => {
         <ThemeProvider theme={darkTheme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          <ApolloProvider client={client}>
-            <UserContext.Provider value={{ user, setUser, checkRoles }}>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <Component {...pageProps} />
-              </MuiPickersUtilsProvider>
-            </UserContext.Provider>
-          </ApolloProvider>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <ApolloProvider client={client}>
+              <UserContext.Provider value={{ user, setUser, checkRoles }}>
+                {isMounted && <Component {...pageProps} />}
+              </UserContext.Provider>
+            </ApolloProvider>
+          </MuiPickersUtilsProvider>
         </ThemeProvider>
       </ThemeContext.Provider>
     </React.Fragment>

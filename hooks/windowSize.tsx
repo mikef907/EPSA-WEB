@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { IS_SERVER } from '../constants';
 
 // Hook
 export const useWindowSize = () => {
@@ -11,7 +12,7 @@ export const useWindowSize = () => {
 
   useEffect(() => {
     // only execute all the code below in client side
-    if (typeof window !== 'undefined') {
+    if (!IS_SERVER) {
       // Handler to call on window resize
       function handleResize() {
         // Set window width/height to state
