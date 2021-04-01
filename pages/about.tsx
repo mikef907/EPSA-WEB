@@ -7,7 +7,7 @@ const About: React.FC = () => {
     <Layout>
       <Box>
         <Typography variant="h4" component="h1" gutterBottom>
-          About PIPA
+          About Early Parenting Support Alaska
         </Typography>
         <Typography>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do Lorem

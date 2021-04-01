@@ -33,9 +33,10 @@
     "next": "10.0.6",
     "node-fetch": "^2.6.1",
     "npm": "^6.14.8",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "react-hook-form": "^6.15.2"
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-hook-form": "^6.15.2",
+    "suneditor-react": "^2.16.1"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.21.1",
