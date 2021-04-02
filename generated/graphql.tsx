@@ -17,50 +17,15 @@ export type Scalars = {
   Upload: any;
 };
 
-export type Query = {
-  __typename?: 'Query';
-  users: Array<UserQuery>;
-  user: UserQuery;
-  events: Array<EventQuery>;
-  event: EventQuery;
-  allStaff: Array<StaffQuery>;
-  staff: StaffQuery;
-};
 
-
-export type QueryUsersArgs = {
-  inRoles?: Maybe<Array<Scalars['String']>>;
-  notInRoles?: Maybe<Array<Scalars['String']>>;
-};
-
-
-export type QueryUserArgs = {
-  id: Scalars['Float'];
-};
-
-
-export type QueryEventArgs = {
-  id: Scalars['Float'];
-};
-
-
-export type QueryStaffArgs = {
-  id: Scalars['Float'];
-};
-
-export type UserQuery = {
-  __typename?: 'UserQuery';
-  id: Scalars['ID'];
-  first_name: Scalars['String'];
-  last_name: Scalars['String'];
-  email: Scalars['String'];
-  roles: Array<RoleQuery>;
-};
-
-export type RoleQuery = {
-  __typename?: 'RoleQuery';
-  id: Scalars['ID'];
+export type EventInput = {
+  id?: Maybe<Scalars['Float']>;
+  parentId?: Maybe<Scalars['Float']>;
   name: Scalars['String'];
+  description: Scalars['String'];
+  allDay?: Maybe<Scalars['Boolean']>;
+  start: Scalars['DateTime'];
+  end?: Maybe<Scalars['DateTime']>;
 };
 
 export type EventQuery = {
@@ -76,17 +41,6 @@ export type EventQuery = {
   updated_at: Scalars['DateTime'];
 };
 
-
-export type StaffQuery = {
-  __typename?: 'StaffQuery';
-  id: Scalars['ID'];
-  userId: Scalars['Float'];
-  start: Scalars['DateTime'];
-  description?: Maybe<Scalars['String']>;
-  img?: Maybe<Scalars['String']>;
-  user: UserQuery;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   resetPassword: Scalars['Boolean'];
@@ -100,6 +54,9 @@ export type Mutation = {
   updateStaff: Scalars['Boolean'];
   removeStaff: Scalars['Boolean'];
   uploadAvatar: Scalars['Boolean'];
+  addPost: Scalars['Float'];
+  updatePost: Scalars['Boolean'];
+  removePost: Scalars['Boolean'];
 };
 
 
@@ -159,9 +116,26 @@ export type MutationUploadAvatarArgs = {
   file: Scalars['Upload'];
 };
 
-export type UserResetPassword = {
-  nonce: Scalars['String'];
-  password: Scalars['String'];
+
+export type MutationAddPostArgs = {
+  post: PostInput;
+};
+
+
+export type MutationUpdatePostArgs = {
+  post: PostInput;
+};
+
+
+export type MutationRemovePostArgs = {
+  id: Scalars['Float'];
+};
+
+export type NewStaffInput = {
+  userId: Scalars['Float'];
+  start: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']>;
+  user: UserInput;
 };
 
 export type NewUserInput = {
@@ -171,28 +145,70 @@ export type NewUserInput = {
   password: Scalars['String'];
 };
 
-export type UserInput = {
-  first_name?: Maybe<Scalars['String']>;
-  last_name?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
-};
-
-export type EventInput = {
+export type PostInput = {
   id?: Maybe<Scalars['Float']>;
-  parentId?: Maybe<Scalars['Float']>;
-  name: Scalars['String'];
-  description: Scalars['String'];
-  allDay?: Maybe<Scalars['Boolean']>;
-  start: Scalars['DateTime'];
-  end?: Maybe<Scalars['DateTime']>;
+  authorId?: Maybe<Scalars['Float']>;
+  published?: Maybe<Scalars['DateTime']>;
+  headline: Scalars['String'];
+  imgUrl?: Maybe<Scalars['String']>;
+  content: Scalars['String'];
 };
 
-export type NewStaffInput = {
-  userId: Scalars['Float'];
-  start: Scalars['DateTime'];
-  description?: Maybe<Scalars['String']>;
-  user: UserInput;
+export type PostQuery = {
+  __typename?: 'PostQuery';
+  id: Scalars['ID'];
+  authorId: Scalars['Float'];
+  author?: Maybe<UserQuery>;
+  published?: Maybe<Scalars['DateTime']>;
+  headline: Scalars['String'];
+  imgUrl?: Maybe<Scalars['String']>;
+  content: Scalars['String'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+};
+
+export type Query = {
+  __typename?: 'Query';
+  users: Array<UserQuery>;
+  user: UserQuery;
+  events: Array<EventQuery>;
+  event: EventQuery;
+  allStaff: Array<StaffQuery>;
+  staff: StaffQuery;
+  allPosts: Array<PostQuery>;
+  post: PostQuery;
+};
+
+
+export type QueryUsersArgs = {
+  inRoles?: Maybe<Array<Scalars['String']>>;
+  notInRoles?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryUserArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type QueryEventArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type QueryStaffArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type QueryPostArgs = {
+  id: Scalars['Float'];
+};
+
+export type RoleQuery = {
+  __typename?: 'RoleQuery';
+  id: Scalars['ID'];
+  name: Scalars['String'];
 };
 
 export type StaffInput = {
@@ -203,6 +219,37 @@ export type StaffInput = {
   user: UserInput;
 };
 
+export type StaffQuery = {
+  __typename?: 'StaffQuery';
+  id: Scalars['ID'];
+  userId: Scalars['Float'];
+  start: Scalars['DateTime'];
+  description?: Maybe<Scalars['String']>;
+  img?: Maybe<Scalars['String']>;
+  user: UserQuery;
+};
+
+
+export type UserInput = {
+  first_name?: Maybe<Scalars['String']>;
+  last_name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+};
+
+export type UserQuery = {
+  __typename?: 'UserQuery';
+  id: Scalars['ID'];
+  first_name: Scalars['String'];
+  last_name: Scalars['String'];
+  email: Scalars['String'];
+  roles: Array<RoleQuery>;
+};
+
+export type UserResetPassword = {
+  nonce: Scalars['String'];
+  password: Scalars['String'];
+};
 
 export type AddEventMutationVariables = Exact<{
   event: EventInput;
@@ -228,6 +275,36 @@ export type UpdateEventMutation = (
     { __typename?: 'EventQuery' }
     & Pick<EventQuery, 'id' | 'parentId' | 'name' | 'description' | 'allDay' | 'start' | 'end'>
   ) }
+);
+
+export type AddPostMutationVariables = Exact<{
+  post: PostInput;
+}>;
+
+
+export type AddPostMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addPost'>
+);
+
+export type UpdatePostMutationVariables = Exact<{
+  post: PostInput;
+}>;
+
+
+export type UpdatePostMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updatePost'>
+);
+
+export type RemovePostMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type RemovePostMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'removePost'>
 );
 
 export type UpdateStaffMutationVariables = Exact<{
@@ -333,6 +410,38 @@ export type EventByIdQuery = (
   & { event: (
     { __typename?: 'EventQuery' }
     & Pick<EventQuery, 'id' | 'parentId' | 'name' | 'description' | 'start' | 'end' | 'allDay'>
+  ) }
+);
+
+export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllPostsQuery = (
+  { __typename?: 'Query' }
+  & { allPosts: Array<(
+    { __typename?: 'PostQuery' }
+    & Pick<PostQuery, 'id' | 'authorId' | 'headline' | 'content' | 'published' | 'created_at' | 'updated_at'>
+    & { author?: Maybe<(
+      { __typename?: 'UserQuery' }
+      & Pick<UserQuery, 'email' | 'first_name' | 'last_name'>
+    )> }
+  )> }
+);
+
+export type PostByIdQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type PostByIdQuery = (
+  { __typename?: 'Query' }
+  & { post: (
+    { __typename?: 'PostQuery' }
+    & Pick<PostQuery, 'id' | 'authorId' | 'headline' | 'content' | 'published' | 'created_at' | 'updated_at'>
+    & { author?: Maybe<(
+      { __typename?: 'UserQuery' }
+      & Pick<UserQuery, 'email' | 'first_name' | 'last_name'>
+    )> }
   ) }
 );
 
@@ -476,6 +585,96 @@ export function useUpdateEventMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateEventMutationHookResult = ReturnType<typeof useUpdateEventMutation>;
 export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
 export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<UpdateEventMutation, UpdateEventMutationVariables>;
+export const AddPostDocument = gql`
+    mutation AddPost($post: PostInput!) {
+  addPost(post: $post)
+}
+    `;
+export type AddPostMutationFn = Apollo.MutationFunction<AddPostMutation, AddPostMutationVariables>;
+
+/**
+ * __useAddPostMutation__
+ *
+ * To run a mutation, you first call `useAddPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPostMutation, { data, loading, error }] = useAddPostMutation({
+ *   variables: {
+ *      post: // value for 'post'
+ *   },
+ * });
+ */
+export function useAddPostMutation(baseOptions?: Apollo.MutationHookOptions<AddPostMutation, AddPostMutationVariables>) {
+        return Apollo.useMutation<AddPostMutation, AddPostMutationVariables>(AddPostDocument, baseOptions);
+      }
+export type AddPostMutationHookResult = ReturnType<typeof useAddPostMutation>;
+export type AddPostMutationResult = Apollo.MutationResult<AddPostMutation>;
+export type AddPostMutationOptions = Apollo.BaseMutationOptions<AddPostMutation, AddPostMutationVariables>;
+export const UpdatePostDocument = gql`
+    mutation UpdatePost($post: PostInput!) {
+  updatePost(post: $post)
+}
+    `;
+export type UpdatePostMutationFn = Apollo.MutationFunction<UpdatePostMutation, UpdatePostMutationVariables>;
+
+/**
+ * __useUpdatePostMutation__
+ *
+ * To run a mutation, you first call `useUpdatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePostMutation, { data, loading, error }] = useUpdatePostMutation({
+ *   variables: {
+ *      post: // value for 'post'
+ *   },
+ * });
+ */
+export function useUpdatePostMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePostMutation, UpdatePostMutationVariables>) {
+        return Apollo.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, baseOptions);
+      }
+export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
+export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>;
+export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>;
+export const RemovePostDocument = gql`
+    mutation RemovePost($id: Float!) {
+  removePost(id: $id)
+}
+    `;
+export type RemovePostMutationFn = Apollo.MutationFunction<RemovePostMutation, RemovePostMutationVariables>;
+
+/**
+ * __useRemovePostMutation__
+ *
+ * To run a mutation, you first call `useRemovePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePostMutation, { data, loading, error }] = useRemovePostMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemovePostMutation(baseOptions?: Apollo.MutationHookOptions<RemovePostMutation, RemovePostMutationVariables>) {
+        return Apollo.useMutation<RemovePostMutation, RemovePostMutationVariables>(RemovePostDocument, baseOptions);
+      }
+export type RemovePostMutationHookResult = ReturnType<typeof useRemovePostMutation>;
+export type RemovePostMutationResult = Apollo.MutationResult<RemovePostMutation>;
+export type RemovePostMutationOptions = Apollo.BaseMutationOptions<RemovePostMutation, RemovePostMutationVariables>;
 export const UpdateStaffDocument = gql`
     mutation UpdateStaff($staff: StaffInput!) {
   updateStaff(staff: $staff)
@@ -795,6 +994,93 @@ export function useEventByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type EventByIdQueryHookResult = ReturnType<typeof useEventByIdQuery>;
 export type EventByIdLazyQueryHookResult = ReturnType<typeof useEventByIdLazyQuery>;
 export type EventByIdQueryResult = Apollo.QueryResult<EventByIdQuery, EventByIdQueryVariables>;
+export const AllPostsDocument = gql`
+    query AllPosts {
+  allPosts {
+    id
+    authorId
+    author {
+      email
+      first_name
+      last_name
+    }
+    headline
+    content
+    published
+    created_at
+    updated_at
+  }
+}
+    `;
+
+/**
+ * __useAllPostsQuery__
+ *
+ * To run a query within a React component, call `useAllPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllPostsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllPostsQuery(baseOptions?: Apollo.QueryHookOptions<AllPostsQuery, AllPostsQueryVariables>) {
+        return Apollo.useQuery<AllPostsQuery, AllPostsQueryVariables>(AllPostsDocument, baseOptions);
+      }
+export function useAllPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllPostsQuery, AllPostsQueryVariables>) {
+          return Apollo.useLazyQuery<AllPostsQuery, AllPostsQueryVariables>(AllPostsDocument, baseOptions);
+        }
+export type AllPostsQueryHookResult = ReturnType<typeof useAllPostsQuery>;
+export type AllPostsLazyQueryHookResult = ReturnType<typeof useAllPostsLazyQuery>;
+export type AllPostsQueryResult = Apollo.QueryResult<AllPostsQuery, AllPostsQueryVariables>;
+export const PostByIdDocument = gql`
+    query PostById($id: Float!) {
+  post(id: $id) {
+    id
+    authorId
+    author {
+      email
+      first_name
+      last_name
+    }
+    headline
+    content
+    published
+    created_at
+    updated_at
+  }
+}
+    `;
+
+/**
+ * __usePostByIdQuery__
+ *
+ * To run a query within a React component, call `usePostByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function usePostByIdQuery(baseOptions: Apollo.QueryHookOptions<PostByIdQuery, PostByIdQueryVariables>) {
+        return Apollo.useQuery<PostByIdQuery, PostByIdQueryVariables>(PostByIdDocument, baseOptions);
+      }
+export function usePostByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostByIdQuery, PostByIdQueryVariables>) {
+          return Apollo.useLazyQuery<PostByIdQuery, PostByIdQueryVariables>(PostByIdDocument, baseOptions);
+        }
+export type PostByIdQueryHookResult = ReturnType<typeof usePostByIdQuery>;
+export type PostByIdLazyQueryHookResult = ReturnType<typeof usePostByIdLazyQuery>;
+export type PostByIdQueryResult = Apollo.QueryResult<PostByIdQuery, PostByIdQueryVariables>;
 export const AllStaffDocument = gql`
     query AllStaff {
   allStaff {

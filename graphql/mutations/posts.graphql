@@ -1,0 +1,11 @@
+mutation AddPost($post: PostInput!) {
+  addPost(post: $post)
+}
+
+mutation UpdatePost($post: PostInput!) {
+  updatePost(post: $post)
+}
+
+mutation RemovePost($id: Float!) {
+  removePost(id: $id)
+}
