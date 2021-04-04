@@ -1093,7 +1093,7 @@
             "args": [],
             "type": {
               "kind": "OBJECT",
-              "name": "UserQuery",
+              "name": "StaffQuery",
               "ofType": null
             },
             "isDeprecated": false,

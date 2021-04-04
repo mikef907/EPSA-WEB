@@ -41,8 +41,8 @@ const NavBar: React.FC = () => {
   const darkTheme = useContext(ThemeContext);
 
   const logout = () => {
-    console.log('logout');
-    localStorage.clear();
+    delete localStorage?.token;
+    delete localStorage?.[process.env.tmpImgKey as string];
     setUser(null);
     router.push('/');
   };
@@ -144,6 +144,11 @@ const NavBar: React.FC = () => {
                 >
                   Admin
                 </Typography>
+              </ListItem>
+              <ListItem>
+                <Link href="/staff/posts" variant="button">
+                  Blog Posts
+                </Link>
               </ListItem>
               <ListItem>
                 <Link href="/admin/users" variant="button">

@@ -158,7 +158,7 @@ export type PostQuery = {
   __typename?: 'PostQuery';
   id: Scalars['ID'];
   authorId: Scalars['Float'];
-  author?: Maybe<UserQuery>;
+  author?: Maybe<StaffQuery>;
   published?: Maybe<Scalars['DateTime']>;
   headline: Scalars['String'];
   imgUrl?: Maybe<Scalars['String']>;
@@ -420,10 +420,14 @@ export type AllPostsQuery = (
   { __typename?: 'Query' }
   & { allPosts: Array<(
     { __typename?: 'PostQuery' }
-    & Pick<PostQuery, 'id' | 'authorId' | 'headline' | 'content' | 'published' | 'created_at' | 'updated_at'>
+    & Pick<PostQuery, 'id' | 'authorId' | 'headline' | 'published' | 'created_at' | 'updated_at'>
     & { author?: Maybe<(
-      { __typename?: 'UserQuery' }
-      & Pick<UserQuery, 'email' | 'first_name' | 'last_name'>
+      { __typename?: 'StaffQuery' }
+      & Pick<StaffQuery, 'img'>
+      & { user: (
+        { __typename?: 'UserQuery' }
+        & Pick<UserQuery, 'email' | 'first_name' | 'last_name'>
+      ) }
     )> }
   )> }
 );
@@ -439,8 +443,12 @@ export type PostByIdQuery = (
     { __typename?: 'PostQuery' }
     & Pick<PostQuery, 'id' | 'authorId' | 'headline' | 'content' | 'published' | 'created_at' | 'updated_at'>
     & { author?: Maybe<(
-      { __typename?: 'UserQuery' }
-      & Pick<UserQuery, 'email' | 'first_name' | 'last_name'>
+      { __typename?: 'StaffQuery' }
+      & Pick<StaffQuery, 'img'>
+      & { user: (
+        { __typename?: 'UserQuery' }
+        & Pick<UserQuery, 'email' | 'first_name' | 'last_name'>
+      ) }
     )> }
   ) }
 );
@@ -1000,12 +1008,14 @@ export const AllPostsDocument = gql`
     id
     authorId
     author {
-      email
-      first_name
-      last_name
+      user {
+        email
+        first_name
+        last_name
+      }
+      img
     }
     headline
-    content
     published
     created_at
     updated_at
@@ -1043,9 +1053,12 @@ export const PostByIdDocument = gql`
     id
     authorId
     author {
-      email
-      first_name
-      last_name
+      user {
+        email
+        first_name
+        last_name
+      }
+      img
     }
     headline
     content

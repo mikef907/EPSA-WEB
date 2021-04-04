@@ -3,12 +3,14 @@ query AllPosts {
     id
     authorId
     author {
-      email
-      first_name
-      last_name
+      user {
+        email
+        first_name
+        last_name
+      }
+      img
     }
     headline
-    content
     published
     created_at
     updated_at
@@ -20,9 +22,12 @@ query PostById($id: Float!) {
     id
     authorId
     author {
-      email
-      first_name
-      last_name
+      user {
+        email
+        first_name
+        last_name
+      }
+      img
     }
     headline
     content

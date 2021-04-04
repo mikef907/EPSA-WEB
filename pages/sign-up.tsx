@@ -40,7 +40,6 @@ const CreateUser: React.FC = () => {
         },
       },
     });
-    console.log(result);
     if (result.data?.addUser) {
       setUser(parseUserFromToken(result.data?.addUser));
       router.push('/');

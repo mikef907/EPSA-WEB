@@ -122,7 +122,6 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
   };
 
   useEffect(() => {
-    console.log('use effect');
     if (id !== undefined) staffById({ variables: { id } });
   }, []);
 
@@ -132,8 +131,6 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
 
   useEffect(() => {
     if (data?.staff) {
-      console.log('staff data', data.staff);
-
       setDescription(data.staff.description || '');
 
       reset({
@@ -153,7 +150,6 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
 
   useEffect(() => {
     if (!id && newStaff) {
-      console.log('user selected', newStaff);
       reset({
         firstname: newStaff.first_name,
         lastname: newStaff.last_name,
