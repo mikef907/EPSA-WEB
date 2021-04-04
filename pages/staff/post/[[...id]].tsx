@@ -180,7 +180,7 @@ const StaffBlogPage: NextPage<IProps> = ({ id }) => {
               ['removeFormat'],
               ['outdent', 'indent'],
               ['align', 'horizontalRule', 'list', 'lineHeight'],
-              ['table', 'link'],
+              ['table', 'link', 'image'],
               ['fullScreen', 'showBlocks', 'codeView'],
               ['preview'],
             ],
