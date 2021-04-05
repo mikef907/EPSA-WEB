@@ -7,6 +7,7 @@ import {
   useAllStaffQuery,
   useRemoveStaffMutation,
 } from '../../generated/graphql';
+import NextLink from 'next/link';
 
 const StaffMembers: React.FC = () => {
   const { data } = useAllStaffQuery();
@@ -57,7 +58,9 @@ const StaffMembers: React.FC = () => {
           const link = `/staff/${params.value}`;
           return (
             <>
-              <Link href={link}>Edit</Link>
+              <NextLink as={link} href="/staff/[id]" passHref>
+                <Link>Edit</Link>
+              </NextLink>
               <Divider
                 orientation="vertical"
                 variant="middle"
@@ -89,7 +92,9 @@ const StaffMembers: React.FC = () => {
         >
           Staff
         </Typography>
-        <Link href="/admin/add-staff">Add Staff</Link>
+        <NextLink href="/admin/add-staff" passHref>
+          <Link>Add Staff</Link>
+        </NextLink>
         {data && (
           <DataGrid
             columns={columns}

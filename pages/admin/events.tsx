@@ -1,4 +1,5 @@
 import { Link, Typography } from '@material-ui/core';
+import NextLink from 'next/link';
 import React from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
@@ -16,7 +17,11 @@ const columns: GridColDef[] = [
     headerName: 'Edit',
     renderCell: (params: GridCellParams) => {
       const link = `/admin/event/${params.value}`;
-      return <Link href={link}>Edit</Link>;
+      return (
+        <NextLink as={link} href="/admin/event/[[...id]]" passHref>
+          <Link>Edit</Link>
+        </NextLink>
+      );
     },
   },
 ];
@@ -35,7 +40,9 @@ const Events: React.FC = () => {
         >
           Events
         </Typography>
-        <Link href="/admin/event">Add Event</Link>
+        <NextLink as={'/admin/event'} href="/admin/event/[[...id]]" passHref>
+          <Link>Add Event</Link>
+        </NextLink>
         {data && (
           <DataGrid
             columns={columns}

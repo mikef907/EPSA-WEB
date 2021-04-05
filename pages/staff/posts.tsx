@@ -1,10 +1,10 @@
-import { Typography } from '@material-ui/core';
+import { Link, Typography } from '@material-ui/core';
 import React from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
 import { DataGrid, GridCellParams, GridColDef } from '@material-ui/data-grid';
 import { useAllPostsQuery } from '../../generated/graphql';
-import Link from 'next/link';
+import NextLink from 'next/link';
 
 const columns: GridColDef[] = [
   { field: 'headline', headerName: 'Headline', width: 160 },
@@ -37,9 +37,9 @@ const columns: GridColDef[] = [
     renderCell: (params: GridCellParams) => {
       const link = `/staff/post/${params.value}`;
       return (
-        <Link as={link} href="/staff/post/[[...id]]">
-          Edit
-        </Link>
+        <NextLink as={link} href="/staff/post/[[...id]]" passHref>
+          <Link>Edit</Link>
+        </NextLink>
       );
     },
   },
@@ -59,9 +59,9 @@ const Events: React.FC = () => {
         >
           Blog Posts
         </Typography>
-        <Link as={`/staff/post`} href="/staff/post/[[...id]]">
-          Add Post
-        </Link>
+        <NextLink as={`/staff/post`} href="/staff/post/[[...id]]" passHref>
+          <Link>Add Post</Link>
+        </NextLink>
         {data && (
           <DataGrid
             columns={columns}
