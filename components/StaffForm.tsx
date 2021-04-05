@@ -175,7 +175,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
                   <Grid item md={12}>
                     <Avatar
                       className={classes.large}
-                      src={getUserImgLink(user)}
+                      src={`${process.env.api}/images/${data?.staff.img}`}
                     ></Avatar>
                   </Grid>
 
