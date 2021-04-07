@@ -71,7 +71,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
 
   const onSubmit = async (input: IFormInput) => {
     if (id && data) {
-      updateStaff({
+      await updateStaff({
         variables: {
           staff: {
             id: data.staff.id,
@@ -105,7 +105,9 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
     }
   };
 
-  const [uploadAvatar] = useUploadAvatarMutation();
+  const [uploadAvatar] = useUploadAvatarMutation({
+    refetchQueries: ['StaffById'],
+  });
 
   const fileUpload = async ({
     target: {
@@ -175,7 +177,9 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
                   <Grid item md={12}>
                     <Avatar
                       className={classes.large}
-                      src={`${process.env.api}/images/${data?.staff.img}`}
+                      src={
+                        data && `${process.env.api}/images/${data?.staff.img}`
+                      }
                     ></Avatar>
                   </Grid>
 
