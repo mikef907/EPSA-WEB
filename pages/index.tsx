@@ -2,6 +2,8 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Layout from '../components/Layout';
+import UpcomingEvents from '../components/UpcomingEvents';
+import PostsPreview from '../components/PostsPreview';
 
 const Index: React.FC = () => {
   return (
@@ -25,6 +27,14 @@ const Index: React.FC = () => {
           vivamus. Tincidunt vitae semper quis lectus nulla at volutpat diam.
           Tristique senectus et netus et.
         </Typography>
+      </Box>
+      <Box marginY="10px">
+        <Typography variant="h5">Upcoming Events</Typography>
+        <UpcomingEvents></UpcomingEvents>
+      </Box>
+      <Box>
+        <Typography variant="h5">Recent Posts</Typography>
+        <PostsPreview></PostsPreview>
       </Box>
     </Layout>
   );
