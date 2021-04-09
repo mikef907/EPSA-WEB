@@ -24,7 +24,11 @@ const PostsPreview: React.FC = () => {
                   primary={post.headline}
                   secondaryTypographyProps={{ component: 'span' }}
                   secondary={
-                    <NextLink as={'/post'} href="/post/[[...id]]" passHref>
+                    <NextLink
+                      as={`/post/${post.id}`}
+                      href="/post/[id]"
+                      passHref
+                    >
                       <Link>Link</Link>
                     </NextLink>
                   }
