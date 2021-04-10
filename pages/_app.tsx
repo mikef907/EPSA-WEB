@@ -26,6 +26,46 @@ import { cyan, deepOrange, green, orange } from '@material-ui/core/colors';
 import { ThemeContext } from '../context/ThemeContext';
 import { IS_SERVER } from '../constants';
 
+// we can also pass a custom map of functions. These will have priority over the GraphQLTypes parsing and serializing functions from the Schema.
+const typesMap = {
+  DateTime: {
+    serialize: (parsed: Date) => parsed.toString(),
+    parseValue: (raw: string | number | null): Date | null => {
+      return raw ? new Date(raw) : null;
+    },
+  },
+};
+
+const schema = buildClientSchema(introspectionResults as any);
+
+const link = ApolloLink.from([
+  withScalars({ schema, typesMap }),
+  createUploadLink({
+    uri: `${process.env.api}/graphql`,
+    headers: {
+      Authorization:
+        !IS_SERVER && localStorage.getItem('token')
+          ? `Bearer ${localStorage.getItem('token')}`
+          : '',
+    },
+  }),
+]);
+
+export const client = new ApolloClient({
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          allStaff: {
+            merge: false,
+          },
+        },
+      },
+    },
+  }),
+  link,
+});
+
 const MyApp = (props: AppProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [darkState, setDarkState] = useState(false);
@@ -54,46 +94,6 @@ const MyApp = (props: AppProps) => {
   });
 
   const { Component, pageProps } = props;
-
-  // we can also pass a custom map of functions. These will have priority over the GraphQLTypes parsing and serializing functions from the Schema.
-  const typesMap = {
-    DateTime: {
-      serialize: (parsed: Date) => parsed.toString(),
-      parseValue: (raw: string | number | null): Date | null => {
-        return raw ? new Date(raw) : null;
-      },
-    },
-  };
-
-  const schema = buildClientSchema(introspectionResults as any);
-
-  const link = ApolloLink.from([
-    withScalars({ schema, typesMap }),
-    createUploadLink({
-      uri: `${process.env.api}/graphql`,
-      headers: {
-        Authorization:
-          !IS_SERVER && localStorage.getItem('token')
-            ? `Bearer ${localStorage.getItem('token')}`
-            : '',
-      },
-    }),
-  ]);
-
-  const client = new ApolloClient({
-    cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            allStaff: {
-              merge: false,
-            },
-          },
-        },
-      },
-    }),
-    link,
-  });
 
   const [user, setUser] = useState<IUser | null>(null);
 

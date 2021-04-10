@@ -432,6 +432,17 @@ export type AllPostsQuery = (
   )> }
 );
 
+export type AllPostIdsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllPostIdsQuery = (
+  { __typename?: 'Query' }
+  & { allPosts: Array<(
+    { __typename?: 'PostQuery' }
+    & Pick<PostQuery, 'id'>
+  )> }
+);
+
 export type PostByIdQueryVariables = Exact<{
   id: Scalars['Float'];
 }>;
@@ -1047,6 +1058,38 @@ export function useAllPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<A
 export type AllPostsQueryHookResult = ReturnType<typeof useAllPostsQuery>;
 export type AllPostsLazyQueryHookResult = ReturnType<typeof useAllPostsLazyQuery>;
 export type AllPostsQueryResult = Apollo.QueryResult<AllPostsQuery, AllPostsQueryVariables>;
+export const AllPostIdsDocument = gql`
+    query AllPostIds {
+  allPosts {
+    id
+  }
+}
+    `;
+
+/**
+ * __useAllPostIdsQuery__
+ *
+ * To run a query within a React component, call `useAllPostIdsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllPostIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllPostIdsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllPostIdsQuery(baseOptions?: Apollo.QueryHookOptions<AllPostIdsQuery, AllPostIdsQueryVariables>) {
+        return Apollo.useQuery<AllPostIdsQuery, AllPostIdsQueryVariables>(AllPostIdsDocument, baseOptions);
+      }
+export function useAllPostIdsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllPostIdsQuery, AllPostIdsQueryVariables>) {
+          return Apollo.useLazyQuery<AllPostIdsQuery, AllPostIdsQueryVariables>(AllPostIdsDocument, baseOptions);
+        }
+export type AllPostIdsQueryHookResult = ReturnType<typeof useAllPostIdsQuery>;
+export type AllPostIdsLazyQueryHookResult = ReturnType<typeof useAllPostIdsLazyQuery>;
+export type AllPostIdsQueryResult = Apollo.QueryResult<AllPostIdsQuery, AllPostIdsQueryVariables>;
 export const PostByIdDocument = gql`
     query PostById($id: Float!) {
   post(id: $id) {

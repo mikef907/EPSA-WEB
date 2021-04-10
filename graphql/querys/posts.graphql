@@ -17,6 +17,12 @@ query AllPosts {
   }
 }
 
+query AllPostIds {
+  allPosts {
+    id
+  }
+}
+
 query PostById($id: Float!) {
   post(id: $id) {
     id
