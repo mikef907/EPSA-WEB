@@ -1,4 +1,4 @@
-import { Divider, Link, Typography } from '@material-ui/core';
+import { Divider, Link as MatLink, Typography } from '@material-ui/core';
 import React from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
@@ -7,7 +7,7 @@ import {
   useAllPostsQuery,
   useRemovePostMutation,
 } from '../../generated/graphql';
-import NextLink from 'next/link';
+import Link from '../../components/Link';
 
 const Events: React.FC = () => {
   const columns: GridColDef[] = [
@@ -43,20 +43,20 @@ const Events: React.FC = () => {
         const link = `/staff/post/${params.value}`;
         return (
           <>
-            <NextLink as={link} href="/staff/post/[[...id]]" passHref>
-              <Link>Edit</Link>
-            </NextLink>
+            <Link as={link} href="/staff/post/[[...id]]">
+              Edit
+            </Link>
             <Divider
               orientation="vertical"
               variant="middle"
               style={{ height: '50%' }}
             ></Divider>
-            <Link
+            <MatLink
               component="button"
               onClick={async () => await removePostById(params.row.id as any)}
             >
               Remove
-            </Link>
+            </MatLink>
           </>
         );
       },
@@ -86,9 +86,9 @@ const Events: React.FC = () => {
         >
           Blog Posts
         </Typography>
-        <NextLink as={`/staff/post`} href="/staff/post/[[...id]]" passHref>
-          <Link>Add Post</Link>
-        </NextLink>
+        <Link as={`/staff/post`} href="/staff/post/[[...id]]">
+          Add Post
+        </Link>
         {data && (
           <DataGrid
             columns={columns}

@@ -1,10 +1,10 @@
-import { Link, Typography } from '@material-ui/core';
-import NextLink from 'next/link';
+import { Typography } from '@material-ui/core';
 import React from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
 import { DataGrid, GridCellParams, GridColDef } from '@material-ui/data-grid';
 import { useEventsQuery } from '../../generated/graphql';
+import Link from '../../components/Link';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Title', width: 160 },
@@ -18,9 +18,9 @@ const columns: GridColDef[] = [
     renderCell: (params: GridCellParams) => {
       const link = `/admin/event/${params.value}`;
       return (
-        <NextLink as={link} href="/admin/event/[[...id]]" passHref>
-          <Link>Edit</Link>
-        </NextLink>
+        <Link as={link} href="/admin/event/[[...id]]">
+          Edit
+        </Link>
       );
     },
   },
@@ -40,9 +40,9 @@ const Events: React.FC = () => {
         >
           Events
         </Typography>
-        <NextLink as={'/admin/event'} href="/admin/event/[[...id]]" passHref>
-          <Link>Add Event</Link>
-        </NextLink>
+        <Link as={'/admin/event'} href="/admin/event/[[...id]]">
+          Add Event
+        </Link>
         {data && (
           <DataGrid
             columns={columns}

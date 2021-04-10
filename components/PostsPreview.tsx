@@ -1,13 +1,12 @@
 import React from 'react';
 import { useAllPostsQuery } from '../generated/graphql';
-import NextLink from 'next/link';
 import {
   CircularProgress,
-  Link,
   List,
   ListItem,
   ListItemText,
 } from '@material-ui/core';
+import Link from './Link';
 
 const PostsPreview: React.FC = () => {
   const { data, loading } = useAllPostsQuery();
@@ -24,13 +23,9 @@ const PostsPreview: React.FC = () => {
                   primary={post.headline}
                   secondaryTypographyProps={{ component: 'span' }}
                   secondary={
-                    <NextLink
-                      as={`/post/${post.id}`}
-                      href="/post/[id]"
-                      passHref
-                    >
-                      <Link>Link</Link>
-                    </NextLink>
+                    <Link as={`/post/${post.id}`} href="/post/[id]">
+                      Link
+                    </Link>
                   }
                 />
               </ListItem>

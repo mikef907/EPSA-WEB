@@ -8,7 +8,7 @@ import {
   Box,
   Divider,
   Drawer,
-  Link,
+  Link as MatLink,
   List,
   ListItem,
   Switch,
@@ -20,6 +20,7 @@ import { getUserImgLink, UserContext } from '../context/UserContext';
 import { useRouter } from 'next/router';
 import { ThemeContext } from '../context/ThemeContext';
 import { useWindowSize } from '../hooks/windowSize';
+import Link from './Link';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -81,9 +82,9 @@ const NavBar: React.FC = () => {
             <>
               <Box marginRight="10px">
                 <Typography>Welcome {user.first_name}</Typography>
-                <Link color="inherit" component="button" onClick={logout}>
+                <MatLink color="inherit" component="button" onClick={logout}>
                   Logout
-                </Link>
+                </MatLink>
               </Box>
               <Avatar src={getUserImgLink(user)}></Avatar>
             </>
