@@ -64,6 +64,17 @@ export const client = new ApolloClient({
     },
   }),
   link,
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'no-cache',
+    },
+    query: {
+      fetchPolicy: 'no-cache',
+    },
+    mutate: {
+      fetchPolicy: 'no-cache',
+    },
+  },
 });
 
 const MyApp = (props: AppProps) => {
