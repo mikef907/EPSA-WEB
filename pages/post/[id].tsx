@@ -1,90 +1,77 @@
-import { gql } from '@apollo/client';
 import { CircularProgress, Typography } from '@material-ui/core';
-import { NextPage, NextPageContext } from 'next';
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import React from 'react';
 import Layout from '../../components/Layout';
-import { useAllPostIdsQuery, usePostByIdQuery } from '../../generated/graphql';
+import {
+  AllPostIdsDocument,
+  PostByIdDocument,
+  PostQuery,
+} from '../../generated/graphql';
 import { client } from '../_app';
 
-interface Context extends NextPageContext {
-  query: {
-    id: string;
-  };
-}
-
 interface IProps {
-  id: number;
+  post: PostQuery;
 }
 
-const Post: NextPage<IProps> = ({ id }) => {
-  const { data, loading } = usePostByIdQuery({ variables: { id } });
+const Post: NextPage<IProps> = ({ post }) => {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <CircularProgress color="secondary" />;
+  }
 
   return (
     <Layout>
-      {loading && <CircularProgress color="secondary" />}
-      {data && (
+      {
         <>
           <Typography
             variant="h4"
             component="h1"
             style={{ textAlign: 'center' }}
           >
-            {data.post.headline}
+            {post.headline}
           </Typography>
-          <div dangerouslySetInnerHTML={{ __html: data.post.content }}></div>
+          <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
         </>
-      )}
+      }
     </Layout>
   );
 };
 
-Post.getInitialProps = (ctx: Context) => {
-  return { id: parseInt(ctx.query.id) };
-};
+export async function getStaticProps({ params }: any) {
+  const { data } = await client.query({
+    query: PostByIdDocument,
+    variables: { id: params.id },
+  });
 
-// export async function getStaticProps({ params }: any) {
-//   console.log(params.id);
-//   return {
-//     props: {
-//       id: parseInt(params.id),
-//     },
-//   };
-// }
+  data.post.published = data.post.published.toLocaleString();
+  data.post.created_at = data.post.created_at.toLocaleString();
+  data.post.updated_at = data.post.updated_at.toLocaleString();
 
-//export async function getStaticPaths() {
-// return {
-//   paths: [
-//     {
-//       params: {
-//         id: '1',
-//       },
-//     },
-//   ],
-//   fallback: false,
-// };
+  return {
+    props: {
+      post: data.post,
+    },
+    revalidate: 30,
+  };
+}
 
-//   const { data } = await client.query({
-//     query: gql`
-//       query AllPostIds {
-//         allPosts {
-//           id
-//         }
-//       }
-//     `,
-//   });
+export async function getStaticPaths() {
+  const { data } = await client.query({
+    query: AllPostIdsDocument,
+  });
 
-//   console.log(data);
-
-//   return {
-//     paths: data?.allPosts.map((post: any) => {
-//       return {
-//         params: {
-//           id: post.id,
-//         },
-//       };
-//     }),
-//     fallback: false,
-//   };
-// }
+  return {
+    paths: data?.allPosts.map((post: PostQuery) => {
+      return {
+        params: {
+          id: post.id,
+        },
+      };
+    }),
+    fallback: true,
+  };
+}
 
 export default Post;
