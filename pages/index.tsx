@@ -10,7 +10,7 @@ const Index: React.FC = () => {
     <Layout>
       <Box>
         <Typography variant="h4" component="h1" gutterBottom>
-          Welcome to PIPA.
+          Welcome to EPSA.
         </Typography>
         <Typography>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do Lorem

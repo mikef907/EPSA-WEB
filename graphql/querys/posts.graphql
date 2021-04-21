@@ -1,5 +1,5 @@
-query AllPosts {
-  allPosts {
+query AllPosts($isPublished: Boolean, $take: Int) {
+  allPosts(isPublished: $isPublished, take: $take) {
     id
     authorId
     author {
@@ -18,7 +18,7 @@ query AllPosts {
 }
 
 query AllPostIds {
-  allPosts {
+  allPosts(isPublished: true) {
     id
   }
 }

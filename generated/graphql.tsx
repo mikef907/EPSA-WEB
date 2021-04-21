@@ -191,6 +191,11 @@ export type QueryUserArgs = {
 };
 
 
+export type QueryEventsArgs = {
+  take?: Maybe<Scalars['Int']>;
+};
+
+
 export type QueryEventArgs = {
   id: Scalars['Float'];
 };
@@ -198,6 +203,12 @@ export type QueryEventArgs = {
 
 export type QueryStaffArgs = {
   id: Scalars['Float'];
+};
+
+
+export type QueryAllPostsArgs = {
+  take?: Maybe<Scalars['Int']>;
+  isPublished?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -389,7 +400,9 @@ export type LoginMutation = (
   & Pick<Mutation, 'login'>
 );
 
-export type EventsQueryVariables = Exact<{ [key: string]: never; }>;
+export type EventsQueryVariables = Exact<{
+  take?: Maybe<Scalars['Int']>;
+}>;
 
 
 export type EventsQuery = (
@@ -413,7 +426,10 @@ export type EventByIdQuery = (
   ) }
 );
 
-export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
+export type AllPostsQueryVariables = Exact<{
+  isPublished?: Maybe<Scalars['Boolean']>;
+  take?: Maybe<Scalars['Int']>;
+}>;
 
 
 export type AllPostsQuery = (
@@ -937,8 +953,8 @@ export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const EventsDocument = gql`
-    query Events {
-  events {
+    query Events($take: Int) {
+  events(take: $take) {
     id
     parentId
     name
@@ -962,6 +978,7 @@ export const EventsDocument = gql`
  * @example
  * const { data, loading, error } = useEventsQuery({
  *   variables: {
+ *      take: // value for 'take'
  *   },
  * });
  */
@@ -1014,8 +1031,8 @@ export type EventByIdQueryHookResult = ReturnType<typeof useEventByIdQuery>;
 export type EventByIdLazyQueryHookResult = ReturnType<typeof useEventByIdLazyQuery>;
 export type EventByIdQueryResult = Apollo.QueryResult<EventByIdQuery, EventByIdQueryVariables>;
 export const AllPostsDocument = gql`
-    query AllPosts {
-  allPosts {
+    query AllPosts($isPublished: Boolean, $take: Int) {
+  allPosts(isPublished: $isPublished, take: $take) {
     id
     authorId
     author {
@@ -1046,6 +1063,8 @@ export const AllPostsDocument = gql`
  * @example
  * const { data, loading, error } = useAllPostsQuery({
  *   variables: {
+ *      isPublished: // value for 'isPublished'
+ *      take: // value for 'take'
  *   },
  * });
  */
@@ -1060,7 +1079,7 @@ export type AllPostsLazyQueryHookResult = ReturnType<typeof useAllPostsLazyQuery
 export type AllPostsQueryResult = Apollo.QueryResult<AllPostsQuery, AllPostsQueryVariables>;
 export const AllPostIdsDocument = gql`
     query AllPostIds {
-  allPosts {
+  allPosts(isPublished: true) {
     id
   }
 }

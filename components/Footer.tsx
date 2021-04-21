@@ -27,7 +27,7 @@ const Footer: React.FC = () => {
       </Grid>
       <Grid>
         <Typography variant="subtitle1">
-          © PIPA {new Date().getFullYear()}
+          © EPSA {new Date().getFullYear()}
         </Typography>
       </Grid>
     </Grid>

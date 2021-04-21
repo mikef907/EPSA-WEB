@@ -1,15 +1,22 @@
 import React from 'react';
-import { useAllPostsQuery } from '../generated/graphql';
+import { StaffQuery, useAllPostsQuery } from '../generated/graphql';
 import {
+  Avatar,
   CircularProgress,
   List,
   ListItem,
   ListItemText,
+  Typography,
 } from '@material-ui/core';
 import Link from './Link';
 
+const getAuthorImgLink = (author: StaffQuery) =>
+  author.img ? `${process.env.api}/images/${author.img}` : '';
+
 const PostsPreview: React.FC = () => {
-  const { data, loading } = useAllPostsQuery();
+  const { data, loading } = useAllPostsQuery({
+    variables: { isPublished: true, take: 5 },
+  });
 
   return (
     <>
@@ -18,14 +25,21 @@ const PostsPreview: React.FC = () => {
         <List>
           {data.allPosts.map((post) => {
             return (
-              <ListItem key={post.id} button>
+              <ListItem key={post.id}>
+                <Avatar
+                  style={{ marginRight: '5px' }}
+                  src={getAuthorImgLink(post.author as StaffQuery)}
+                ></Avatar>
                 <ListItemText
                   primary={post.headline}
                   secondaryTypographyProps={{ component: 'span' }}
                   secondary={
-                    <Link as={`/post/${post.id}`} href="/post/[id]">
-                      Link
-                    </Link>
+                    <>
+                      <Typography variant="subtitle2">{`Published on ${post.published.toLocaleDateString()} at ${post.published.toLocaleTimeString()}`}</Typography>
+                      <Link as={`/post/${post.id}`} href="/post/[id]">
+                        Link
+                      </Link>
+                    </>
                   }
                 />
               </ListItem>

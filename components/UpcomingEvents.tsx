@@ -4,15 +4,16 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const formatWhen = (start: Date, end?: Date) => {
   return (
-    <Typography>
-      {start.toLocaleDateString()} {start.toLocaleString()}{' '}
-      {end && ` -  ${end.toLocaleDateString()} ${end.toLocaleTimeString()}`}
+    <Typography variant="subtitle2">
+      Starts {start.toLocaleDateString()} at {start.toLocaleTimeString()}{' '}
+      {end &&
+        ` Ends  ${end.toLocaleDateString()} at ${end.toLocaleTimeString()}`}
     </Typography>
   );
 };
 
 const UpcomingEvents: React.FC = () => {
-  const { data, loading } = useEventsQuery();
+  const { data, loading } = useEventsQuery({ variables: { take: 5 } });
 
   return (
     <>
@@ -21,7 +22,7 @@ const UpcomingEvents: React.FC = () => {
         <List>
           {data.events.map((event) => {
             return (
-              <ListItem key={event.id} button>
+              <ListItem key={event.id}>
                 <ListItemText
                   primary={event.name}
                   secondaryTypographyProps={{ component: 'span' }}

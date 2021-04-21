@@ -1,5 +1,5 @@
-query Events {
-  events {
+query Events($take: Int) {
+  events(take: $take) {
     id
     parentId
     name
