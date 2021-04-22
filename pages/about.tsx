@@ -1,8 +1,9 @@
 import { Box, Typography } from '@material-ui/core';
+import { NextPage } from 'next';
 import React from 'react';
 import Layout from '../components/Layout';
 
-const About: React.FC = () => {
+const About: NextPage = () => {
   return (
     <Layout>
       <Box>

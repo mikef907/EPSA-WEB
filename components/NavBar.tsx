@@ -15,20 +15,13 @@ import {
 } from '@material-ui/core';
 import React, { useContext, useState } from 'react';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { getUserImgLink, UserContext } from '../context/UserContext';
 import { useRouter } from 'next/router';
 import { ThemeContext } from '../context/ThemeContext';
 import { useWindowSize } from '../hooks/windowSize';
 import Link from './Link';
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    drawerPaper: {
-      width: 200,
-    },
-  })
-);
+import { IMGKEY } from '../constants';
+import { useStyles } from '../hooks/styles';
 
 const NavBar: React.FC = () => {
   const windowSize = useWindowSize();
@@ -43,7 +36,7 @@ const NavBar: React.FC = () => {
 
   const logout = () => {
     delete localStorage?.token;
-    delete localStorage?.[process.env.tmpImgKey as string];
+    delete localStorage?.[IMGKEY];
     setUser(null);
     router.push('/');
   };
@@ -125,6 +118,11 @@ const NavBar: React.FC = () => {
           <ListItem>
             <Link href="/about" variant="button">
               About
+            </Link>
+          </ListItem>
+          <ListItem>
+            <Link href="/staff" variant="button">
+              Staff
             </Link>
           </ListItem>
           <ListItem>

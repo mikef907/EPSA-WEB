@@ -65,6 +65,8 @@ const StaffBlogPage: NextPage<IProps> = ({ id }) => {
         published: !!data.post.published,
         headline: data.post.headline,
       });
+
+      setIsPublished(!!data.post.published);
     }
   }, [data]);
 

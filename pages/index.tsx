@@ -4,8 +4,21 @@ import Box from '@material-ui/core/Box';
 import Layout from '../components/Layout';
 import UpcomingEvents from '../components/UpcomingEvents';
 import PostsPreview from '../components/PostsPreview';
+import { NextPage } from 'next';
+import {
+  AllPostsDocument,
+  EventQuery,
+  EventsDocument,
+  PostQuery,
+} from '../generated/graphql';
+import { client } from './_app';
 
-const Index: React.FC = () => {
+interface IProps {
+  posts: PostQuery[];
+  events: EventQuery[];
+}
+
+const Index: NextPage<IProps> = ({ posts, events }) => {
   return (
     <Layout>
       <Box>
@@ -30,14 +43,43 @@ const Index: React.FC = () => {
       </Box>
       <Box marginY="10px">
         <Typography variant="h5">Upcoming Events</Typography>
-        <UpcomingEvents></UpcomingEvents>
+        <UpcomingEvents events={events}></UpcomingEvents>
       </Box>
       <Box>
         <Typography variant="h5">Recent Posts</Typography>
-        <PostsPreview></PostsPreview>
+        <PostsPreview posts={posts}></PostsPreview>
       </Box>
     </Layout>
   );
 };
 
 export default Index;
+
+export async function getStaticProps() {
+  const { data: posts } = await client.query({
+    query: AllPostsDocument,
+    variables: { isPublished: true, take: 5 },
+  });
+
+  const { data: events } = await client.query({
+    query: EventsDocument,
+    variables: { take: 5 },
+  });
+
+  return {
+    props: {
+      posts: posts.allPosts.map((post: any) => {
+        post.published = post.published.toLocaleString();
+        post.created_at = post.created_at.toLocaleString();
+        post.updated_at = post.updated_at.toLocaleString();
+        return post;
+      }),
+      events: events.events.map((event: any) => {
+        event.start = event.start.toLocaleString();
+        event.end = event.end?.toLocaleString() || null;
+        return event;
+      }),
+    },
+    revalidate: 120,
+  };
+}

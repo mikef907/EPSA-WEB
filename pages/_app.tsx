@@ -24,7 +24,7 @@ import { createUploadLink } from 'apollo-upload-client';
 import { IUser } from '../interfaces/IUser';
 import { cyan, deepOrange, green, orange } from '@material-ui/core/colors';
 import { ThemeContext } from '../context/ThemeContext';
-import { IS_SERVER } from '../constants';
+import { API, IS_SERVER, TOKEN } from '../constants';
 
 // we can also pass a custom map of functions. These will have priority over the GraphQLTypes parsing and serializing functions from the Schema.
 const typesMap = {
@@ -41,11 +41,11 @@ const schema = buildClientSchema(introspectionResults as any);
 const link = ApolloLink.from([
   withScalars({ schema, typesMap }),
   createUploadLink({
-    uri: `${process.env.api}/graphql`,
+    uri: `${API}/graphql`,
     headers: {
       Authorization:
-        !IS_SERVER && localStorage.getItem('token')
-          ? `Bearer ${localStorage.getItem('token')}`
+        !IS_SERVER && localStorage.getItem(TOKEN)
+          ? `Bearer ${localStorage.getItem(TOKEN)}`
           : '',
     },
   }),

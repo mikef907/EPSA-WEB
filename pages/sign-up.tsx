@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import { parseUserFromToken, UserContext } from '../context/UserContext';
 import router from 'next/router';
 import { useAddUserMutation } from '../generated/graphql';
+import { NextPage } from 'next';
 
 interface IFormInput {
   firstname: string;
@@ -22,7 +23,7 @@ interface IFormInput {
   confirmPassword: string;
 }
 
-const CreateUser: React.FC = () => {
+const CreateUser: NextPage = () => {
   const { user, setUser } = React.useContext(UserContext);
 
   const [addUser, { loading, error }] = useAddUserMutation();

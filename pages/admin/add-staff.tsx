@@ -2,8 +2,9 @@ import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
 import { Typography } from '@material-ui/core';
 import StaffForm from '../../components/StaffForm';
+import { NextPage } from 'next';
 
-const AddStaffPage: React.FC = () => {
+const AddStaffPage: NextPage = () => {
   return (
     <Protect roles={['Admin']}>
       <Layout>

@@ -2,8 +2,9 @@ import { Typography } from '@material-ui/core';
 import Layout from '../components/Layout';
 import React from 'react';
 import Login from '../components/Login';
+import { NextPage } from 'next';
 
-export default function LoginPage() {
+const LoginPage: NextPage = () => {
   return (
     <Layout>
       <Typography
@@ -17,4 +18,6 @@ export default function LoginPage() {
       <Login></Login>
     </Layout>
   );
-}
+};
+
+export default LoginPage;

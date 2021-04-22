@@ -4,6 +4,7 @@ import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
 import { DataGrid, GridColDef } from '@material-ui/data-grid';
 import { useUserListQuery } from '../../generated/graphql';
+import { NextPage } from 'next';
 
 const columns: GridColDef[] = [
   { field: 'first_name', headerName: 'First Name', width: 160 },
@@ -11,7 +12,7 @@ const columns: GridColDef[] = [
   { field: 'email', headerName: 'Email', width: 160 },
 ];
 
-const Users: React.FC = () => {
+const Users: NextPage = () => {
   const { data } = useUserListQuery();
 
   return (

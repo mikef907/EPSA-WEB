@@ -1,6 +1,7 @@
 import React, { createContext } from 'react';
 import jwt_decode from 'jwt-decode';
 import { IUser } from '../interfaces/IUser';
+import { API, IMGKEY, TOKEN } from '../constants';
 
 export type User = {
   user: IUser | null;
@@ -8,8 +9,8 @@ export type User = {
   checkRoles: (user: IUser | null, ...roles: string[]) => boolean;
 };
 
-const token = () => localStorage.getItem('token');
-const tmpImg = () => localStorage.getItem(process.env.tmpImgKey as string);
+const token = () => localStorage.getItem(TOKEN);
+const tmpImg = () => localStorage.getItem(IMGKEY);
 
 export const setUserFromLocalStorage = () => {
   const val = token();
@@ -22,12 +23,12 @@ export const setUserFromLocalStorage = () => {
 };
 
 export const parseUserFromToken = (token: string) => {
-  localStorage.setItem('token', token);
+  localStorage.setItem(TOKEN, token);
   return getUserFromToken();
 };
 
 export const getUserImgLink = (user: IUser | null) =>
-  user?.img ? `${process.env.api}/images/${user.img}` : '';
+  user?.img ? `${API}/images/${user.img}` : '';
 
 export const checkRoles = (user: IUser | null, ...roles: string[]) => {
   if (user)

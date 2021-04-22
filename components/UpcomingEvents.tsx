@@ -1,44 +1,35 @@
 import { List, ListItem, ListItemText, Typography } from '@material-ui/core';
-import { useEventsQuery } from '../generated/graphql';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { EventQuery } from '../generated/graphql';
 
-const formatWhen = (start: Date, end?: Date) => {
+interface IProps {
+  events: EventQuery[];
+}
+
+const UpcomingEvents: React.FC<IProps> = ({ events }) => {
   return (
-    <Typography variant="subtitle2">
-      Starts {start.toLocaleDateString()} at {start.toLocaleTimeString()}{' '}
-      {end &&
-        ` Ends  ${end.toLocaleDateString()} at ${end.toLocaleTimeString()}`}
-    </Typography>
-  );
-};
-
-const UpcomingEvents: React.FC = () => {
-  const { data, loading } = useEventsQuery({ variables: { take: 5 } });
-
-  return (
-    <>
-      {loading && <CircularProgress color="secondary" />}
-      {data && (
-        <List>
-          {data.events.map((event) => {
-            return (
-              <ListItem key={event.id}>
-                <ListItemText
-                  primary={event.name}
-                  secondaryTypographyProps={{ component: 'span' }}
-                  secondary={
-                    <>
-                      {formatWhen(event.start, event?.end)}
-                      <Typography>{event.description}</Typography>
-                    </>
-                  }
-                />
-              </ListItem>
-            );
-          })}
-        </List>
-      )}
-    </>
+    <List>
+      {events.map((event) => {
+        return (
+          <ListItem key={event.id}>
+            <ListItemText
+              primary={event.name}
+              secondaryTypographyProps={{ component: 'span' }}
+              secondary={
+                <>
+                  <Typography variant="subtitle2" component="span">
+                    {event.start}
+                  </Typography>
+                  <Typography variant="subtitle2" component="span">
+                    {event.end}
+                  </Typography>
+                  <Typography>{event.description}</Typography>
+                </>
+              }
+            />
+          </ListItem>
+        );
+      })}
+    </List>
   );
 };
 

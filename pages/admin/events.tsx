@@ -5,6 +5,7 @@ import Protect from '../../components/Protect';
 import { DataGrid, GridCellParams, GridColDef } from '@material-ui/data-grid';
 import { useEventsQuery } from '../../generated/graphql';
 import Link from '../../components/Link';
+import { NextPage } from 'next';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: 'Title', width: 160 },
@@ -26,7 +27,7 @@ const columns: GridColDef[] = [
   },
 ];
 
-const Events: React.FC = () => {
+const Events: NextPage = () => {
   const { data } = useEventsQuery();
 
   return (

@@ -5,6 +5,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
+import { NextPage } from 'next';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import Layout from '../components/Layout';
@@ -15,7 +16,7 @@ interface IFormInput {
   password: string;
 }
 
-const ForgotPassword: React.FC = () => {
+const ForgotPassword: NextPage = () => {
   const [
     forgotPassword,
     { loading, error, data },

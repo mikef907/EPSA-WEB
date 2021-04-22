@@ -8,8 +8,9 @@ import {
   useRemoveStaffMutation,
 } from '../../generated/graphql';
 import Link from '../../components/Link';
+import { NextPage } from 'next';
 
-const StaffMembers: React.FC = () => {
+const StaffMembers: NextPage = () => {
   const { data } = useAllStaffQuery();
 
   const [removeStaff] = useRemoveStaffMutation({

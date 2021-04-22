@@ -1,15 +1,13 @@
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import React, { useState, useEffect, useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { getUserImgLink, UserContext } from '../context/UserContext';
+import { UserContext } from '../context/UserContext';
 import {
   Avatar,
   Button,
-  createStyles,
   FormControl,
   Grid,
   InputLabel,
-  makeStyles,
   TextareaAutosize,
   TextField,
   Typography,
@@ -24,6 +22,8 @@ import { KeyboardDatePicker } from '@material-ui/pickers';
 import { IUser } from '../interfaces/IUser';
 import UsersDDL from './UsersDDL';
 import { useRouter } from 'next/router';
+import { API, IMGKEY } from '../constants';
+import { useStyles } from '../hooks/styles';
 
 interface IProps {
   id?: number;
@@ -36,15 +36,6 @@ export interface IFormInput {
   description: string;
   start: Date;
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    large: {
-      width: 200,
-      height: 200,
-    },
-  })
-);
 
 const StaffForm: React.FC<IProps> = ({ id }) => {
   const classes = useStyles();
@@ -118,7 +109,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
       await uploadAvatar({ variables: { file, userId: data.staff.userId } });
       if (user.id === data.staff.userId) {
         setUser({ ...user, img: file.name });
-        localStorage.setItem(process.env.tmpImgKey as string, file.name);
+        localStorage.setItem(IMGKEY, file.name);
       }
     }
   };
@@ -177,9 +168,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
                   <Grid item md={12}>
                     <Avatar
                       className={classes.large}
-                      src={
-                        data && `${process.env.api}/images/${data?.staff.img}`
-                      }
+                      src={data && `${API}/images/${data?.staff.img}`}
                     ></Avatar>
                   </Grid>
 
@@ -281,6 +270,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
                 <TextareaAutosize
                   name="description"
                   rowsMin="4"
+                  maxLength={255}
                   value={description}
                   onChange={(e) => {
                     setDescription(e.target.value);
