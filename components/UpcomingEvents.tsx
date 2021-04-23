@@ -19,8 +19,13 @@ const UpcomingEvents: React.FC<IProps> = ({ events }) => {
                   <Typography variant="subtitle2" component="span">
                     {event.start}
                   </Typography>
-                  <Typography variant="subtitle2" component="span">
-                    {event.end}
+                  {event.end && (
+                    <Typography variant="subtitle2" component="span">
+                      &nbsp;to {event.end}
+                    </Typography>
+                  )}
+                  <Typography variant="subtitle1">
+                    Zip: {event.zipCode} Language: {event.language}
                   </Typography>
                   <Typography>{event.description}</Typography>
                 </>

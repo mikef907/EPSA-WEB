@@ -26,6 +26,8 @@ export type EventInput = {
   allDay?: Maybe<Scalars['Boolean']>;
   start: Scalars['DateTime'];
   end?: Maybe<Scalars['DateTime']>;
+  zipCode: Scalars['Float'];
+  language: Scalars['String'];
 };
 
 export type EventQuery = {
@@ -37,6 +39,8 @@ export type EventQuery = {
   allDay?: Maybe<Scalars['Boolean']>;
   start: Scalars['DateTime'];
   end?: Maybe<Scalars['DateTime']>;
+  zipCode: Scalars['Float'];
+  language: Scalars['String'];
   created_at: Scalars['DateTime'];
   updated_at: Scalars['DateTime'];
 };
@@ -409,7 +413,7 @@ export type EventsQuery = (
   { __typename?: 'Query' }
   & { events: Array<(
     { __typename?: 'EventQuery' }
-    & Pick<EventQuery, 'id' | 'parentId' | 'name' | 'description' | 'start' | 'end' | 'allDay'>
+    & Pick<EventQuery, 'id' | 'parentId' | 'name' | 'description' | 'start' | 'end' | 'allDay' | 'zipCode' | 'language'>
   )> }
 );
 
@@ -422,7 +426,7 @@ export type EventByIdQuery = (
   { __typename?: 'Query' }
   & { event: (
     { __typename?: 'EventQuery' }
-    & Pick<EventQuery, 'id' | 'parentId' | 'name' | 'description' | 'start' | 'end' | 'allDay'>
+    & Pick<EventQuery, 'id' | 'parentId' | 'name' | 'description' | 'start' | 'end' | 'allDay' | 'zipCode' | 'language'>
   ) }
 );
 
@@ -962,6 +966,8 @@ export const EventsDocument = gql`
     start
     end
     allDay
+    zipCode
+    language
   }
 }
     `;
@@ -1001,6 +1007,8 @@ export const EventByIdDocument = gql`
     start
     end
     allDay
+    zipCode
+    language
   }
 }
     `;

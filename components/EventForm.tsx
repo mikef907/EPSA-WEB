@@ -30,6 +30,8 @@ interface IFormInput {
   start: Date;
   end: Date;
   allDay: boolean | null;
+  zipCode: number;
+  language: string;
 }
 
 interface IEvent extends IFormInput {
@@ -60,6 +62,8 @@ const EventForm: React.FC<IProps> = ({ id }) => {
             start: input.start,
             end: input.end,
             allDay: input.allDay,
+            zipCode: input.zipCode,
+            language: input.language,
           },
         },
       });
@@ -72,6 +76,8 @@ const EventForm: React.FC<IProps> = ({ id }) => {
             start: input.start,
             end: input.end,
             allDay: input.allDay,
+            zipCode: input.zipCode,
+            language: input.language,
           },
         },
       });
@@ -97,6 +103,8 @@ const EventForm: React.FC<IProps> = ({ id }) => {
         description: data.event.description,
         start: dayjs(data.event.start).format('YYYY-MM-DDTHH:mm'),
         end: dayjs(data.event.end).format('YYYY-MM-DDTHH:mm'),
+        zipCode: data.event.zipCode,
+        language: data.event.language,
       });
     }
   }, [data]);
@@ -128,6 +136,34 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                       })}
                       error={!!errors.name}
                       helperText={errors.name?.message}
+                    ></TextField>
+                  </FormControl>
+                </Grid>
+                <Grid item>
+                  <FormControl fullWidth>
+                    <TextField
+                      InputLabelProps={{ shrink: true }}
+                      name="zipCode"
+                      label="Zip Code"
+                      inputRef={register({
+                        required: 'Zip code is required',
+                      })}
+                      error={!!errors.zipCode}
+                      helperText={errors.zipCode?.message}
+                    ></TextField>
+                  </FormControl>
+                </Grid>
+                <Grid item>
+                  <FormControl fullWidth>
+                    <TextField
+                      InputLabelProps={{ shrink: true }}
+                      name="language"
+                      label="Language"
+                      inputRef={register({
+                        required: 'Language is required',
+                      })}
+                      error={!!errors.language}
+                      helperText={errors.language?.message}
                     ></TextField>
                   </FormControl>
                 </Grid>

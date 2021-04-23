@@ -13,6 +13,8 @@ const columns: GridColDef[] = [
   { field: 'start', headerName: 'Start', width: 160, type: 'dateTime' },
   { field: 'end', headerName: 'End', width: 160, type: 'dateTime' },
   { field: 'allDay', headerName: 'All Day', width: 160, type: 'bool' },
+  { field: 'zipCode', headerName: 'Zip' },
+  { field: 'language', headerName: 'Lang' },
   {
     field: 'id',
     headerName: 'Edit',
