@@ -10,7 +10,7 @@ interface IProps {
   user: IUser | null;
 }
 
-const UsersDDL: React.FC<IProps> = ({ id, setUser, user }) => {
+const UsersPicker: React.FC<IProps> = ({ id, setUser, user }) => {
   const { data, loading } = useUserListQuery({
     variables: { notInRoles: ['Staff'] },
   });
@@ -36,4 +36,4 @@ const UsersDDL: React.FC<IProps> = ({ id, setUser, user }) => {
   );
 };
 
-export default UsersDDL;
+export default UsersPicker;

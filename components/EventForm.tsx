@@ -4,6 +4,7 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
+  Input,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -19,6 +20,7 @@ import Protect from './Protect';
 import dayjs from 'dayjs';
 import CheckBox from '@material-ui/core/Checkbox';
 import { useRouter } from 'next/router';
+import LanguagePicker from './LanguagePicker';
 
 interface IProps {
   id?: number;
@@ -155,7 +157,14 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                 </Grid>
                 <Grid item>
                   <FormControl fullWidth>
-                    <TextField
+                    <LanguagePicker
+                      name="language"
+                      inputRef={register({
+                        required: 'Language is required',
+                      })}
+                      error={!!errors.language}
+                    ></LanguagePicker>
+                    {/* <TextField
                       InputLabelProps={{ shrink: true }}
                       name="language"
                       label="Language"
@@ -164,7 +173,7 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                       })}
                       error={!!errors.language}
                       helperText={errors.language?.message}
-                    ></TextField>
+                    ></TextField> */}
                   </FormControl>
                 </Grid>
                 <Grid item>

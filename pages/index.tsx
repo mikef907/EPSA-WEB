@@ -12,6 +12,7 @@ import {
   PostQuery,
 } from '../generated/graphql';
 import { client } from './_app';
+import { CODES } from '../constants';
 
 interface IProps {
   posts: PostQuery[];
@@ -77,6 +78,9 @@ export async function getStaticProps() {
       events: events.events.map((event: any) => {
         event.start = event.start.toLocaleString();
         event.end = event.end?.toLocaleString() || null;
+        event.language = CODES.filter(
+          (_) => _.code === event.language.toLocaleLowerCase()
+        )[0].name;
         return event;
       }),
     },

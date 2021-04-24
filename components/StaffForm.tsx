@@ -20,7 +20,7 @@ import {
 } from '../generated/graphql';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { IUser } from '../interfaces/IUser';
-import UsersDDL from './UsersDDL';
+import UsersPicker from './UsersPicker';
 import { useRouter } from 'next/router';
 import { API, IMGKEY } from '../constants';
 import { useStyles } from '../hooks/styles';
@@ -187,11 +187,11 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
               <Grid item xs={12} md={12}>
                 <FormControl fullWidth>
                   <InputLabel id="user-label">Select user to assign</InputLabel>
-                  <UsersDDL
+                  <UsersPicker
                     id="user-label"
                     setUser={setNewStaff}
                     user={newStaff}
-                  ></UsersDDL>
+                  ></UsersPicker>
                 </FormControl>
               </Grid>
             )}
