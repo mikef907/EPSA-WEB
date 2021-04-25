@@ -10,6 +10,7 @@ import {
   ApolloProvider,
   InMemoryCache,
 } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 import {
   setUserFromLocalStorage,
   checkRoles,
@@ -38,18 +39,24 @@ const typesMap = {
 
 const schema = buildClientSchema(introspectionResults as any);
 
-const link = ApolloLink.from([
+export const link = ApolloLink.from([
   withScalars({ schema, typesMap }),
   createUploadLink({
     uri: `${API}/graphql`,
-    headers: {
-      Authorization:
-        !IS_SERVER && localStorage.getItem(TOKEN)
-          ? `Bearer ${localStorage.getItem(TOKEN)}`
-          : '',
-    },
   }),
 ]);
+
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = !IS_SERVER ? localStorage.getItem('token') : '';
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
 
 export const client = new ApolloClient({
   cache: new InMemoryCache({
@@ -63,7 +70,7 @@ export const client = new ApolloClient({
       },
     },
   }),
-  link,
+  link: authLink.concat(link),
   defaultOptions: {
     watchQuery: {
       fetchPolicy: 'no-cache',
