@@ -116,6 +116,11 @@ const NavBar: React.FC = () => {
             </Link>
           </ListItem>
           <ListItem>
+            <Link href="/groups" variant="button">
+              Groups
+            </Link>
+          </ListItem>
+          <ListItem>
             <Link href="/about" variant="button">
               About
             </Link>

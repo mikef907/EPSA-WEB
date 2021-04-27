@@ -45,6 +45,26 @@ export type EventQuery = {
   updated_at: Scalars['DateTime'];
 };
 
+export type GroupInput = {
+  facilitatorId: Scalars['Float'];
+  city: Scalars['String'];
+  zipCode: Scalars['Float'];
+  language: Scalars['String'];
+};
+
+export type GroupQuery = {
+  __typename?: 'GroupQuery';
+  id: Scalars['ID'];
+  facilitatorId: Scalars['Float'];
+  facilitator?: Maybe<StaffQuery>;
+  users?: Maybe<Array<UserQuery>>;
+  city: Scalars['String'];
+  zipCode: Scalars['Float'];
+  language: Scalars['String'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   resetPassword: Scalars['Boolean'];
@@ -61,6 +81,9 @@ export type Mutation = {
   addPost: Scalars['Float'];
   updatePost: Scalars['Boolean'];
   removePost: Scalars['Boolean'];
+  createGroup: GroupQuery;
+  updateGroup: Scalars['Boolean'];
+  deleteGroup: Scalars['Boolean'];
 };
 
 
@@ -135,6 +158,22 @@ export type MutationRemovePostArgs = {
   id: Scalars['Float'];
 };
 
+
+export type MutationCreateGroupArgs = {
+  group: GroupInput;
+};
+
+
+export type MutationUpdateGroupArgs = {
+  group: GroupInput;
+  id: Scalars['Float'];
+};
+
+
+export type MutationDeleteGroupArgs = {
+  id: Scalars['Float'];
+};
+
 export type NewStaffInput = {
   userId: Scalars['Float'];
   start: Scalars['DateTime'];
@@ -181,6 +220,8 @@ export type Query = {
   staff: StaffQuery;
   allPosts: Array<PostQuery>;
   post: PostQuery;
+  groups: Array<GroupQuery>;
+  group: GroupQuery;
 };
 
 
@@ -217,6 +258,19 @@ export type QueryAllPostsArgs = {
 
 
 export type QueryPostArgs = {
+  id: Scalars['Float'];
+};
+
+
+export type QueryGroupsArgs = {
+  take?: Maybe<Scalars['Int']>;
+  zipCode?: Maybe<Scalars['Int']>;
+  language?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGroupArgs = {
+  withUsers: Scalars['Boolean'];
   id: Scalars['Float'];
 };
 
@@ -427,6 +481,74 @@ export type EventByIdQuery = (
   & { event: (
     { __typename?: 'EventQuery' }
     & Pick<EventQuery, 'id' | 'parentId' | 'name' | 'description' | 'start' | 'end' | 'allDay' | 'zipCode' | 'language'>
+  ) }
+);
+
+export type AllGroupsQueryVariables = Exact<{
+  take?: Maybe<Scalars['Int']>;
+  zipCode?: Maybe<Scalars['Int']>;
+  language?: Maybe<Scalars['String']>;
+}>;
+
+
+export type AllGroupsQuery = (
+  { __typename?: 'Query' }
+  & { groups: Array<(
+    { __typename?: 'GroupQuery' }
+    & Pick<GroupQuery, 'id' | 'facilitatorId' | 'zipCode' | 'language' | 'city' | 'created_at'>
+    & { facilitator?: Maybe<(
+      { __typename?: 'StaffQuery' }
+      & Pick<StaffQuery, 'id' | 'img'>
+      & { user: (
+        { __typename?: 'UserQuery' }
+        & Pick<UserQuery, 'id' | 'email' | 'first_name' | 'last_name'>
+      ) }
+    )> }
+  )> }
+);
+
+export type GroupByIdQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type GroupByIdQuery = (
+  { __typename?: 'Query' }
+  & { group: (
+    { __typename?: 'GroupQuery' }
+    & Pick<GroupQuery, 'id' | 'facilitatorId' | 'zipCode' | 'language' | 'city' | 'created_at'>
+    & { facilitator?: Maybe<(
+      { __typename?: 'StaffQuery' }
+      & Pick<StaffQuery, 'id' | 'img'>
+      & { user: (
+        { __typename?: 'UserQuery' }
+        & Pick<UserQuery, 'id' | 'email' | 'first_name' | 'last_name'>
+      ) }
+    )> }
+  ) }
+);
+
+export type GroupByIdWithUsersQueryVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type GroupByIdWithUsersQuery = (
+  { __typename?: 'Query' }
+  & { group: (
+    { __typename?: 'GroupQuery' }
+    & Pick<GroupQuery, 'id' | 'facilitatorId' | 'zipCode' | 'language' | 'city' | 'created_at'>
+    & { facilitator?: Maybe<(
+      { __typename?: 'StaffQuery' }
+      & Pick<StaffQuery, 'id' | 'img'>
+      & { user: (
+        { __typename?: 'UserQuery' }
+        & Pick<UserQuery, 'id' | 'email' | 'first_name' | 'last_name'>
+      ) }
+    )>, users?: Maybe<Array<(
+      { __typename?: 'UserQuery' }
+      & Pick<UserQuery, 'id' | 'email' | 'first_name' | 'last_name'>
+    )>> }
   ) }
 );
 
@@ -1038,6 +1160,158 @@ export function useEventByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type EventByIdQueryHookResult = ReturnType<typeof useEventByIdQuery>;
 export type EventByIdLazyQueryHookResult = ReturnType<typeof useEventByIdLazyQuery>;
 export type EventByIdQueryResult = Apollo.QueryResult<EventByIdQuery, EventByIdQueryVariables>;
+export const AllGroupsDocument = gql`
+    query AllGroups($take: Int, $zipCode: Int, $language: String) {
+  groups(take: $take, zipCode: $zipCode, language: $language) {
+    id
+    facilitatorId
+    zipCode
+    language
+    city
+    created_at
+    facilitator {
+      id
+      img
+      user {
+        id
+        email
+        first_name
+        last_name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllGroupsQuery__
+ *
+ * To run a query within a React component, call `useAllGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllGroupsQuery({
+ *   variables: {
+ *      take: // value for 'take'
+ *      zipCode: // value for 'zipCode'
+ *      language: // value for 'language'
+ *   },
+ * });
+ */
+export function useAllGroupsQuery(baseOptions?: Apollo.QueryHookOptions<AllGroupsQuery, AllGroupsQueryVariables>) {
+        return Apollo.useQuery<AllGroupsQuery, AllGroupsQueryVariables>(AllGroupsDocument, baseOptions);
+      }
+export function useAllGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllGroupsQuery, AllGroupsQueryVariables>) {
+          return Apollo.useLazyQuery<AllGroupsQuery, AllGroupsQueryVariables>(AllGroupsDocument, baseOptions);
+        }
+export type AllGroupsQueryHookResult = ReturnType<typeof useAllGroupsQuery>;
+export type AllGroupsLazyQueryHookResult = ReturnType<typeof useAllGroupsLazyQuery>;
+export type AllGroupsQueryResult = Apollo.QueryResult<AllGroupsQuery, AllGroupsQueryVariables>;
+export const GroupByIdDocument = gql`
+    query GroupById($id: Float!) {
+  group(id: $id, withUsers: false) {
+    id
+    facilitatorId
+    zipCode
+    language
+    city
+    created_at
+    facilitator {
+      id
+      img
+      user {
+        id
+        email
+        first_name
+        last_name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGroupByIdQuery__
+ *
+ * To run a query within a React component, call `useGroupByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGroupByIdQuery(baseOptions: Apollo.QueryHookOptions<GroupByIdQuery, GroupByIdQueryVariables>) {
+        return Apollo.useQuery<GroupByIdQuery, GroupByIdQueryVariables>(GroupByIdDocument, baseOptions);
+      }
+export function useGroupByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GroupByIdQuery, GroupByIdQueryVariables>) {
+          return Apollo.useLazyQuery<GroupByIdQuery, GroupByIdQueryVariables>(GroupByIdDocument, baseOptions);
+        }
+export type GroupByIdQueryHookResult = ReturnType<typeof useGroupByIdQuery>;
+export type GroupByIdLazyQueryHookResult = ReturnType<typeof useGroupByIdLazyQuery>;
+export type GroupByIdQueryResult = Apollo.QueryResult<GroupByIdQuery, GroupByIdQueryVariables>;
+export const GroupByIdWithUsersDocument = gql`
+    query GroupByIdWithUsers($id: Float!) {
+  group(id: $id, withUsers: true) {
+    id
+    facilitatorId
+    zipCode
+    language
+    city
+    created_at
+    facilitator {
+      id
+      img
+      user {
+        id
+        email
+        first_name
+        last_name
+      }
+    }
+    users {
+      id
+      email
+      first_name
+      last_name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGroupByIdWithUsersQuery__
+ *
+ * To run a query within a React component, call `useGroupByIdWithUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupByIdWithUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupByIdWithUsersQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGroupByIdWithUsersQuery(baseOptions: Apollo.QueryHookOptions<GroupByIdWithUsersQuery, GroupByIdWithUsersQueryVariables>) {
+        return Apollo.useQuery<GroupByIdWithUsersQuery, GroupByIdWithUsersQueryVariables>(GroupByIdWithUsersDocument, baseOptions);
+      }
+export function useGroupByIdWithUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GroupByIdWithUsersQuery, GroupByIdWithUsersQueryVariables>) {
+          return Apollo.useLazyQuery<GroupByIdWithUsersQuery, GroupByIdWithUsersQueryVariables>(GroupByIdWithUsersDocument, baseOptions);
+        }
+export type GroupByIdWithUsersQueryHookResult = ReturnType<typeof useGroupByIdWithUsersQuery>;
+export type GroupByIdWithUsersLazyQueryHookResult = ReturnType<typeof useGroupByIdWithUsersLazyQuery>;
+export type GroupByIdWithUsersQueryResult = Apollo.QueryResult<GroupByIdWithUsersQuery, GroupByIdWithUsersQueryVariables>;
 export const AllPostsDocument = gql`
     query AllPosts($isPublished: Boolean, $take: Int) {
   allPosts(isPublished: $isPublished, take: $take) {

@@ -164,16 +164,6 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                       })}
                       error={!!errors.language}
                     ></LanguagePicker>
-                    {/* <TextField
-                      InputLabelProps={{ shrink: true }}
-                      name="language"
-                      label="Language"
-                      inputRef={register({
-                        required: 'Language is required',
-                      })}
-                      error={!!errors.language}
-                      helperText={errors.language?.message}
-                    ></TextField> */}
                   </FormControl>
                 </Grid>
                 <Grid item>
