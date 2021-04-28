@@ -264,7 +264,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
                       format="MM/DD/YYYY"
                       label="Start Date"
                       defaultValue={new Date()}
-                      value={field.value}
+                      value={field.value || new Date()}
                       onChange={field.onChange}
                       KeyboardButtonProps={{
                         'aria-label': 'change date',

@@ -12,7 +12,7 @@ import CheckBox from '@material-ui/core/Checkbox';
 import { NextPage, NextPageContext } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import SunEditor, { buttonList } from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
 import Layout from '../../../components/Layout';
@@ -46,7 +46,13 @@ interface IFormInput {
 
 const StaffBlogPage: NextPage<IProps> = ({ id }) => {
   const router = useRouter();
-  const { register, handleSubmit, reset, errors } = useForm<IFormInput>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm<IFormInput>();
   const [isPublished, setIsPublished] = useState<boolean>(false);
   const [postContent, setPostContent] = useState<string>('');
   const [postQuery, { loading: queryLoading, data }] = usePostByIdLazyQuery();
@@ -114,37 +120,49 @@ const StaffBlogPage: NextPage<IProps> = ({ id }) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <TextField
-                    InputLabelProps={{ shrink: true }}
+                  <Controller
                     name="headline"
-                    label="Headline"
-                    placeholder="Insert headline here..."
-                    inputProps={{ maxLength: 110 }}
-                    inputRef={register({
-                      required: 'Headline required',
-                    })}
-                    error={!!errors.headline}
-                    helperText={errors.headline?.message}
-                  ></TextField>
+                    control={control}
+                    rules={{ required: 'Headline is required' }}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        InputLabelProps={{ shrink: true }}
+                        name="headline"
+                        label="Headline"
+                        placeholder="Insert headline here..."
+                        inputProps={{ maxLength: 110 }}
+                        error={!!errors.headline}
+                        helperText={errors.headline?.message}
+                      ></TextField>
+                    )}
+                  />
                 </FormControl>
               </Grid>
               <Grid item xs={6}>
                 <FormControl>
-                  <FormGroup>
-                    <FormControlLabel
-                      label="Published"
-                      control={
-                        <CheckBox
-                          name="published"
-                          checked={isPublished || false}
-                          onChange={(input) => {
-                            setIsPublished(input.target.checked);
-                          }}
-                          inputRef={register()}
-                        ></CheckBox>
-                      }
-                    ></FormControlLabel>
-                  </FormGroup>
+                  <Controller
+                    name="published"
+                    control={control}
+                    defaultValue={false}
+                    render={({ field }) => (
+                      <FormGroup>
+                        <FormControlLabel
+                          label="Published"
+                          control={
+                            <CheckBox
+                              {...field}
+                              checked={isPublished || false}
+                              onChange={(input) => {
+                                setIsPublished(input.target.checked);
+                              }}
+                            ></CheckBox>
+                          }
+                        ></FormControlLabel>
+                      </FormGroup>
+                    )}
+                  />
                 </FormControl>
               </Grid>
               <Grid item xs={6}>
@@ -178,7 +196,7 @@ const StaffBlogPage: NextPage<IProps> = ({ id }) => {
                 'subscript',
                 'superscript',
               ],
-              ['fontColor', 'hiliteColor', 'textStyle'],
+              ['fontColor', 'hiliteColor'],
               ['removeFormat'],
               ['outdent', 'indent'],
               ['align', 'horizontalRule', 'list', 'lineHeight'],

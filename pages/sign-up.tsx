@@ -138,14 +138,14 @@ const CreateUser: NextPage = () => {
                       name="password"
                       defaultValue=""
                       control={control}
-                      rules={`{
+                      rules={{
                         required: 'Password is required',
                         minLength: {
                           value: 10,
                           message:
                             'Password must be at least 10 chars long because security',
                         },
-                      }`}
+                      }}
                       render={({ field }) => (
                         <TextField
                           {...field}
