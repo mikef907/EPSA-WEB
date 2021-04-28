@@ -13,7 +13,7 @@ const StaffListItem: React.FC<IProps> = ({ staff }) => {
   const classes = useStyles();
 
   return (
-    <ListItem key={staff.id}>
+    <ListItem>
       <Avatar
         className={classes.medium}
         style={{ marginRight: '5px' }}

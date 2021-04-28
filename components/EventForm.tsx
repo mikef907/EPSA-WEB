@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import {
   useEventByIdLazyQuery,
   useUpdateEventMutation,
@@ -21,6 +21,10 @@ import dayjs from 'dayjs';
 import CheckBox from '@material-ui/core/Checkbox';
 import { useRouter } from 'next/router';
 import LanguagePicker from './LanguagePicker';
+import {
+  KeyboardDatePicker,
+  KeyboardDateTimePicker,
+} from '@material-ui/pickers';
 
 interface IProps {
   id?: number;
@@ -51,7 +55,13 @@ const EventForm: React.FC<IProps> = ({ id }) => {
 
   const [eventAdd] = useAddEventMutation();
 
-  const { register, handleSubmit, reset, errors } = useForm<IFormInput>();
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<IFormInput>();
 
   const onSubmit = async (input: IFormInput) => {
     if (event.id)
@@ -128,84 +138,125 @@ const EventForm: React.FC<IProps> = ({ id }) => {
               <Grid container direction="column" spacing={2}>
                 <Grid item>
                   <FormControl fullWidth>
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
+                    <Controller
                       name="name"
-                      label="Name"
-                      inputProps={{ maxLength: 50 }}
-                      inputRef={register({
-                        required: 'Event name required',
-                      })}
-                      error={!!errors.name}
-                      helperText={errors.name?.message}
-                    ></TextField>
+                      control={control}
+                      rules={{ required: 'Event name is required' }}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          InputLabelProps={{ shrink: true }}
+                          label="Name"
+                          error={!!errors.name}
+                          helperText={errors.name?.message}
+                        ></TextField>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item>
                   <FormControl fullWidth>
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
+                    <Controller
                       name="zipCode"
-                      label="Zip Code"
-                      inputRef={register({
-                        required: 'Zip code is required',
-                      })}
-                      error={!!errors.zipCode}
-                      helperText={errors.zipCode?.message}
-                    ></TextField>
+                      control={control}
+                      rules={{ required: 'Zip code is required' }}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          InputLabelProps={{ shrink: true }}
+                          label="Zip Code"
+                          error={!!errors.zipCode}
+                          helperText={errors.zipCode?.message}
+                        ></TextField>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item>
                   <FormControl fullWidth>
-                    <LanguagePicker
+                    <Controller
                       name="language"
-                      inputRef={register({
-                        required: 'Language is required',
-                      })}
-                      error={!!errors.language}
-                    ></LanguagePicker>
+                      control={control}
+                      defaultValue={'en'}
+                      rules={{ required: true }}
+                      render={({ field }) => <LanguagePicker field={field} />}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item>
                   <FormControl fullWidth>
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
+                    <Controller
                       name="description"
-                      label="Description"
-                      inputProps={{ maxLength: 50 }}
-                      inputRef={register()}
-                      error={!!errors.description}
-                      helperText={errors.description?.message}
-                    ></TextField>
+                      control={control}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          InputLabelProps={{ shrink: true }}
+                          label="Description"
+                          inputProps={{ maxLength: 50 }}
+                          error={!!errors.description}
+                          helperText={errors.description?.message}
+                        ></TextField>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item>
                   <FormControl fullWidth>
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
-                      type="datetime-local"
+                    <Controller
                       name="start"
-                      label="Start"
-                      inputRef={register({
-                        required: 'Start datetime is required',
-                      })}
-                      error={!!errors.start}
-                      helperText={errors.start?.message}
-                    ></TextField>
+                      control={control}
+                      defaultValue=""
+                      rules={{ required: 'Start date is required' }}
+                      render={({ field }) => (
+                        <KeyboardDateTimePicker
+                          inputRef={field.ref}
+                          minutesStep={15}
+                          ampm
+                          variant="inline"
+                          format="MM/DD/YYYY h:mm a"
+                          label="Start"
+                          disablePast
+                          value={field.value || null}
+                          onChange={field.onChange}
+                          KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                          }}
+                          error={!!errors.start}
+                          helperText={errors.start?.message}
+                        ></KeyboardDateTimePicker>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item>
                   <FormControl fullWidth>
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
-                      type="datetime-local"
+                    <Controller
                       name="end"
-                      label="End"
-                      inputProps={{ maxLength: 50 }}
-                      inputRef={register()}
-                      error={!!errors.end}
-                      helperText={errors.end?.message}
-                    ></TextField>
+                      control={control}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <KeyboardDateTimePicker
+                          inputRef={field.ref}
+                          minutesStep={15}
+                          ampm
+                          variant="inline"
+                          format="MM/DD/YYYY h:mm a"
+                          label="End"
+                          disablePast
+                          value={field.value || null}
+                          onChange={field.onChange}
+                          KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                          }}
+                          error={!!errors.end}
+                          helperText={errors.end?.message}
+                        ></KeyboardDateTimePicker>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item>
@@ -214,17 +265,23 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                       <FormControlLabel
                         label="All Day"
                         control={
-                          <CheckBox
-                            name="allDay"
-                            checked={event?.allDay || false}
-                            onChange={(input) => {
-                              setEvent({
-                                ...event,
-                                allDay: input.target.checked,
-                              });
-                            }}
-                            inputRef={register()}
-                          ></CheckBox>
+                          <Controller
+                            name="language"
+                            control={control}
+                            defaultValue={false}
+                            rules={{ required: true }}
+                            render={({ field }) => (
+                              <CheckBox
+                                {...field}
+                                onChange={(input) => {
+                                  setEvent({
+                                    ...event,
+                                    allDay: input.target.checked,
+                                  });
+                                }}
+                              />
+                            )}
+                          />
                         }
                       ></FormControlLabel>
                     </FormGroup>

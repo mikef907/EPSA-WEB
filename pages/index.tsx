@@ -13,6 +13,7 @@ import {
 } from '../generated/graphql';
 import { client } from './_app';
 import { CODES } from '../constants';
+import dayjs from 'dayjs';
 
 interface IProps {
   posts: PostQuery[];
@@ -76,8 +77,10 @@ export async function getStaticProps() {
         return post;
       }),
       events: events.events.map((event: any) => {
-        event.start = event.start.toLocaleString();
-        event.end = event.end?.toLocaleString() || null;
+        event.start = dayjs(event.start).format('dddd MMMM Do [at] h:mm a');
+        event.end = event.end
+          ? dayjs(event.end).format('dddd MMMM Do [at] h:mm a')
+          : null;
         event.language = CODES.filter(
           (_) => _.code === event.language.toLocaleLowerCase()
         )[0].name;

@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { NextPage } from 'next';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import Layout from '../../components/Layout';
 import Login from '../../components/Login';
 import { useResetPasswordMutation } from '../../generated/graphql';
@@ -19,7 +19,13 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
     confirmPassword: string;
   }
 
-  const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    control,
+    formState: { errors },
+  } = useForm<IFormInput>();
 
   const [resetPassword, { loading, error, data }] = useResetPasswordMutation();
 
@@ -64,35 +70,54 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
               <Grid spacing={1} container direction="row">
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <TextField
-                      label="Password"
+                    <Controller
                       name="password"
-                      type="password"
-                      inputProps={{ maxLength: 75 }}
-                      inputRef={register({
-                        required: 'Password required',
-                      })}
-                      error={!!errors.password}
-                      helperText={errors.password?.message}
-                    ></TextField>
+                      defaultValue=""
+                      control={control}
+                      rules={{
+                        required: 'Password is required',
+                        minLength: {
+                          value: 10,
+                          message:
+                            'Password must be at least 10 chars long because security',
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Password"
+                          type="password"
+                          inputProps={{ maxLength: 75 }}
+                          error={!!errors.password}
+                          helperText={errors.password?.message}
+                        ></TextField>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <TextField
+                    <Controller
                       name="confirmPassword"
-                      label="Confirm Password"
-                      type="password"
-                      inputProps={{ maxLength: 75 }}
-                      inputRef={register({
-                        required: 'Confirm password required',
+                      defaultValue=""
+                      control={control}
+                      rules={{
+                        required: 'Confirm password is required',
                         validate: (value) =>
                           value === getValues('password') ||
                           'Passwords do not match',
-                      })}
-                      error={!!errors.confirmPassword}
-                      helperText={errors.confirmPassword?.message}
-                    ></TextField>
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Confirm Password"
+                          type="password"
+                          inputProps={{ maxLength: 75 }}
+                          error={!!errors.confirmPassword}
+                          helperText={errors.confirmPassword?.message}
+                        ></TextField>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>

@@ -20,7 +20,7 @@ import { buildClientSchema } from 'graphql';
 import { withScalars } from 'apollo-link-scalars';
 import introspectionResults from '../graphql.schema.json';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import DayJsUtils from '@date-io/dayjs';
 import { createUploadLink } from 'apollo-upload-client';
 import { IUser } from '../interfaces/IUser';
 import { cyan, deepOrange, green, orange } from '@material-ui/core/colors';
@@ -144,7 +144,7 @@ const MyApp = (props: AppProps) => {
         <ThemeProvider theme={darkTheme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <MuiPickersUtilsProvider utils={DayJsUtils}>
             <ApolloProvider client={client}>
               <UserContext.Provider value={{ user, setUser, checkRoles }}>
                 {isMounted && <Component {...pageProps} />}

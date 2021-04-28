@@ -1,6 +1,6 @@
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import React, { useState, useEffect, useContext } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { UserContext } from '../context/UserContext';
 import {
   Avatar,
@@ -46,11 +46,12 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
 
   const [newStaff, setNewStaff] = useState<IUser | null>(null);
 
-  const { register, errors, reset, handleSubmit, setValue, watch } = useForm();
-
-  const [startDate, setStartDate] = useState<MaterialUiPickersDate>(null);
-
-  const startDateValue = watch('start') as Date;
+  const {
+    control,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const [description, setDescription] = useState<string>('');
 
@@ -118,10 +119,6 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
     if (id !== undefined) staffById({ variables: { id } });
   }, []);
 
-  useEffect(() => register('start', { required: 'Start date required' }), [
-    register,
-  ]);
-
   useEffect(() => {
     if (data?.staff) {
       setDescription(data.staff.description || '');
@@ -136,10 +133,6 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
       });
     }
   }, [data]);
-
-  useEffect(() => {
-    setStartDate(startDateValue || null);
-  }, [setStartDate, startDateValue]);
 
   useEffect(() => {
     if (!id && newStaff) {
@@ -197,71 +190,91 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
             )}
             <Grid item xs={12} md={6}>
               <FormControl fullWidth>
-                <TextField
-                  InputLabelProps={{ shrink: true }}
+                <Controller
                   name="firstname"
-                  label="First Name"
-                  inputProps={{ maxLength: 50 }}
-                  inputRef={register({
-                    required: 'First name required',
-                  })}
-                  error={!!errors.firstname}
-                  helperText={errors.firstname?.message}
-                ></TextField>
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: 'First name required' }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      InputLabelProps={{ shrink: true }}
+                      label="First Name"
+                      inputProps={{ maxLength: 50 }}
+                      error={!!errors.firstname}
+                      helperText={errors.firstname?.message}
+                    ></TextField>
+                  )}
+                />
               </FormControl>
             </Grid>
             <Grid item xs={12} md={6}>
               <FormControl fullWidth>
-                <TextField
-                  InputLabelProps={{ shrink: true }}
+                <Controller
                   name="lastname"
-                  label="Last Name"
-                  inputProps={{ maxLength: 50 }}
-                  inputRef={register({
-                    required: 'Last name required',
-                  })}
-                  error={!!errors.lastname}
-                  helperText={errors.lastname?.message}
-                ></TextField>
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: 'Last name required' }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      InputLabelProps={{ shrink: true }}
+                      label="Last Name"
+                      inputProps={{ maxLength: 50 }}
+                      error={!!errors.lastname}
+                      helperText={errors.lastname?.message}
+                    ></TextField>
+                  )}
+                />
               </FormControl>
             </Grid>
             <Grid item xs={12} md={6}>
               <FormControl fullWidth>
-                <TextField
-                  InputLabelProps={{ shrink: true }}
+                <Controller
                   name="email"
-                  label="Email"
-                  inputProps={{ maxLength: 50 }}
-                  inputRef={register({
-                    required: 'Email required',
-                  })}
-                  error={!!errors.email}
-                  helperText={errors.email?.message}
-                ></TextField>
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: 'Email required' }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      InputLabelProps={{ shrink: true }}
+                      label="Email"
+                      inputProps={{ maxLength: 50 }}
+                      error={!!errors.email}
+                      helperText={errors.email?.message}
+                    ></TextField>
+                  )}
+                />
               </FormControl>
             </Grid>
             <Grid item xs={12} md={6}>
               <FormControl fullWidth>
-                <KeyboardDatePicker
-                  disableToolbar
-                  autoOk
-                  variant="inline"
-                  format="MM/dd/yyyy"
-                  label="Start Date"
-                  value={startDate}
-                  onChange={(date) =>
-                    setValue('start', date, {
-                      shouldValidate: true,
-                      shouldDirty: true,
-                    })
-                  }
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
-                  disabled={!checkRoles(user, 'Admin')}
-                  error={!!errors.start}
-                  helperText={errors.start?.message}
-                ></KeyboardDatePicker>
+                <Controller
+                  name="start"
+                  control={control}
+                  defaultValue={new Date()}
+                  rules={{ required: 'Start required' }}
+                  render={({ field }) => (
+                    <KeyboardDatePicker
+                      inputRef={field.ref}
+                      disableToolbar
+                      autoOk
+                      variant="inline"
+                      format="MM/DD/YYYY"
+                      label="Start Date"
+                      defaultValue={new Date()}
+                      value={field.value}
+                      onChange={field.onChange}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                      disabled={!checkRoles(user, 'Admin')}
+                      error={!!errors.start}
+                      helperText={errors.start?.message}
+                    ></KeyboardDatePicker>
+                  )}
+                />
               </FormControl>
             </Grid>
             <Grid item xs={12}>

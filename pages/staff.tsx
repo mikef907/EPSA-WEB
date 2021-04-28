@@ -17,7 +17,7 @@ const StaffPage: NextPage<IProps> = ({ staff }) => {
         EPSA Staff
         <List>
           {staff.map((s) => (
-            <StaffListItem staff={s} />
+            <StaffListItem staff={s} key={s.id} />
           ))}
         </List>
       </Typography>

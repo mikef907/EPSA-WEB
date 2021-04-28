@@ -1,14 +1,13 @@
 import { InputLabel, NativeSelect } from '@material-ui/core';
 import React from 'react';
+import { UseFormRegister, ValidationRule } from 'react-hook-form';
 import { CODES } from '../constants';
 
 interface IProps {
-  name: string;
-  inputRef: any;
-  error: boolean;
+  field: any;
 }
 
-const LanguagePicker: React.FC<IProps> = ({ name, inputRef, error }) => {
+const LanguagePicker: React.FC<IProps> = ({ field }) => {
   return (
     <>
       <InputLabel htmlFor="language-label" shrink={true}>
@@ -18,9 +17,7 @@ const LanguagePicker: React.FC<IProps> = ({ name, inputRef, error }) => {
         inputProps={{
           id: 'language-label',
         }}
-        name={name}
-        inputRef={inputRef}
-        error={error}
+        {...field}
       >
         {CODES.sort((a, b) => (a.name > b.name ? 1 : -1)).map((_) => (
           <option key={_.code} value={_.code}>

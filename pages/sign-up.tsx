@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import Layout from '../components/Layout';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { parseUserFromToken, UserContext } from '../context/UserContext';
 import router from 'next/router';
 import { useAddUserMutation } from '../generated/graphql';
@@ -28,7 +28,13 @@ const CreateUser: NextPage = () => {
 
   const [addUser, { loading, error }] = useAddUserMutation();
 
-  const { register, handleSubmit, getValues, errors } = useForm<IFormInput>();
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    control,
+    formState: { errors },
+  } = useForm<IFormInput>();
 
   const onSubmit = async (input: IFormInput) => {
     const result = await addUser({
@@ -70,72 +76,112 @@ const CreateUser: NextPage = () => {
               <Grid spacing={1} container direction="row">
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <TextField
+                    <Controller
                       name="firstname"
-                      label="First Name"
-                      inputProps={{ maxLength: 50 }}
-                      inputRef={register({ required: 'First name required' })}
-                      error={!!errors.firstname}
-                      helperText={errors.firstname?.message}
-                    ></TextField>
+                      defaultValue=""
+                      control={control}
+                      rules={{ required: 'First name is required' }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="First Name"
+                          inputProps={{ maxLength: 50 }}
+                          error={!!errors.firstname}
+                          helperText={errors.firstname?.message}
+                        ></TextField>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <TextField
-                      label="Last Name"
+                    <Controller
                       name="lastname"
-                      inputProps={{ maxLength: 50 }}
-                      inputRef={register({ required: 'Last name required' })}
-                      error={!!errors.lastname}
-                      helperText={errors.lastname?.message}
-                    ></TextField>
+                      defaultValue=""
+                      control={control}
+                      rules={{ required: 'Last name is required' }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Last Name"
+                          inputProps={{ maxLength: 50 }}
+                          error={!!errors.lastname}
+                          helperText={errors.lastname?.message}
+                        ></TextField>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <TextField
-                      label="Email"
+                    <Controller
                       name="email"
-                      type="email"
-                      inputProps={{ maxLength: 75 }}
-                      inputRef={register({ required: 'Email required' })}
-                      error={!!errors.email}
-                      helperText={errors.email?.message}
-                    ></TextField>
+                      defaultValue=""
+                      control={control}
+                      rules={{ required: 'Email is required' }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Email"
+                          type="email"
+                          inputProps={{ maxLength: 75 }}
+                          error={!!errors.email}
+                          helperText={errors.email?.message}
+                        ></TextField>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <TextField
-                      label="Password"
+                    <Controller
                       name="password"
-                      type="password"
-                      inputProps={{ maxLength: 75 }}
-                      inputRef={register({
-                        required: 'Password required',
-                      })}
-                      error={!!errors.password}
-                      helperText={errors.password?.message}
-                    ></TextField>
+                      defaultValue=""
+                      control={control}
+                      rules={`{
+                        required: 'Password is required',
+                        minLength: {
+                          value: 10,
+                          message:
+                            'Password must be at least 10 chars long because security',
+                        },
+                      }`}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Password"
+                          type="password"
+                          inputProps={{ maxLength: 75 }}
+                          error={!!errors.password}
+                          helperText={errors.password?.message}
+                        ></TextField>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <TextField
+                    <Controller
                       name="confirmPassword"
-                      label="Confirm Password"
-                      type="password"
-                      inputProps={{ maxLength: 75 }}
-                      inputRef={register({
-                        required: 'Confirm password required',
+                      defaultValue=""
+                      control={control}
+                      rules={{
+                        required: 'Confirm password is required',
                         validate: (value) =>
                           value === getValues('password') ||
                           'Passwords do not match',
-                      })}
-                      error={!!errors.confirmPassword}
-                      helperText={errors.confirmPassword?.message}
-                    ></TextField>
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label="Confirm Password"
+                          type="password"
+                          inputProps={{ maxLength: 75 }}
+                          error={!!errors.confirmPassword}
+                          helperText={errors.confirmPassword?.message}
+                        ></TextField>
+                      )}
+                    />
                   </FormControl>
                 </Grid>
                 <Grid item md={4}>

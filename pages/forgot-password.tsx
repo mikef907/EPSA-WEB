@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import { NextPage } from 'next';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import Layout from '../components/Layout';
 import { useForgotPasswordMutation } from '../generated/graphql';
 
@@ -22,7 +22,12 @@ const ForgotPassword: NextPage = () => {
     { loading, error, data },
   ] = useForgotPasswordMutation();
 
-  const { register, handleSubmit, errors } = useForm<IFormInput>();
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<IFormInput>();
 
   const onSubmit = async (data: IFormInput) => {
     await forgotPassword({
@@ -52,15 +57,22 @@ const ForgotPassword: NextPage = () => {
         >
           <Grid item>
             <FormControl>
-              <TextField
+              <Controller
                 name="email"
-                type="email"
-                label="Email"
-                inputProps={{ maxLength: 75 }}
-                inputRef={register({ required: 'Email required' })}
-                error={!!errors.email}
-                helperText="We will send you a link to reset your password"
-              ></TextField>
+                control={control}
+                defaultValue=""
+                rules={{ required: 'Email is required' }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="email"
+                    label="Email"
+                    inputProps={{ maxLength: 75 }}
+                    error={!!errors.email}
+                    helperText="We will send you a link to reset your password"
+                  ></TextField>
+                )}
+              />
             </FormControl>
           </Grid>
           <Grid item>
