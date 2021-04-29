@@ -1,4 +1,3 @@
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import React, { useState, useEffect, useContext } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { UserContext } from '../context/UserContext';
@@ -9,7 +8,6 @@ import {
   Grid,
   InputLabel,
   TextareaAutosize,
-  TextField,
   Typography,
 } from '@material-ui/core';
 import {
@@ -24,6 +22,7 @@ import UsersPicker from './UsersPicker';
 import { useRouter } from 'next/router';
 import { API, IMGKEY } from '../constants';
 import { useStyles } from '../hooks/styles';
+import InputFormControl from './InputFormControl';
 
 interface IProps {
   id?: number;
@@ -53,8 +52,6 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
     formState: { errors },
   } = useForm();
 
-  const [description, setDescription] = useState<string>('');
-
   const [staffById, { data, loading }] = useStaffByIdLazyQuery();
 
   const [updateStaff] = useUpdateStaffMutation();
@@ -68,7 +65,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
           staff: {
             id: data.staff.id,
             userId: data.staff.userId,
-            description,
+            description: input.description,
             start: input.start,
             user: {
               first_name: input.firstname,
@@ -84,6 +81,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
           staff: {
             userId: newStaff.id,
             start: input.start,
+            description: input.description,
             user: {
               first_name: input.firstname,
               last_name: input.lastname,
@@ -121,8 +119,6 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
 
   useEffect(() => {
     if (data?.staff) {
-      setDescription(data.staff.description || '');
-
       reset({
         firstname: data.staff.user.first_name,
         lastname: data.staff.user.last_name,
@@ -189,71 +185,38 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
               </Grid>
             )}
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <Controller
-                  name="firstname"
-                  control={control}
-                  defaultValue=""
-                  rules={{ required: 'First name required' }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      InputLabelProps={{ shrink: true }}
-                      label="First Name"
-                      inputProps={{ maxLength: 50 }}
-                      error={!!errors.firstname}
-                      helperText={errors.firstname?.message}
-                    ></TextField>
-                  )}
-                />
-              </FormControl>
+              <InputFormControl
+                control={control}
+                name="firstname"
+                label="First Name"
+                rules={{ required: 'First name is required' }}
+                inputProps={{ maxLength: 50 }}
+              />
             </Grid>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <Controller
-                  name="lastname"
-                  control={control}
-                  defaultValue=""
-                  rules={{ required: 'Last name required' }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      InputLabelProps={{ shrink: true }}
-                      label="Last Name"
-                      inputProps={{ maxLength: 50 }}
-                      error={!!errors.lastname}
-                      helperText={errors.lastname?.message}
-                    ></TextField>
-                  )}
-                />
-              </FormControl>
+              <InputFormControl
+                control={control}
+                name="lastname"
+                label="Last Name"
+                rules={{ required: 'Last name is required' }}
+                inputProps={{ maxLength: 50 }}
+              />
             </Grid>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <Controller
-                  name="email"
-                  control={control}
-                  defaultValue=""
-                  rules={{ required: 'Email required' }}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      InputLabelProps={{ shrink: true }}
-                      label="Email"
-                      inputProps={{ maxLength: 50 }}
-                      error={!!errors.email}
-                      helperText={errors.email?.message}
-                    ></TextField>
-                  )}
-                />
-              </FormControl>
+              <InputFormControl
+                control={control}
+                name="email"
+                label="Email"
+                rules={{ required: 'Email is required' }}
+                inputProps={{ maxLength: 50 }}
+              />
             </Grid>
             <Grid item xs={12} md={6}>
               <FormControl fullWidth>
                 <Controller
                   name="start"
                   control={control}
-                  defaultValue={new Date()}
+                  defaultValue={null}
                   rules={{ required: 'Start required' }}
                   render={({ field }) => (
                     <KeyboardDatePicker
@@ -263,8 +226,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
                       variant="inline"
                       format="MM/DD/YYYY"
                       label="Start Date"
-                      defaultValue={new Date()}
-                      value={field.value || new Date()}
+                      value={field.value}
                       onChange={field.onChange}
                       KeyboardButtonProps={{
                         'aria-label': 'change date',
@@ -280,15 +242,20 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
             <Grid item xs={12}>
               <Typography variant="caption">Description</Typography>
               <FormControl fullWidth>
-                <TextareaAutosize
+                <Controller
                   name="description"
-                  rowsMin="4"
-                  maxLength={255}
-                  value={description}
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
-                ></TextareaAutosize>
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextareaAutosize
+                      {...field}
+                      rowsMin="4"
+                      maxLength={255}
+                      value={field.value || ''}
+                      onChange={field.onChange}
+                    ></TextareaAutosize>
+                  )}
+                />
               </FormControl>
             </Grid>
             <Grid item>

@@ -1,14 +1,8 @@
-import {
-  Button,
-  CircularProgress,
-  FormControl,
-  Grid,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Button, CircularProgress, Grid, Typography } from '@material-ui/core';
 import { NextPage } from 'next';
 import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import InputFormControl from '../../components/InputFormControl';
 import Layout from '../../components/Layout';
 import Login from '../../components/Login';
 import { useResetPasswordMutation } from '../../generated/graphql';
@@ -19,13 +13,7 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
     confirmPassword: string;
   }
 
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    control,
-    formState: { errors },
-  } = useForm<IFormInput>();
+  const { handleSubmit, getValues, control } = useForm<IFormInput>();
 
   const [resetPassword, { loading, error, data }] = useResetPasswordMutation();
 
@@ -69,56 +57,38 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
             <Grid item md={4}>
               <Grid spacing={1} container direction="row">
                 <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <Controller
-                      name="password"
-                      defaultValue=""
-                      control={control}
-                      rules={{
-                        required: 'Password is required',
-                        minLength: {
-                          value: 10,
-                          message:
-                            'Password must be at least 10 chars long because security',
-                        },
-                      }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          label="Password"
-                          type="password"
-                          inputProps={{ maxLength: 75 }}
-                          error={!!errors.password}
-                          helperText={errors.password?.message}
-                        ></TextField>
-                      )}
-                    />
-                  </FormControl>
+                  <InputFormControl
+                    name="password"
+                    label="Password"
+                    type="password"
+                    control={control}
+                    rules={{
+                      required: 'Password is required',
+                      minLength: {
+                        value: 10,
+                        message:
+                          'Password must be at least 10 chars long because security',
+                      },
+                    }}
+                    inputProps={{ maxLength: 75 }}
+                    inputLabelProps={null}
+                  />
                 </Grid>
                 <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <Controller
-                      name="confirmPassword"
-                      defaultValue=""
-                      control={control}
-                      rules={{
-                        required: 'Confirm password is required',
-                        validate: (value) =>
-                          value === getValues('password') ||
-                          'Passwords do not match',
-                      }}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          label="Confirm Password"
-                          type="password"
-                          inputProps={{ maxLength: 75 }}
-                          error={!!errors.confirmPassword}
-                          helperText={errors.confirmPassword?.message}
-                        ></TextField>
-                      )}
-                    />
-                  </FormControl>
+                  <InputFormControl
+                    name="confirmPassword"
+                    label="Password Confirm"
+                    type="password"
+                    control={control}
+                    rules={{
+                      required: 'Confirm password is required',
+                      validate: (value: any) =>
+                        value === getValues('password') ||
+                        'Passwords do not match',
+                    }}
+                    inputProps={{ maxLength: 75 }}
+                    inputLabelProps={null}
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <Button

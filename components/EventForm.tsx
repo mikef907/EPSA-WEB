@@ -4,8 +4,6 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
-  Input,
-  TextField,
   Typography,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
@@ -21,10 +19,8 @@ import dayjs from 'dayjs';
 import CheckBox from '@material-ui/core/Checkbox';
 import { useRouter } from 'next/router';
 import LanguagePicker from './LanguagePicker';
-import {
-  KeyboardDatePicker,
-  KeyboardDateTimePicker,
-} from '@material-ui/pickers';
+import { KeyboardDateTimePicker } from '@material-ui/pickers';
+import InputFormControl from './InputFormControl';
 
 interface IProps {
   id?: number;
@@ -56,7 +52,6 @@ const EventForm: React.FC<IProps> = ({ id }) => {
   const [eventAdd] = useAddEventMutation();
 
   const {
-    register,
     handleSubmit,
     control,
     reset,
@@ -137,42 +132,23 @@ const EventForm: React.FC<IProps> = ({ id }) => {
             <Grid item>
               <Grid container direction="column" spacing={2}>
                 <Grid item>
-                  <FormControl fullWidth>
-                    <Controller
-                      name="name"
-                      control={control}
-                      rules={{ required: 'Event name is required' }}
-                      defaultValue=""
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          InputLabelProps={{ shrink: true }}
-                          label="Name"
-                          error={!!errors.name}
-                          helperText={errors.name?.message}
-                        ></TextField>
-                      )}
-                    />
-                  </FormControl>
+                  <InputFormControl
+                    name="name"
+                    label="Name"
+                    control={control}
+                    rules={{ required: 'Event name is required' }}
+                    inputProps={{ maxLength: 255 }}
+                  />
                 </Grid>
                 <Grid item>
-                  <FormControl fullWidth>
-                    <Controller
-                      name="zipCode"
-                      control={control}
-                      rules={{ required: 'Zip code is required' }}
-                      defaultValue=""
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          InputLabelProps={{ shrink: true }}
-                          label="Zip Code"
-                          error={!!errors.zipCode}
-                          helperText={errors.zipCode?.message}
-                        ></TextField>
-                      )}
-                    />
-                  </FormControl>
+                  <InputFormControl
+                    name="zipCode"
+                    label="Zip Code"
+                    control={control}
+                    rules={{ required: 'Zip code is required' }}
+                    type="number"
+                    inputProps={{ max: 99999 }}
+                  />
                 </Grid>
                 <Grid item>
                   <FormControl fullWidth>
@@ -186,23 +162,13 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                   </FormControl>
                 </Grid>
                 <Grid item>
-                  <FormControl fullWidth>
-                    <Controller
-                      name="description"
-                      control={control}
-                      defaultValue=""
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          InputLabelProps={{ shrink: true }}
-                          label="Description"
-                          inputProps={{ maxLength: 50 }}
-                          error={!!errors.description}
-                          helperText={errors.description?.message}
-                        ></TextField>
-                      )}
-                    />
-                  </FormControl>
+                  <InputFormControl
+                    name="description"
+                    label="Description"
+                    control={control}
+                    rules={{ required: 'Description is required' }}
+                    inputProps={{ maxLength: 255 }}
+                  />
                 </Grid>
                 <Grid item>
                   <FormControl fullWidth>
