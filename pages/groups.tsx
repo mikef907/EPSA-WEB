@@ -1,5 +1,8 @@
 import { Typography } from '@material-ui/core';
+import dayjs from 'dayjs';
 import { NextPage } from 'next';
+import React from 'react';
+import GroupItem from '../components/GroupItem';
 import Layout from '../components/Layout';
 import { AllGroupsDocument, GroupQuery } from '../generated/graphql';
 import { client } from './_app';
@@ -14,7 +17,9 @@ const GroupsPage: NextPage<IProps> = ({ groups }) => {
       <Typography component="h1" variant="h4" style={{ textAlign: 'center' }}>
         Groups
       </Typography>
-      {JSON.stringify(groups)}
+      {groups.map((group) => (
+        <GroupItem key={group.id} group={group}></GroupItem>
+      ))}
     </Layout>
   );
 };
@@ -29,7 +34,7 @@ export async function getStaticProps() {
   return {
     props: {
       groups: data.groups.map((group: any) => {
-        group.created_at = group.created_at.toLocaleString();
+        group.created_at = dayjs(group.created_at).format('MMMM Do YYYY');
         return group;
       }),
     },

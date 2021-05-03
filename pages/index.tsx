@@ -12,8 +12,8 @@ import {
   PostQuery,
 } from '../generated/graphql';
 import { client } from './_app';
-import { CODES } from '../constants';
 import dayjs from 'dayjs';
+import { useLanguageCodeConverter } from '../hooks/language';
 
 interface IProps {
   posts: PostQuery[];
@@ -81,9 +81,9 @@ export async function getStaticProps() {
         event.end = event.end
           ? dayjs(event.end).format('dddd MMMM Do [at] h:mm a')
           : null;
-        event.language = CODES.filter(
-          (_) => _.code === event.language.toLocaleLowerCase()
-        )[0].name;
+        event.language = useLanguageCodeConverter(
+          event.language.toLocaleLowerCase()
+        );
         return event;
       }),
     },
