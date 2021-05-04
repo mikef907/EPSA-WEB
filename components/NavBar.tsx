@@ -67,10 +67,12 @@ const NavBar: React.FC = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography style={{ flexGrow: 1 }} variant="h6">
-            {(windowSize.width > 600 && 'Early Parenting Support Alaska') ||
-              'EPSA'}
-          </Typography>
+          <Link style={{ flexGrow: 1 }} color="textPrimary" href="/">
+            <Typography variant="h6">
+              {(windowSize.width > 600 && 'Early Parenting Support Alaska') ||
+                'EPSA'}
+            </Typography>
+          </Link>
           {user ? (
             <>
               <Box marginRight="10px">

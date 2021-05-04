@@ -1,7 +1,7 @@
 import NextLink from 'next/link';
 import { Link as MatLink } from '@material-ui/core';
 import { Variant } from '@material-ui/core/styles/createTypography';
-import { Children } from 'react';
+import { CSSProperties } from '@material-ui/styles';
 
 interface IProps {
   href: string;
@@ -16,6 +16,7 @@ interface IProps {
     | undefined;
   variant?: 'inherit' | Variant | undefined;
   as?: string;
+  style?: CSSProperties | undefined;
 }
 
 const Link: React.FC<IProps> = ({
@@ -24,10 +25,11 @@ const Link: React.FC<IProps> = ({
   variant = 'inherit',
   as,
   children,
+  style,
 }) => {
   return (
     <NextLink href={href} as={as} passHref>
-      <MatLink color={color} variant={variant}>
+      <MatLink style={style} color={color} variant={variant}>
         {children}
       </MatLink>
     </NextLink>

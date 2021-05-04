@@ -81,7 +81,7 @@ const StaffBlogPage: NextPage<IProps> = ({ id }) => {
       await updatePost({
         variables: {
           post: {
-            id,
+            id: id.toString(),
             content: postContent,
             published: input.published ? new Date() : null,
             headline: input.headline,

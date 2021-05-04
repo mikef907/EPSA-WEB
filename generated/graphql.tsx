@@ -47,6 +47,7 @@ export type EventQuery = IEvent & IEventInput & {
 };
 
 export type GroupInput = {
+  id: Scalars['ID'];
   facilitatorId: Scalars['Float'];
   city: Scalars['String'];
   zipCode: Scalars['Float'];
@@ -60,6 +61,7 @@ export type GroupInput = {
 
 export type GroupQuery = IGroup & IGroupInput & {
   __typename?: 'GroupQuery';
+  id: Scalars['ID'];
   facilitatorId: Scalars['Float'];
   city: Scalars['String'];
   zipCode: Scalars['Float'];
@@ -69,7 +71,6 @@ export type GroupQuery = IGroup & IGroupInput & {
   start: Scalars['DateTime'];
   end: Scalars['DateTime'];
   limit: Scalars['Int'];
-  id: Scalars['ID'];
   facilitator?: Maybe<StaffQuery>;
   users?: Maybe<Array<UserQuery>>;
   created_at: Scalars['DateTime'];
@@ -103,6 +104,7 @@ export type IEventInput = {
 };
 
 export type IGroup = {
+  id: Scalars['ID'];
   facilitatorId: Scalars['Float'];
   city: Scalars['String'];
   zipCode: Scalars['Float'];
@@ -112,7 +114,6 @@ export type IGroup = {
   start: Scalars['DateTime'];
   end: Scalars['DateTime'];
   limit: Scalars['Int'];
-  id: Scalars['ID'];
   facilitator?: Maybe<StaffQuery>;
   users?: Maybe<Array<UserQuery>>;
   created_at: Scalars['DateTime'];
@@ -120,6 +121,7 @@ export type IGroup = {
 };
 
 export type IGroupInput = {
+  id: Scalars['ID'];
   facilitatorId: Scalars['Float'];
   city: Scalars['String'];
   zipCode: Scalars['Float'];
@@ -132,7 +134,7 @@ export type IGroupInput = {
 };
 
 export type IPost = {
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
   authorId?: Maybe<Scalars['Float']>;
   published?: Maybe<Scalars['DateTime']>;
   headline: Scalars['String'];
@@ -144,7 +146,7 @@ export type IPost = {
 };
 
 export type IPostInput = {
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
   authorId?: Maybe<Scalars['Float']>;
   published?: Maybe<Scalars['DateTime']>;
   headline: Scalars['String'];
@@ -177,16 +179,17 @@ export type IStaffInput = {
 };
 
 export type IUser = {
+  id: Scalars['ID'];
   first_name: Scalars['String'];
   last_name: Scalars['String'];
   email: Scalars['String'];
-  id: Scalars['ID'];
   roles: Array<RoleQuery>;
   created_at: Scalars['DateTime'];
   updated_at: Scalars['DateTime'];
 };
 
 export type IUserInput = {
+  id: Scalars['ID'];
   first_name: Scalars['String'];
   last_name: Scalars['String'];
   email: Scalars['String'];
@@ -302,6 +305,7 @@ export type MutationDeleteGroupArgs = {
 };
 
 export type NewUserInput = {
+  id?: Maybe<Scalars['ID']>;
   first_name: Scalars['String'];
   last_name: Scalars['String'];
   email: Scalars['String'];
@@ -319,7 +323,7 @@ export type PostInput = {
 
 export type PostQuery = IPost & IPostInput & {
   __typename?: 'PostQuery';
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID'];
   authorId?: Maybe<Scalars['Float']>;
   published?: Maybe<Scalars['DateTime']>;
   headline: Scalars['String'];
@@ -401,7 +405,7 @@ export type RoleQuery = IRole & {
 };
 
 export type StaffInput = {
-  id: Scalars['ID'];
+  id?: Maybe<Scalars['ID']>;
   userId: Scalars['Float'];
   start?: Maybe<Scalars['DateTime']>;
   description?: Maybe<Scalars['String']>;
@@ -430,6 +434,7 @@ export type StaffUpdate = {
 
 
 export type UserInput = {
+  id?: Maybe<Scalars['ID']>;
   first_name: Scalars['String'];
   last_name: Scalars['String'];
   email: Scalars['String'];
@@ -437,10 +442,10 @@ export type UserInput = {
 
 export type UserQuery = IUser & IUserInput & {
   __typename?: 'UserQuery';
+  id: Scalars['ID'];
   first_name: Scalars['String'];
   last_name: Scalars['String'];
   email: Scalars['String'];
-  id: Scalars['ID'];
   roles: Array<RoleQuery>;
   created_at: Scalars['DateTime'];
   updated_at: Scalars['DateTime'];

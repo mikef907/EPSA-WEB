@@ -63,7 +63,7 @@ const EventForm: React.FC<IProps> = ({ id }) => {
       await eventUpdate({
         variables: {
           event: {
-            id: parseInt(event.id),
+            id: event.id,
             name: input.name,
             description: input.description || '',
             start: input.start,
