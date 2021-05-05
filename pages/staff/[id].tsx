@@ -16,11 +16,11 @@ interface IProps {
 
 const StaffPage: NextPage<IProps> = ({ id }) => {
   return (
-    <Protect roles={['Admin', 'Staff']}>
-      <Layout>
+    <Layout>
+      <Protect roles={['Admin', 'Staff']}>
         <StaffForm id={id}></StaffForm>
-      </Layout>
-    </Protect>
+      </Protect>
+    </Layout>
   );
 };
 

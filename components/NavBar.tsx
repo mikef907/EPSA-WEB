@@ -153,7 +153,12 @@ const NavBar: React.FC = () => {
               </ListItem>
               <ListItem>
                 <Link href="/staff/posts" variant="button">
-                  Blog Posts
+                  Posts
+                </Link>
+              </ListItem>
+              <ListItem>
+                <Link href="/staff/groups" variant="button">
+                  Groups
                 </Link>
               </ListItem>
               <ListItem>

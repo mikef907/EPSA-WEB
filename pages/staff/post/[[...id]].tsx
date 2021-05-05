@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   FormControl,
   FormControlLabel,
@@ -13,9 +12,10 @@ import { NextPage, NextPageContext } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import SunEditor, { buttonList } from 'suneditor-react';
+import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
 import Layout from '../../../components/Layout';
+import Protect from '../../../components/Protect';
 import {
   useAddPostMutation,
   usePostByIdLazyQuery,
@@ -38,16 +38,9 @@ interface IFormInput {
   content: string;
 }
 
-// interface IPost {
-//   conent: string;
-//   headline: string;
-//   published: Date;
-// }
-
 const StaffBlogPage: NextPage<IProps> = ({ id }) => {
   const router = useRouter();
   const {
-    register,
     handleSubmit,
     reset,
     control,
@@ -105,108 +98,110 @@ const StaffBlogPage: NextPage<IProps> = ({ id }) => {
 
   return (
     <Layout>
-      <Typography
-        variant="h4"
-        component="h1"
-        style={{ textAlign: 'center' }}
-        gutterBottom
-      >
-        EPSA Blog
-      </Typography>
+      <Protect roles={['Admin', 'Staff']}>
+        <Typography
+          variant="h4"
+          component="h1"
+          style={{ textAlign: 'center' }}
+          gutterBottom
+        >
+          EPSA Blog
+        </Typography>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container justify="center" style={{ marginBottom: '10px' }}>
-          <Grid item md={6}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <Controller
-                    name="headline"
-                    control={control}
-                    rules={{ required: 'Headline is required' }}
-                    defaultValue=""
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        InputLabelProps={{ shrink: true }}
-                        name="headline"
-                        label="Headline"
-                        placeholder="Insert headline here..."
-                        inputProps={{ maxLength: 110 }}
-                        error={!!errors.headline}
-                        helperText={errors.headline?.message}
-                      ></TextField>
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={6}>
-                <FormControl>
-                  <Controller
-                    name="published"
-                    control={control}
-                    defaultValue={false}
-                    render={({ field }) => (
-                      <FormGroup>
-                        <FormControlLabel
-                          label="Published"
-                          control={
-                            <CheckBox
-                              {...field}
-                              checked={isPublished || false}
-                              onChange={(input) => {
-                                setIsPublished(input.target.checked);
-                              }}
-                            ></CheckBox>
-                          }
-                        ></FormControlLabel>
-                      </FormGroup>
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={6}>
-                <Button
-                  type="submit"
-                  style={{ alignSelf: 'flex-end', float: 'right' }}
-                  disabled={isLoading()}
-                  variant="contained"
-                  color="primary"
-                >
-                  Save
-                </Button>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid container justify="center" style={{ marginBottom: '10px' }}>
+            <Grid item md={6}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <Controller
+                      name="headline"
+                      control={control}
+                      rules={{ required: 'Headline is required' }}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          InputLabelProps={{ shrink: true }}
+                          name="headline"
+                          label="Headline"
+                          placeholder="Insert headline here..."
+                          inputProps={{ maxLength: 110 }}
+                          error={!!errors.headline}
+                          helperText={errors.headline?.message}
+                        ></TextField>
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6}>
+                  <FormControl>
+                    <Controller
+                      name="published"
+                      control={control}
+                      defaultValue={false}
+                      render={({ field }) => (
+                        <FormGroup>
+                          <FormControlLabel
+                            label="Published"
+                            control={
+                              <CheckBox
+                                {...field}
+                                checked={isPublished || false}
+                                onChange={(input) => {
+                                  setIsPublished(input.target.checked);
+                                }}
+                              ></CheckBox>
+                            }
+                          ></FormControlLabel>
+                        </FormGroup>
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6}>
+                  <Button
+                    type="submit"
+                    style={{ alignSelf: 'flex-end', float: 'right' }}
+                    disabled={isLoading()}
+                    variant="contained"
+                    color="primary"
+                  >
+                    Save
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <SunEditor
-          height="200px"
-          setContents={data?.post.content}
-          onChange={(e) => setPostContent(e)}
-          setOptions={{
-            buttonList: [
-              ['undo', 'redo'],
-              ['font', 'fontSize', 'formatBlock'],
-              ['paragraphStyle', 'blockquote'],
-              [
-                'bold',
-                'underline',
-                'italic',
-                'strike',
-                'subscript',
-                'superscript',
+          <SunEditor
+            height="200px"
+            setContents={data?.post.content}
+            onChange={(e) => setPostContent(e)}
+            setOptions={{
+              buttonList: [
+                ['undo', 'redo'],
+                ['font', 'fontSize', 'formatBlock'],
+                ['paragraphStyle', 'blockquote'],
+                [
+                  'bold',
+                  'underline',
+                  'italic',
+                  'strike',
+                  'subscript',
+                  'superscript',
+                ],
+                ['fontColor', 'hiliteColor'],
+                ['removeFormat'],
+                ['outdent', 'indent'],
+                ['align', 'horizontalRule', 'list', 'lineHeight'],
+                ['table', 'link', 'image'],
+                ['fullScreen', 'showBlocks', 'codeView'],
+                ['preview'],
               ],
-              ['fontColor', 'hiliteColor'],
-              ['removeFormat'],
-              ['outdent', 'indent'],
-              ['align', 'horizontalRule', 'list', 'lineHeight'],
-              ['table', 'link', 'image'],
-              ['fullScreen', 'showBlocks', 'codeView'],
-              ['preview'],
-            ],
-          }}
-        ></SunEditor>
-      </form>
+            }}
+          ></SunEditor>
+        </form>
+      </Protect>
     </Layout>
   );
 };

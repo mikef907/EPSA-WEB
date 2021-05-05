@@ -35,6 +35,7 @@ const InputFormControl: React.FC<IProps> = ({
         render={({ field, fieldState: { error } }) => (
           <TextField
             {...field}
+            value={field.value || defaultValue}
             label={label}
             type={type}
             InputLabelProps={inputLabelProps}

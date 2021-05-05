@@ -47,7 +47,7 @@ export type EventQuery = IEvent & IEventInput & {
 };
 
 export type GroupInput = {
-  id: Scalars['ID'];
+  id?: Maybe<Scalars['ID']>;
   facilitatorId: Scalars['Float'];
   city: Scalars['String'];
   zipCode: Scalars['Float'];
@@ -64,7 +64,7 @@ export type GroupQuery = IGroup & IGroupInput & {
   id: Scalars['ID'];
   facilitatorId: Scalars['Float'];
   city: Scalars['String'];
-  zipCode: Scalars['Float'];
+  zipCode: Scalars['Int'];
   language: Scalars['String'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -107,7 +107,7 @@ export type IGroup = {
   id: Scalars['ID'];
   facilitatorId: Scalars['Float'];
   city: Scalars['String'];
-  zipCode: Scalars['Float'];
+  zipCode: Scalars['Int'];
   language: Scalars['String'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -124,7 +124,7 @@ export type IGroupInput = {
   id: Scalars['ID'];
   facilitatorId: Scalars['Float'];
   city: Scalars['String'];
-  zipCode: Scalars['Float'];
+  zipCode: Scalars['Int'];
   language: Scalars['String'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -211,9 +211,9 @@ export type Mutation = {
   addPost: Scalars['Float'];
   updatePost: Scalars['Boolean'];
   removePost: Scalars['Boolean'];
-  createGroup: GroupQuery;
+  createGroup: Scalars['Float'];
   updateGroup: Scalars['Boolean'];
-  deleteGroup: Scalars['Boolean'];
+  removeGroup: Scalars['Boolean'];
 };
 
 
@@ -300,7 +300,7 @@ export type MutationUpdateGroupArgs = {
 };
 
 
-export type MutationDeleteGroupArgs = {
+export type MutationRemoveGroupArgs = {
   id: Scalars['Float'];
 };
 
@@ -482,6 +482,37 @@ export type UpdateEventMutation = (
   ) }
 );
 
+export type RemoveGroupMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type RemoveGroupMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'removeGroup'>
+);
+
+export type UpdateGroupMutationVariables = Exact<{
+  group: GroupInput;
+  id: Scalars['Float'];
+}>;
+
+
+export type UpdateGroupMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateGroup'>
+);
+
+export type CreateGroupMutationVariables = Exact<{
+  group: GroupInput;
+}>;
+
+
+export type CreateGroupMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'createGroup'>
+);
+
 export type AddPostMutationVariables = Exact<{
   post: PostInput;
 }>;
@@ -631,7 +662,7 @@ export type AllGroupsQuery = (
   { __typename?: 'Query' }
   & { groups: Array<(
     { __typename?: 'GroupQuery' }
-    & Pick<GroupQuery, 'id' | 'facilitatorId' | 'zipCode' | 'language' | 'city' | 'created_at'>
+    & Pick<GroupQuery, 'id' | 'facilitatorId' | 'zipCode' | 'language' | 'city' | 'start' | 'end' | 'limit' | 'title' | 'description'>
     & { facilitator?: Maybe<(
       { __typename?: 'StaffQuery' }
       & Pick<StaffQuery, 'id' | 'img'>
@@ -652,7 +683,7 @@ export type GroupByIdQuery = (
   { __typename?: 'Query' }
   & { group: (
     { __typename?: 'GroupQuery' }
-    & Pick<GroupQuery, 'id' | 'facilitatorId' | 'zipCode' | 'language' | 'city' | 'created_at'>
+    & Pick<GroupQuery, 'id' | 'facilitatorId' | 'zipCode' | 'language' | 'city' | 'start' | 'end' | 'limit' | 'title' | 'description'>
     & { facilitator?: Maybe<(
       { __typename?: 'StaffQuery' }
       & Pick<StaffQuery, 'id' | 'img'>
@@ -673,7 +704,7 @@ export type GroupByIdWithUsersQuery = (
   { __typename?: 'Query' }
   & { group: (
     { __typename?: 'GroupQuery' }
-    & Pick<GroupQuery, 'id' | 'facilitatorId' | 'zipCode' | 'language' | 'city' | 'created_at'>
+    & Pick<GroupQuery, 'id' | 'facilitatorId' | 'zipCode' | 'language' | 'city' | 'start' | 'end' | 'limit' | 'description'>
     & { facilitator?: Maybe<(
       { __typename?: 'StaffQuery' }
       & Pick<StaffQuery, 'id' | 'img'>
@@ -884,6 +915,100 @@ export function useUpdateEventMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateEventMutationHookResult = ReturnType<typeof useUpdateEventMutation>;
 export type UpdateEventMutationResult = Apollo.MutationResult<UpdateEventMutation>;
 export type UpdateEventMutationOptions = Apollo.BaseMutationOptions<UpdateEventMutation, UpdateEventMutationVariables>;
+export const RemoveGroupDocument = gql`
+    mutation RemoveGroup($id: Float!) {
+  removeGroup(id: $id)
+}
+    `;
+export type RemoveGroupMutationFn = Apollo.MutationFunction<RemoveGroupMutation, RemoveGroupMutationVariables>;
+
+/**
+ * __useRemoveGroupMutation__
+ *
+ * To run a mutation, you first call `useRemoveGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeGroupMutation, { data, loading, error }] = useRemoveGroupMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveGroupMutation(baseOptions?: Apollo.MutationHookOptions<RemoveGroupMutation, RemoveGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveGroupMutation, RemoveGroupMutationVariables>(RemoveGroupDocument, options);
+      }
+export type RemoveGroupMutationHookResult = ReturnType<typeof useRemoveGroupMutation>;
+export type RemoveGroupMutationResult = Apollo.MutationResult<RemoveGroupMutation>;
+export type RemoveGroupMutationOptions = Apollo.BaseMutationOptions<RemoveGroupMutation, RemoveGroupMutationVariables>;
+export const UpdateGroupDocument = gql`
+    mutation UpdateGroup($group: GroupInput!, $id: Float!) {
+  updateGroup(group: $group, id: $id)
+}
+    `;
+export type UpdateGroupMutationFn = Apollo.MutationFunction<UpdateGroupMutation, UpdateGroupMutationVariables>;
+
+/**
+ * __useUpdateGroupMutation__
+ *
+ * To run a mutation, you first call `useUpdateGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGroupMutation, { data, loading, error }] = useUpdateGroupMutation({
+ *   variables: {
+ *      group: // value for 'group'
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUpdateGroupMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGroupMutation, UpdateGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGroupMutation, UpdateGroupMutationVariables>(UpdateGroupDocument, options);
+      }
+export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
+export type UpdateGroupMutationResult = Apollo.MutationResult<UpdateGroupMutation>;
+export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<UpdateGroupMutation, UpdateGroupMutationVariables>;
+export const CreateGroupDocument = gql`
+    mutation CreateGroup($group: GroupInput!) {
+  createGroup(group: $group)
+}
+    `;
+export type CreateGroupMutationFn = Apollo.MutationFunction<CreateGroupMutation, CreateGroupMutationVariables>;
+
+/**
+ * __useCreateGroupMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupMutation, { data, loading, error }] = useCreateGroupMutation({
+ *   variables: {
+ *      group: // value for 'group'
+ *   },
+ * });
+ */
+export function useCreateGroupMutation(baseOptions?: Apollo.MutationHookOptions<CreateGroupMutation, CreateGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateGroupMutation, CreateGroupMutationVariables>(CreateGroupDocument, options);
+      }
+export type CreateGroupMutationHookResult = ReturnType<typeof useCreateGroupMutation>;
+export type CreateGroupMutationResult = Apollo.MutationResult<CreateGroupMutation>;
+export type CreateGroupMutationOptions = Apollo.BaseMutationOptions<CreateGroupMutation, CreateGroupMutationVariables>;
 export const AddPostDocument = gql`
     mutation AddPost($post: PostInput!) {
   addPost(post: $post)
@@ -1321,7 +1446,11 @@ export const AllGroupsDocument = gql`
     zipCode
     language
     city
-    created_at
+    start
+    end
+    limit
+    title
+    description
     facilitator {
       id
       img
@@ -1373,7 +1502,11 @@ export const GroupByIdDocument = gql`
     zipCode
     language
     city
-    created_at
+    start
+    end
+    limit
+    title
+    description
     facilitator {
       id
       img
@@ -1423,7 +1556,10 @@ export const GroupByIdWithUsersDocument = gql`
     zipCode
     language
     city
-    created_at
+    start
+    end
+    limit
+    description
     facilitator {
       id
       img

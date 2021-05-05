@@ -1,0 +1,11 @@
+mutation RemoveGroup($id: Float!) {
+  removeGroup(id: $id)
+}
+
+mutation UpdateGroup($group: GroupInput!, $id: Float!) {
+  updateGroup(group: $group, id: $id)
+}
+
+mutation CreateGroup($group: GroupInput!) {
+  createGroup(group: $group)
+}

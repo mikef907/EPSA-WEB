@@ -4,46 +4,69 @@ import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
 import { DataGrid, GridCellParams, GridColDef } from '@material-ui/data-grid';
 import {
+  useAllGroupsQuery,
   useAllPostsQuery,
+  useRemoveGroupMutation,
   useRemovePostMutation,
 } from '../../generated/graphql';
 import Link from '../../components/Link';
+import dayjs from 'dayjs';
 
-const Events: React.FC = () => {
+const Groups: React.FC = () => {
   const columns: GridColDef[] = [
-    { field: 'headline', headerName: 'Headline', width: 160 },
     {
       field: 'first_name',
-      headerName: 'First Name',
+      headerName: 'Facilitator',
       width: 160,
-      valueFormatter: (p) => p.row.author.user.first_name,
+      valueFormatter: (p) =>
+        `${p.row.facilitator.user.first_name} ${p.row.facilitator.user.last_name}`,
     },
     {
-      field: 'last_name',
-      headerName: 'Last Name',
+      field: 'city',
+      headerName: 'City',
       width: 160,
-      valueFormatter: (p) => p.row.author.user.last_name,
     },
     {
-      field: 'email',
-      headerName: 'Email',
-      width: 200,
-      valueFormatter: (p) => p.row.author.user.email,
+      field: 'zipCode',
+      headerName: 'Zip',
+      width: 100,
     },
     {
-      field: 'published',
-      headerName: 'Published',
+      field: 'language',
+      headerName: 'Lang',
+      width: 100,
+    },
+    {
+      field: 'title',
+      headerName: 'Title',
       width: 160,
+    },
+    {
+      field: 'start',
+      headerName: 'Start',
+      width: 130,
+      valueFormatter: (p) => dayjs(p.row.start).format('MM/DD/YYYY'),
+    },
+    {
+      field: 'end',
+      headerName: 'End',
+      width: 130,
+      valueFormatter: (p) => dayjs(p.row.end).format('MM/DD/YYYY'),
+    },
+    {
+      field: 'limit',
+      headerName: 'Limit',
+      width: 100,
     },
     {
       field: 'id',
       headerName: ' ',
       width: 160,
       renderCell: (params: GridCellParams) => {
-        const link = `/staff/post/${params.value}`;
+        const link = `/staff/group/${params.value}`;
         return (
           <>
-            <Link as={link} href="/staff/post/[[...id]]">
+            <Link as={link} href="/staff/group/[[...id]]">
               Edit
             </Link>
             <Divider
@@ -53,7 +76,7 @@ const Events: React.FC = () => {
             ></Divider>
             <MatLink
               component="button"
-              onClick={async () => await removePostById(params.row.id as any)}
+              onClick={async () => await removeGroupById(params.row.id as any)}
             >
               Remove
             </MatLink>
@@ -63,15 +86,15 @@ const Events: React.FC = () => {
     },
   ];
 
-  const { data } = useAllPostsQuery();
+  const { data } = useAllGroupsQuery();
 
-  const [removePost] = useRemovePostMutation({
+  const [removeGroup] = useRemoveGroupMutation({
     refetchQueries: () => ['AllPosts'],
   });
 
-  const removePostById = async (id: any) => {
-    if (confirm('Remove post? (This is not undoable)')) {
-      await removePost({ variables: { id } });
+  const removeGroupById = async (id: any) => {
+    if (confirm('Remove group? (This is not undoable)')) {
+      await removeGroup({ variables: { id } });
     }
   };
 
@@ -83,16 +106,16 @@ const Events: React.FC = () => {
         style={{ textAlign: 'center' }}
         gutterBottom
       >
-        Blog Posts
+        Groups
       </Typography>
       <Protect roles={['Admin', 'Staff']}>
-        <Link as={`/staff/post`} href="/staff/post/[[...id]]">
-          Add Post
+        <Link as={`/staff/group`} href="/staff/group/[[...id]]">
+          Add Group
         </Link>
         {data && (
           <DataGrid
             columns={columns}
-            rows={data.allPosts}
+            rows={data.groups}
             autoHeight={true}
             autoPageSize={true}
           ></DataGrid>
@@ -102,4 +125,4 @@ const Events: React.FC = () => {
   );
 };
 
-export default Events;
+export default Groups;

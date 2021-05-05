@@ -5,7 +5,11 @@ query AllGroups($take: Int, $zipCode: Int, $language: String) {
     zipCode
     language
     city
-    created_at
+    start
+    end
+    limit
+    title
+    description
     facilitator {
       id
       img
@@ -26,7 +30,11 @@ query GroupById($id: Float!) {
     zipCode
     language
     city
-    created_at
+    start
+    end
+    limit
+    title
+    description
     facilitator {
       id
       img
@@ -47,7 +55,10 @@ query GroupByIdWithUsers($id: Float!) {
     zipCode
     language
     city
-    created_at
+    start
+    end
+    limit
+    description
     facilitator {
       id
       img
