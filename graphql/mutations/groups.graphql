@@ -9,3 +9,7 @@ mutation UpdateGroup($group: GroupInput!, $id: Float!) {
 mutation CreateGroup($group: GroupInput!) {
   createGroup(group: $group)
 }
+
+mutation RequestToJoinGroup($id: Float!) {
+  requestToJoin(id: $id)
+}

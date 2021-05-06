@@ -77,3 +77,7 @@ query GroupByIdWithUsers($id: Float!) {
     }
   }
 }
+
+query JoinedGroups {
+  joinedGroups
+}

@@ -214,6 +214,7 @@ export type Mutation = {
   createGroup: Scalars['Float'];
   updateGroup: Scalars['Boolean'];
   removeGroup: Scalars['Boolean'];
+  requestToJoin: Scalars['Float'];
 };
 
 
@@ -304,6 +305,11 @@ export type MutationRemoveGroupArgs = {
   id: Scalars['Float'];
 };
 
+
+export type MutationRequestToJoinArgs = {
+  id: Scalars['Float'];
+};
+
 export type NewUserInput = {
   id?: Maybe<Scalars['ID']>;
   first_name: Scalars['String'];
@@ -346,6 +352,7 @@ export type Query = {
   post: PostQuery;
   groups: Array<GroupQuery>;
   group: GroupQuery;
+  joinedGroups: Array<Scalars['Float']>;
 };
 
 
@@ -511,6 +518,16 @@ export type CreateGroupMutationVariables = Exact<{
 export type CreateGroupMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'createGroup'>
+);
+
+export type RequestToJoinGroupMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type RequestToJoinGroupMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'requestToJoin'>
 );
 
 export type AddPostMutationVariables = Exact<{
@@ -717,6 +734,14 @@ export type GroupByIdWithUsersQuery = (
       & Pick<UserQuery, 'id' | 'email' | 'first_name' | 'last_name'>
     )>> }
   ) }
+);
+
+export type JoinedGroupsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type JoinedGroupsQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'joinedGroups'>
 );
 
 export type AllPostsQueryVariables = Exact<{
@@ -1009,6 +1034,37 @@ export function useCreateGroupMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateGroupMutationHookResult = ReturnType<typeof useCreateGroupMutation>;
 export type CreateGroupMutationResult = Apollo.MutationResult<CreateGroupMutation>;
 export type CreateGroupMutationOptions = Apollo.BaseMutationOptions<CreateGroupMutation, CreateGroupMutationVariables>;
+export const RequestToJoinGroupDocument = gql`
+    mutation RequestToJoinGroup($id: Float!) {
+  requestToJoin(id: $id)
+}
+    `;
+export type RequestToJoinGroupMutationFn = Apollo.MutationFunction<RequestToJoinGroupMutation, RequestToJoinGroupMutationVariables>;
+
+/**
+ * __useRequestToJoinGroupMutation__
+ *
+ * To run a mutation, you first call `useRequestToJoinGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRequestToJoinGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [requestToJoinGroupMutation, { data, loading, error }] = useRequestToJoinGroupMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRequestToJoinGroupMutation(baseOptions?: Apollo.MutationHookOptions<RequestToJoinGroupMutation, RequestToJoinGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RequestToJoinGroupMutation, RequestToJoinGroupMutationVariables>(RequestToJoinGroupDocument, options);
+      }
+export type RequestToJoinGroupMutationHookResult = ReturnType<typeof useRequestToJoinGroupMutation>;
+export type RequestToJoinGroupMutationResult = Apollo.MutationResult<RequestToJoinGroupMutation>;
+export type RequestToJoinGroupMutationOptions = Apollo.BaseMutationOptions<RequestToJoinGroupMutation, RequestToJoinGroupMutationVariables>;
 export const AddPostDocument = gql`
     mutation AddPost($post: PostInput!) {
   addPost(post: $post)
@@ -1607,6 +1663,38 @@ export function useGroupByIdWithUsersLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GroupByIdWithUsersQueryHookResult = ReturnType<typeof useGroupByIdWithUsersQuery>;
 export type GroupByIdWithUsersLazyQueryHookResult = ReturnType<typeof useGroupByIdWithUsersLazyQuery>;
 export type GroupByIdWithUsersQueryResult = Apollo.QueryResult<GroupByIdWithUsersQuery, GroupByIdWithUsersQueryVariables>;
+export const JoinedGroupsDocument = gql`
+    query JoinedGroups {
+  joinedGroups
+}
+    `;
+
+/**
+ * __useJoinedGroupsQuery__
+ *
+ * To run a query within a React component, call `useJoinedGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useJoinedGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useJoinedGroupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useJoinedGroupsQuery(baseOptions?: Apollo.QueryHookOptions<JoinedGroupsQuery, JoinedGroupsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<JoinedGroupsQuery, JoinedGroupsQueryVariables>(JoinedGroupsDocument, options);
+      }
+export function useJoinedGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<JoinedGroupsQuery, JoinedGroupsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<JoinedGroupsQuery, JoinedGroupsQueryVariables>(JoinedGroupsDocument, options);
+        }
+export type JoinedGroupsQueryHookResult = ReturnType<typeof useJoinedGroupsQuery>;
+export type JoinedGroupsLazyQueryHookResult = ReturnType<typeof useJoinedGroupsLazyQuery>;
+export type JoinedGroupsQueryResult = Apollo.QueryResult<JoinedGroupsQuery, JoinedGroupsQueryVariables>;
 export const AllPostsDocument = gql`
     query AllPosts($isPublished: Boolean, $take: Int) {
   allPosts(isPublished: $isPublished, take: $take) {

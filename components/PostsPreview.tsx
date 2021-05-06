@@ -23,6 +23,7 @@ const PostsPreview: React.FC<IProps> = ({ posts }) => {
             <Avatar
               style={{ marginRight: '5px' }}
               src={useStaffImg(post.author as StaffQuery)}
+              alt="Staff image avatar"
             ></Avatar>
             <ListItemText
               primary={post.headline}

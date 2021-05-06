@@ -41,7 +41,8 @@ const Login: React.FC<IProps> = ({ message, redirect }) => {
     if (result.data) {
       userContext.setUser(parseUserFromToken(result.data.login));
 
-      if (redirect === undefined) router.push('/');
+      if (router.query.r !== undefined) router.push(router.query.r as string);
+      else if (redirect === undefined) router.push('/');
       else if (redirect) router.push(redirect);
     }
   };

@@ -18,6 +18,7 @@ const StaffListItem: React.FC<IProps> = ({ staff }) => {
         className={classes.medium}
         style={{ marginRight: '5px' }}
         src={useStaffImg(staff)}
+        alt="Staff image avatar"
       ></Avatar>
       <ListItemText
         primary={`${staff.user.first_name} ${staff.user.last_name}`}

@@ -81,7 +81,10 @@ const NavBar: React.FC = () => {
                   Logout
                 </MatLink>
               </Box>
-              <Avatar src={getUserImgLink(user)}></Avatar>
+              <Avatar
+                src={getUserImgLink(user)}
+                alt="User image avatar"
+              ></Avatar>
             </>
           ) : (
             <>

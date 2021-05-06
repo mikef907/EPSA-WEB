@@ -136,6 +136,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
         firstname: newStaff.first_name,
         lastname: newStaff.last_name,
         email: newStaff.email,
+        start: new Date(),
       });
     }
   }, [newStaff]);
@@ -158,6 +159,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
                     <Avatar
                       className={classes.large}
                       src={data && `${API}/images/${data?.staff.img}`}
+                      alt="Staff image avatar"
                     ></Avatar>
                   </Grid>
 

@@ -95,8 +95,7 @@ const Group: NextPage<IProps> = ({ id }) => {
       const result = await createGroup({
         variables: { group: input as GroupInput },
       });
-      id = result.data?.createGroup;
-      router.push(`${id}`, undefined, { shallow: true });
+      router.push(`${result.data?.createGroup}`);
     }
   };
 

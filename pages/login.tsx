@@ -3,6 +3,7 @@ import Layout from '../components/Layout';
 import React from 'react';
 import Login from '../components/Login';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 
 const LoginPage: NextPage = () => {
   return (

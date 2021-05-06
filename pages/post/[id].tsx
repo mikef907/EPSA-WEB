@@ -51,7 +51,10 @@ const Post: NextPage<IProps> = ({ post }) => {
             </Typography>
             <Grid container justify="center" spacing={1}>
               <Grid item>
-                <Avatar src={useStaffImg(post.author as StaffQuery)} />
+                <Avatar
+                  src={useStaffImg(post.author as StaffQuery)}
+                  alt="Author image avatar"
+                />
               </Grid>
               <Grid item alignContent="flex-end">
                 <Typography component="h2" variant="subtitle1">

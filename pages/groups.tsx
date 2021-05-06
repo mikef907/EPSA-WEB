@@ -34,7 +34,8 @@ export async function getStaticProps() {
   return {
     props: {
       groups: data.groups.map((group: any) => {
-        group.created_at = dayjs(group.created_at).format('MMMM Do YYYY');
+        group.start = dayjs(group.start).format('MMMM Do YYYY');
+        group.end = dayjs(group.end).format('MMMM Do YYYY');
         return group;
       }),
     },

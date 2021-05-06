@@ -91,8 +91,7 @@ const StaffBlogPage: NextPage<IProps> = ({ id }) => {
           },
         },
       });
-      id = result.data?.addPost;
-      router.push(`${result.data?.addPost}`, undefined, { shallow: true });
+      router.push(`${result.data?.addPost}`);
     }
   };
 
