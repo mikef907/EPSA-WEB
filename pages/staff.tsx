@@ -1,4 +1,4 @@
-import { List, Typography } from '@material-ui/core';
+import { Grid, List, Typography } from '@material-ui/core';
 import { NextPage } from 'next';
 import React from 'react';
 import Layout from '../components/Layout';
@@ -13,14 +13,18 @@ interface IProps {
 const StaffPage: NextPage<IProps> = ({ staff }) => {
   return (
     <Layout>
-      <Typography component="h1" variant="h4">
+      <Typography component="h1" variant="h4" style={{ textAlign: 'center' }}>
         EPSA Staff
-        <List>
-          {staff.map((s) => (
-            <StaffListItem staff={s} key={s.id} />
-          ))}
-        </List>
       </Typography>
+      <Grid container justify="center">
+        <Grid item>
+          <List>
+            {staff.map((s) => (
+              <StaffListItem staff={s} key={s.id} />
+            ))}
+          </List>
+        </Grid>
+      </Grid>
     </Layout>
   );
 };

@@ -5,7 +5,7 @@ import {
   Typography,
   Button,
 } from '@material-ui/core';
-import dayjs from 'dayjs';
+import { Alert } from '@material-ui/lab';
 import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../context/UserContext';
 import {
@@ -89,15 +89,15 @@ const GroupItem: React.FC<IProps> = ({ group }) => {
                   </Button>
                 )}
                 {user && isInGroup(parseInt(group.id)) && (
-                  <Typography color="secondary">
+                  <Alert variant="outlined" severity="success">
                     You are in this group!
-                  </Typography>
+                  </Alert>
                 )}
                 {error &&
                   error.graphQLErrors.map(({ message }) => (
-                    <Typography color="error" component="p">
-                      {message} 🙁
-                    </Typography>
+                    <Alert variant="outlined" severity="error">
+                      {message}
+                    </Alert>
                   ))}
               </>
             }

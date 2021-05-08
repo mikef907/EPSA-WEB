@@ -6,6 +6,7 @@ import InputFormControl from '../../components/InputFormControl';
 import Layout from '../../components/Layout';
 import Login from '../../components/Login';
 import { useResetPasswordMutation } from '../../generated/graphql';
+import Alert from '@material-ui/lab/Alert';
 
 const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
   interface IFormInput {
@@ -40,9 +41,7 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
       </Typography>
       {data?.resetPassword && (
         <Login
-          message={
-            <Typography color="textPrimary">Password reset success"</Typography>
-          }
+          message={<Alert variant="outlined">Password reset success</Alert>}
         ></Login>
       )}
       {!data?.resetPassword && (
@@ -113,9 +112,9 @@ const ResetPassword: NextPage<{ token: string }> = ({ token }) => {
                 <Grid item md={4}>
                   {error &&
                     error.graphQLErrors.map(({ message }, i) => (
-                      <Typography component="p" color="error">
-                        {message} 🙁
-                      </Typography>
+                      <Alert variant="outlined" severity="error">
+                        {message}
+                      </Alert>
                     ))}
                 </Grid>
               </Grid>

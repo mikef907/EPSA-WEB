@@ -1,10 +1,4 @@
-import {
-  Button,
-  CircularProgress,
-  Grid,
-  Link,
-  Typography,
-} from '@material-ui/core';
+import { Button, CircularProgress, Grid, Typography } from '@material-ui/core';
 import React from 'react';
 import Layout from '../components/Layout';
 import { useForm } from 'react-hook-form';
@@ -13,6 +7,8 @@ import router from 'next/router';
 import { useAddUserMutation } from '../generated/graphql';
 import { NextPage } from 'next';
 import InputFormControl from '../components/InputFormControl';
+import Alert from '@material-ui/lab/Alert';
+import Link from '../components/Link';
 
 interface IFormInput {
   firstname: string;
@@ -164,9 +160,9 @@ const CreateUser: NextPage = () => {
               <Grid>
                 {error &&
                   error.graphQLErrors.map(({ message }) => (
-                    <Typography color="error" component="p">
-                      {message} 🙁
-                    </Typography>
+                    <Alert variant="outlined" severity="error">
+                      {message}
+                    </Alert>
                   ))}
               </Grid>
             </Grid>

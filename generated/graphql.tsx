@@ -184,6 +184,7 @@ export type IUser = {
   last_name: Scalars['String'];
   email: Scalars['String'];
   roles: Array<RoleQuery>;
+  confirmed: Scalars['Boolean'];
   created_at: Scalars['DateTime'];
   updated_at: Scalars['DateTime'];
 };
@@ -197,6 +198,7 @@ export type IUserInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  confirmation: Scalars['Boolean'];
   resetPassword: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
   addUser: Scalars['String'];
@@ -215,6 +217,11 @@ export type Mutation = {
   updateGroup: Scalars['Boolean'];
   removeGroup: Scalars['Boolean'];
   requestToJoin: Scalars['Float'];
+};
+
+
+export type MutationConfirmationArgs = {
+  token: Scalars['String'];
 };
 
 
@@ -342,6 +349,7 @@ export type PostQuery = IPost & IPostInput & {
 
 export type Query = {
   __typename?: 'Query';
+  resendConfirmation: Scalars['Boolean'];
   users: Array<UserQuery>;
   user: UserQuery;
   events: Array<EventQuery>;
@@ -454,6 +462,7 @@ export type UserQuery = IUser & IUserInput & {
   last_name: Scalars['String'];
   email: Scalars['String'];
   roles: Array<RoleQuery>;
+  confirmed: Scalars['Boolean'];
   created_at: Scalars['DateTime'];
   updated_at: Scalars['DateTime'];
 };
@@ -640,6 +649,16 @@ export type LoginMutationVariables = Exact<{
 export type LoginMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'login'>
+);
+
+export type ConfirmationMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type ConfirmationMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'confirmation'>
 );
 
 export type EventsQueryVariables = Exact<{
@@ -859,6 +878,14 @@ export type UserByIdQuery = (
     { __typename?: 'UserQuery' }
     & Pick<UserQuery, 'id' | 'first_name' | 'last_name' | 'email'>
   ) }
+);
+
+export type ResendConfirmationQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ResendConfirmationQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'resendConfirmation'>
 );
 
 
@@ -1408,6 +1435,37 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const ConfirmationDocument = gql`
+    mutation Confirmation($token: String!) {
+  confirmation(token: $token)
+}
+    `;
+export type ConfirmationMutationFn = Apollo.MutationFunction<ConfirmationMutation, ConfirmationMutationVariables>;
+
+/**
+ * __useConfirmationMutation__
+ *
+ * To run a mutation, you first call `useConfirmationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConfirmationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [confirmationMutation, { data, loading, error }] = useConfirmationMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useConfirmationMutation(baseOptions?: Apollo.MutationHookOptions<ConfirmationMutation, ConfirmationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConfirmationMutation, ConfirmationMutationVariables>(ConfirmationDocument, options);
+      }
+export type ConfirmationMutationHookResult = ReturnType<typeof useConfirmationMutation>;
+export type ConfirmationMutationResult = Apollo.MutationResult<ConfirmationMutation>;
+export type ConfirmationMutationOptions = Apollo.BaseMutationOptions<ConfirmationMutation, ConfirmationMutationVariables>;
 export const EventsDocument = gql`
     query Events($take: Int) {
   events(take: $take) {
@@ -1996,3 +2054,35 @@ export function useUserByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<U
 export type UserByIdQueryHookResult = ReturnType<typeof useUserByIdQuery>;
 export type UserByIdLazyQueryHookResult = ReturnType<typeof useUserByIdLazyQuery>;
 export type UserByIdQueryResult = Apollo.QueryResult<UserByIdQuery, UserByIdQueryVariables>;
+export const ResendConfirmationDocument = gql`
+    query ResendConfirmation {
+  resendConfirmation
+}
+    `;
+
+/**
+ * __useResendConfirmationQuery__
+ *
+ * To run a query within a React component, call `useResendConfirmationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useResendConfirmationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useResendConfirmationQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useResendConfirmationQuery(baseOptions?: Apollo.QueryHookOptions<ResendConfirmationQuery, ResendConfirmationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ResendConfirmationQuery, ResendConfirmationQueryVariables>(ResendConfirmationDocument, options);
+      }
+export function useResendConfirmationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ResendConfirmationQuery, ResendConfirmationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ResendConfirmationQuery, ResendConfirmationQueryVariables>(ResendConfirmationDocument, options);
+        }
+export type ResendConfirmationQueryHookResult = ReturnType<typeof useResendConfirmationQuery>;
+export type ResendConfirmationLazyQueryHookResult = ReturnType<typeof useResendConfirmationLazyQuery>;
+export type ResendConfirmationQueryResult = Apollo.QueryResult<ResendConfirmationQuery, ResendConfirmationQueryVariables>;

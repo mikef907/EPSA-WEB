@@ -1,16 +1,12 @@
-import {
-  Grid,
-  Button,
-  CircularProgress,
-  Link,
-  Typography,
-} from '@material-ui/core';
+import { Grid, Button, CircularProgress } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { UserContext, parseUserFromToken } from '../context/UserContext';
 import { useLoginMutation } from '../generated/graphql';
 import InputFormControl from './InputFormControl';
+import Link from './Link';
 
 interface IFormInput {
   email: string;
@@ -113,9 +109,9 @@ const Login: React.FC<IProps> = ({ message, redirect }) => {
           <Grid>
             {error &&
               error.graphQLErrors.map(({ message }) => (
-                <Typography color="error" component="p">
-                  {message} 🙁
-                </Typography>
+                <Alert variant="outlined" severity="error">
+                  {message}
+                </Alert>
               ))}
           </Grid>
         </Grid>

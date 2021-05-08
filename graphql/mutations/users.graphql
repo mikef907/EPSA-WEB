@@ -13,3 +13,7 @@ mutation AddUser($newUser: NewUserInput!) {
 mutation Login($email: String!, $password: String!) {
   login(email: $email, password: $password)
 }
+
+mutation Confirmation($token: String!) {
+  confirmation(token: $token)
+}

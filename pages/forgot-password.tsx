@@ -5,6 +5,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { NextPage } from 'next';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -23,7 +24,6 @@ const ForgotPassword: NextPage = () => {
   ] = useForgotPasswordMutation();
 
   const {
-    register,
     handleSubmit,
     control,
     formState: { errors },
@@ -88,15 +88,16 @@ const ForgotPassword: NextPage = () => {
         <Grid container justify="center" direction="row" spacing={2}>
           <Grid item>
             {data && data.forgotPassword && (
-              <Typography color="textPrimary">
-                Check your email for further instructions! 👍
-              </Typography>
+              <Alert variant="outlined">
+                Check your email for further instructions (including your spam
+                folder)!
+              </Alert>
             )}
             {error &&
               error.graphQLErrors.map(({ message }) => (
-                <Typography color="error" component="p">
-                  {message} 🙁
-                </Typography>
+                <Alert variant="outlined" severity="error">
+                  {message}
+                </Alert>
               ))}
           </Grid>
         </Grid>

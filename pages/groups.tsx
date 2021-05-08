@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import dayjs from 'dayjs';
 import { NextPage } from 'next';
 import React from 'react';
@@ -17,9 +17,13 @@ const GroupsPage: NextPage<IProps> = ({ groups }) => {
       <Typography component="h1" variant="h4" style={{ textAlign: 'center' }}>
         Groups
       </Typography>
-      {groups.map((group) => (
-        <GroupItem key={group.id} group={group}></GroupItem>
-      ))}
+      <Grid container justify="center">
+        <Grid item>
+          {groups.map((group) => (
+            <GroupItem key={group.id} group={group}></GroupItem>
+          ))}
+        </Grid>
+      </Grid>
     </Layout>
   );
 };

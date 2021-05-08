@@ -1,5 +1,5 @@
-import { Typography } from '@material-ui/core';
-import { useContext } from 'react';
+import { Alert } from '@material-ui/lab';
+import React, { useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import Login from './Login';
 
@@ -15,9 +15,9 @@ const Protect: React.FC<IProp> = ({ children, roles }) => {
     return (
       <Login
         message={
-          <Typography variant="subtitle2" color="error">
-            Unauthorized
-          </Typography>
+          <Alert variant="outlined" severity="warning">
+            Please log in to continue
+          </Alert>
         }
         redirect={false}
       ></Login>

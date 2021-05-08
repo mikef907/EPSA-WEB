@@ -1,16 +1,3 @@
-# query Users {
-#   users {
-#     id
-#     first_name
-#     last_name
-#     email
-#     roles {
-#       id
-#       name
-#     }
-#   }
-# }
-
 query UserList($inRoles: [String!] = [], $notInRoles: [String!] = []) {
   users(inRoles: $inRoles, notInRoles: $notInRoles) {
     id
@@ -31,4 +18,8 @@ query UserById($id: Float!) {
     last_name
     email
   }
+}
+
+query ResendConfirmation {
+  resendConfirmation
 }
