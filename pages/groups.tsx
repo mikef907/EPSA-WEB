@@ -33,6 +33,7 @@ export default GroupsPage;
 export async function getStaticProps() {
   const { data } = await client.query({
     query: AllGroupsDocument,
+    variables: { active: true },
   });
 
   return {

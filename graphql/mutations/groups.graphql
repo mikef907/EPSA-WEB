@@ -13,3 +13,7 @@ mutation CreateGroup($group: GroupInput!) {
 mutation RequestToJoinGroup($id: Float!) {
   requestToJoin(id: $id)
 }
+
+mutation RequestToLeaveGroup($id: Float!) {
+  requestToLeave(id: $id)
+}

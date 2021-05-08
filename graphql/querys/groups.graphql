@@ -1,5 +1,10 @@
-query AllGroups($take: Int, $zipCode: Int, $language: String) {
-  groups(take: $take, zipCode: $zipCode, language: $language) {
+query AllGroups(
+  $take: Int
+  $zipCode: Int
+  $language: String
+  $active: Boolean
+) {
+  groups(take: $take, zipCode: $zipCode, language: $language, active: $active) {
     id
     facilitatorId
     zipCode

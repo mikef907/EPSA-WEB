@@ -216,7 +216,8 @@ export type Mutation = {
   createGroup: Scalars['Float'];
   updateGroup: Scalars['Boolean'];
   removeGroup: Scalars['Boolean'];
-  requestToJoin: Scalars['Float'];
+  requestToJoin: Scalars['Boolean'];
+  requestToLeave: Scalars['Boolean'];
 };
 
 
@@ -317,6 +318,11 @@ export type MutationRequestToJoinArgs = {
   id: Scalars['Float'];
 };
 
+
+export type MutationRequestToLeaveArgs = {
+  id: Scalars['Float'];
+};
+
 export type NewUserInput = {
   id?: Maybe<Scalars['ID']>;
   first_name: Scalars['String'];
@@ -405,6 +411,7 @@ export type QueryGroupsArgs = {
   take?: Maybe<Scalars['Int']>;
   zipCode?: Maybe<Scalars['Int']>;
   language?: Maybe<Scalars['String']>;
+  active?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -537,6 +544,16 @@ export type RequestToJoinGroupMutationVariables = Exact<{
 export type RequestToJoinGroupMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'requestToJoin'>
+);
+
+export type RequestToLeaveGroupMutationVariables = Exact<{
+  id: Scalars['Float'];
+}>;
+
+
+export type RequestToLeaveGroupMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'requestToLeave'>
 );
 
 export type AddPostMutationVariables = Exact<{
@@ -691,6 +708,7 @@ export type AllGroupsQueryVariables = Exact<{
   take?: Maybe<Scalars['Int']>;
   zipCode?: Maybe<Scalars['Int']>;
   language?: Maybe<Scalars['String']>;
+  active?: Maybe<Scalars['Boolean']>;
 }>;
 
 
@@ -1092,6 +1110,37 @@ export function useRequestToJoinGroupMutation(baseOptions?: Apollo.MutationHookO
 export type RequestToJoinGroupMutationHookResult = ReturnType<typeof useRequestToJoinGroupMutation>;
 export type RequestToJoinGroupMutationResult = Apollo.MutationResult<RequestToJoinGroupMutation>;
 export type RequestToJoinGroupMutationOptions = Apollo.BaseMutationOptions<RequestToJoinGroupMutation, RequestToJoinGroupMutationVariables>;
+export const RequestToLeaveGroupDocument = gql`
+    mutation RequestToLeaveGroup($id: Float!) {
+  requestToLeave(id: $id)
+}
+    `;
+export type RequestToLeaveGroupMutationFn = Apollo.MutationFunction<RequestToLeaveGroupMutation, RequestToLeaveGroupMutationVariables>;
+
+/**
+ * __useRequestToLeaveGroupMutation__
+ *
+ * To run a mutation, you first call `useRequestToLeaveGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRequestToLeaveGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [requestToLeaveGroupMutation, { data, loading, error }] = useRequestToLeaveGroupMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRequestToLeaveGroupMutation(baseOptions?: Apollo.MutationHookOptions<RequestToLeaveGroupMutation, RequestToLeaveGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RequestToLeaveGroupMutation, RequestToLeaveGroupMutationVariables>(RequestToLeaveGroupDocument, options);
+      }
+export type RequestToLeaveGroupMutationHookResult = ReturnType<typeof useRequestToLeaveGroupMutation>;
+export type RequestToLeaveGroupMutationResult = Apollo.MutationResult<RequestToLeaveGroupMutation>;
+export type RequestToLeaveGroupMutationOptions = Apollo.BaseMutationOptions<RequestToLeaveGroupMutation, RequestToLeaveGroupMutationVariables>;
 export const AddPostDocument = gql`
     mutation AddPost($post: PostInput!) {
   addPost(post: $post)
@@ -1553,8 +1602,8 @@ export type EventByIdQueryHookResult = ReturnType<typeof useEventByIdQuery>;
 export type EventByIdLazyQueryHookResult = ReturnType<typeof useEventByIdLazyQuery>;
 export type EventByIdQueryResult = Apollo.QueryResult<EventByIdQuery, EventByIdQueryVariables>;
 export const AllGroupsDocument = gql`
-    query AllGroups($take: Int, $zipCode: Int, $language: String) {
-  groups(take: $take, zipCode: $zipCode, language: $language) {
+    query AllGroups($take: Int, $zipCode: Int, $language: String, $active: Boolean) {
+  groups(take: $take, zipCode: $zipCode, language: $language, active: $active) {
     id
     facilitatorId
     zipCode
@@ -1594,6 +1643,7 @@ export const AllGroupsDocument = gql`
  *      take: // value for 'take'
  *      zipCode: // value for 'zipCode'
  *      language: // value for 'language'
+ *      active: // value for 'active'
  *   },
  * });
  */
