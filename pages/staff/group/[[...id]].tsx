@@ -134,7 +134,7 @@ const Group: NextPage<IProps> = ({ id }) => {
                     />
                   </FormControl>
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={6} xs={12}>
                   <InputFormControl
                     name="city"
                     label="City"
@@ -143,7 +143,7 @@ const Group: NextPage<IProps> = ({ id }) => {
                     inputProps={{ maxLength: 255 }}
                   ></InputFormControl>
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={6} xs={12}>
                   <InputFormControl
                     name="zipCode"
                     label="Zip Code"
@@ -153,7 +153,7 @@ const Group: NextPage<IProps> = ({ id }) => {
                     inputProps={{ max: 99999 }}
                   ></InputFormControl>
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={6} xs={12}>
                   <FormControl fullWidth>
                     <Controller
                       name="language"
@@ -165,7 +165,7 @@ const Group: NextPage<IProps> = ({ id }) => {
                     />
                   </FormControl>
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={6} xs={12}>
                   <InputFormControl
                     name="title"
                     label="Title"
@@ -174,7 +174,7 @@ const Group: NextPage<IProps> = ({ id }) => {
                     inputProps={{ maxLength: 255 }}
                   ></InputFormControl>
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={6} xs={12}>
                   <InputFormControl
                     name="description"
                     label="Description"
@@ -182,7 +182,7 @@ const Group: NextPage<IProps> = ({ id }) => {
                     inputProps={{ maxLength: 255 }}
                   ></InputFormControl>
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={6} xs={12}>
                   <InputFormControl
                     name="limit"
                     label="Group Limit"
@@ -192,7 +192,7 @@ const Group: NextPage<IProps> = ({ id }) => {
                     type="number"
                   ></InputFormControl>
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={6} xs={12}>
                   <FormControl fullWidth>
                     <Controller
                       name="start"
@@ -220,7 +220,7 @@ const Group: NextPage<IProps> = ({ id }) => {
                     />
                   </FormControl>
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={6} xs={12}>
                   <FormControl fullWidth>
                     <Controller
                       name="end"

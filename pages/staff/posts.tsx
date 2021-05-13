@@ -1,5 +1,5 @@
 import { Divider, Link as MatLink, Typography } from '@material-ui/core';
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
 import { DataGrid, GridCellParams, GridColDef } from '@material-ui/data-grid';
@@ -8,8 +8,11 @@ import {
   useRemovePostMutation,
 } from '../../generated/graphql';
 import Link from '../../components/Link';
+import { UserContext } from '../../context/UserContext';
 
 const Events: React.FC = () => {
+  const { user, checkRoles } = useContext(UserContext);
+
   const columns: GridColDef[] = [
     { field: 'headline', headerName: 'Headline', width: 160 },
     {
@@ -37,11 +40,11 @@ const Events: React.FC = () => {
     },
     {
       field: 'id',
-      headerName: ' ',
+      headerName: 'Action',
       width: 160,
       renderCell: (params: GridCellParams) => {
         const link = `/staff/post/${params.value}`;
-        return (
+        return checkRoles(user, 'Staff') ? (
           <>
             <Link as={link} href="/staff/post/[[...id]]">
               Edit
@@ -58,6 +61,8 @@ const Events: React.FC = () => {
               Remove
             </MatLink>
           </>
+        ) : (
+          <></>
         );
       },
     },
@@ -86,9 +91,11 @@ const Events: React.FC = () => {
         Blog Posts
       </Typography>
       <Protect roles={['Admin', 'Staff']}>
-        <Link as={`/staff/post`} href="/staff/post/[[...id]]">
-          Add Post
-        </Link>
+        {checkRoles(user, 'Staff') && (
+          <Link as={`/staff/post`} href="/staff/post/[[...id]]">
+            Add Post
+          </Link>
+        )}
         {data && (
           <DataGrid
             columns={columns}

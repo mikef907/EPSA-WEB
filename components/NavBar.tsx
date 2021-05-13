@@ -136,6 +136,11 @@ const NavBar: React.FC = () => {
             </Link>
           </ListItem>
           <ListItem>
+            <Link href="/donate" variant="button">
+              Donate
+            </Link>
+          </ListItem>
+          <ListItem>
             <Link href="/contact-us" variant="button">
               Contact Us
             </Link>
