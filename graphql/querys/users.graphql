@@ -17,9 +17,22 @@ query UserById($id: Float!) {
     first_name
     last_name
     email
+    roles {
+      id
+      name
+    }
   }
 }
 
 query ResendConfirmation {
   resendConfirmation
+}
+
+query MyProfile {
+  myProfile {
+    id
+    first_name
+    last_name
+    email
+  }
 }

@@ -17,3 +17,7 @@ mutation Login($email: String!, $password: String!) {
 mutation Confirmation($token: String!) {
   confirmation(token: $token)
 }
+
+mutation UpdateMyProfile($user: MyProfileInput!) {
+  updateMyProfile(user: $user)
+}

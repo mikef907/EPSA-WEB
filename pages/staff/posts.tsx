@@ -44,7 +44,7 @@ const Events: React.FC = () => {
       width: 160,
       renderCell: (params: GridCellParams) => {
         const link = `/staff/post/${params.value}`;
-        return checkRoles(user, 'Staff') ? (
+        return (
           <>
             <Link as={link} href="/staff/post/[[...id]]">
               Edit
@@ -61,8 +61,6 @@ const Events: React.FC = () => {
               Remove
             </MatLink>
           </>
-        ) : (
-          <></>
         );
       },
     },
@@ -90,7 +88,7 @@ const Events: React.FC = () => {
       >
         Blog Posts
       </Typography>
-      <Protect roles={['Admin', 'Staff']}>
+      <Protect roles={['Staff']}>
         {checkRoles(user, 'Staff') && (
           <Link as={`/staff/post`} href="/staff/post/[[...id]]">
             Add Post

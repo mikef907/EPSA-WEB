@@ -104,7 +104,7 @@ const Group: NextPage<IProps> = ({ id }) => {
       <Typography component="h1" variant="h4" style={{ textAlign: 'center' }}>
         Group
       </Typography>
-      <Protect roles={['Admin', 'Staff']}>
+      <Protect roles={['Staff']}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container justify="center">
             <Grid item md={6}>

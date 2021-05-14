@@ -97,7 +97,7 @@ const StaffBlogPage: NextPage<IProps> = ({ id }) => {
 
   return (
     <Layout>
-      <Protect roles={['Admin', 'Staff']}>
+      <Protect roles={['Staff']}>
         <Typography
           variant="h4"
           component="h1"

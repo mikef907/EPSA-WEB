@@ -4,7 +4,6 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
-  Typography,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -13,8 +12,6 @@ import {
   useUpdateEventMutation,
   useAddEventMutation,
 } from '../generated/graphql';
-import Layout from './Layout';
-import Protect from './Protect';
 import dayjs from 'dayjs';
 import CheckBox from '@material-ui/core/Checkbox';
 import { useRouter } from 'next/router';
@@ -117,159 +114,147 @@ const EventForm: React.FC<IProps> = ({ id }) => {
   }, [data]);
 
   return (
-    <Layout>
-      <Protect roles={['Admin', 'Staff']}>
-        <Typography
-          variant="h4"
-          component="h1"
-          style={{ textAlign: 'center' }}
-          gutterBottom
-        >
-          {event.id ? 'Edit Event' : 'Add Event'}
-        </Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container justify="center">
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Grid container justify="center">
+        <Grid item>
+          <Grid container direction="column" spacing={2}>
             <Grid item>
-              <Grid container direction="column" spacing={2}>
-                <Grid item>
-                  <InputFormControl
-                    name="name"
-                    label="Name"
-                    control={control}
-                    rules={{ required: 'Event name is required' }}
-                    inputProps={{ maxLength: 255 }}
-                  />
-                </Grid>
-                <Grid item>
-                  <InputFormControl
-                    name="zipCode"
-                    label="Zip Code"
-                    control={control}
-                    rules={{ required: 'Zip code is required' }}
-                    type="number"
-                    inputProps={{ max: 99999 }}
-                  />
-                </Grid>
-                <Grid item>
-                  <FormControl fullWidth>
-                    <Controller
-                      name="language"
-                      control={control}
-                      defaultValue={'en'}
-                      rules={{ required: true }}
-                      render={({ field }) => <LanguagePicker field={field} />}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item>
-                  <InputFormControl
-                    name="description"
-                    label="Description"
-                    control={control}
-                    rules={{ required: 'Description is required' }}
-                    inputProps={{ maxLength: 255 }}
-                  />
-                </Grid>
-                <Grid item>
-                  <FormControl fullWidth>
-                    <Controller
-                      name="start"
-                      control={control}
-                      defaultValue=""
-                      rules={{ required: 'Start date is required' }}
-                      render={({ field }) => (
-                        <KeyboardDateTimePicker
-                          inputRef={field.ref}
-                          minutesStep={15}
-                          ampm
-                          variant="inline"
-                          format="MM/DD/YYYY h:mm a"
-                          label="Start"
-                          disablePast
-                          value={field.value || null}
-                          onChange={field.onChange}
-                          KeyboardButtonProps={{
-                            'aria-label': 'change date',
-                          }}
-                          error={!!errors.start}
-                          helperText={errors.start?.message}
-                        ></KeyboardDateTimePicker>
-                      )}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item>
-                  <FormControl fullWidth>
-                    <Controller
-                      name="end"
-                      control={control}
-                      defaultValue=""
-                      render={({ field }) => (
-                        <KeyboardDateTimePicker
-                          inputRef={field.ref}
-                          minutesStep={15}
-                          ampm
-                          variant="inline"
-                          format="MM/DD/YYYY h:mm a"
-                          label="End"
-                          disablePast
-                          value={field.value || null}
-                          onChange={field.onChange}
-                          KeyboardButtonProps={{
-                            'aria-label': 'change date',
-                          }}
-                          error={!!errors.end}
-                          helperText={errors.end?.message}
-                        ></KeyboardDateTimePicker>
-                      )}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item>
-                  <FormControl fullWidth>
-                    <FormGroup>
-                      <FormControlLabel
-                        label="All Day"
-                        control={
-                          <Controller
-                            name="language"
-                            control={control}
-                            defaultValue={false}
-                            rules={{ required: true }}
-                            render={({ field }) => (
-                              <CheckBox
-                                {...field}
-                                onChange={(input) => {
-                                  setEvent({
-                                    ...event,
-                                    allDay: input.target.checked,
-                                  });
-                                }}
-                              />
-                            )}
+              <InputFormControl
+                name="name"
+                label="Name"
+                control={control}
+                rules={{ required: 'Event name is required' }}
+                inputProps={{ maxLength: 255 }}
+              />
+            </Grid>
+            <Grid item>
+              <InputFormControl
+                name="zipCode"
+                label="Zip Code"
+                control={control}
+                rules={{ required: 'Zip code is required' }}
+                type="number"
+                inputProps={{ max: 99999 }}
+              />
+            </Grid>
+            <Grid item>
+              <FormControl fullWidth>
+                <Controller
+                  name="language"
+                  control={control}
+                  defaultValue={'en'}
+                  rules={{ required: true }}
+                  render={({ field }) => <LanguagePicker field={field} />}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item>
+              <InputFormControl
+                name="description"
+                label="Description"
+                control={control}
+                rules={{ required: 'Description is required' }}
+                inputProps={{ maxLength: 255 }}
+              />
+            </Grid>
+            <Grid item>
+              <FormControl fullWidth>
+                <Controller
+                  name="start"
+                  control={control}
+                  defaultValue=""
+                  rules={{ required: 'Start date is required' }}
+                  render={({ field }) => (
+                    <KeyboardDateTimePicker
+                      inputRef={field.ref}
+                      minutesStep={15}
+                      ampm
+                      variant="inline"
+                      format="MM/DD/YYYY h:mm a"
+                      label="Start"
+                      disablePast
+                      value={field.value || null}
+                      onChange={field.onChange}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                      error={!!errors.start}
+                      helperText={errors.start?.message}
+                    ></KeyboardDateTimePicker>
+                  )}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item>
+              <FormControl fullWidth>
+                <Controller
+                  name="end"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <KeyboardDateTimePicker
+                      inputRef={field.ref}
+                      minutesStep={15}
+                      ampm
+                      variant="inline"
+                      format="MM/DD/YYYY h:mm a"
+                      label="End"
+                      disablePast
+                      value={field.value || null}
+                      onChange={field.onChange}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                      error={!!errors.end}
+                      helperText={errors.end?.message}
+                    ></KeyboardDateTimePicker>
+                  )}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item>
+              <FormControl fullWidth>
+                <FormGroup>
+                  <FormControlLabel
+                    label="All Day"
+                    control={
+                      <Controller
+                        name="language"
+                        control={control}
+                        defaultValue={false}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <CheckBox
+                            {...field}
+                            onChange={(input) => {
+                              setEvent({
+                                ...event,
+                                allDay: input.target.checked,
+                              });
+                            }}
                           />
-                        }
-                      ></FormControlLabel>
-                    </FormGroup>
-                  </FormControl>
-                </Grid>
-                <Grid item>
-                  <Button
-                    type="submit"
-                    style={{ alignSelf: 'flex-end' }}
-                    disabled={loading}
-                    variant="contained"
-                    color="primary"
-                  >
-                    Save
-                  </Button>
-                </Grid>
-              </Grid>
+                        )}
+                      />
+                    }
+                  ></FormControlLabel>
+                </FormGroup>
+              </FormControl>
+            </Grid>
+            <Grid item>
+              <Button
+                type="submit"
+                style={{ alignSelf: 'flex-end' }}
+                disabled={loading}
+                variant="contained"
+                color="primary"
+              >
+                Save
+              </Button>
             </Grid>
           </Grid>
-        </form>
-      </Protect>
-    </Layout>
+        </Grid>
+      </Grid>
+    </form>
   );
 };
 

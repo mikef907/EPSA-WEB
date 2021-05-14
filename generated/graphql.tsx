@@ -190,7 +190,7 @@ export type IUser = {
 };
 
 export type IUserInput = {
-  id: Scalars['ID'];
+  id?: Maybe<Scalars['ID']>;
   first_name: Scalars['String'];
   last_name: Scalars['String'];
   email: Scalars['String'];
@@ -201,6 +201,7 @@ export type Mutation = {
   confirmation: Scalars['Boolean'];
   resetPassword: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
+  updateMyProfile: Scalars['Boolean'];
   addUser: Scalars['String'];
   updateUser: Scalars['String'];
   login: Scalars['String'];
@@ -233,6 +234,11 @@ export type MutationResetPasswordArgs = {
 
 export type MutationForgotPasswordArgs = {
   email: Scalars['String'];
+};
+
+
+export type MutationUpdateMyProfileArgs = {
+  user: MyProfileInput;
 };
 
 
@@ -323,6 +329,14 @@ export type MutationRequestToLeaveArgs = {
   id: Scalars['Float'];
 };
 
+export type MyProfileInput = {
+  id?: Maybe<Scalars['ID']>;
+  first_name: Scalars['String'];
+  last_name: Scalars['String'];
+  email: Scalars['String'];
+  password?: Maybe<Scalars['String']>;
+};
+
 export type NewUserInput = {
   id?: Maybe<Scalars['ID']>;
   first_name: Scalars['String'];
@@ -358,6 +372,7 @@ export type Query = {
   resendConfirmation: Scalars['Boolean'];
   users: Array<UserQuery>;
   user: UserQuery;
+  myProfile: UserQuery;
   events: Array<EventQuery>;
   event: EventQuery;
   allStaff: Array<StaffQuery>;
@@ -392,7 +407,8 @@ export type QueryEventArgs = {
 
 
 export type QueryStaffArgs = {
-  id: Scalars['Float'];
+  userId?: Maybe<Scalars['Float']>;
+  id?: Maybe<Scalars['Float']>;
 };
 
 
@@ -678,6 +694,16 @@ export type ConfirmationMutation = (
   & Pick<Mutation, 'confirmation'>
 );
 
+export type UpdateMyProfileMutationVariables = Exact<{
+  user: MyProfileInput;
+}>;
+
+
+export type UpdateMyProfileMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateMyProfile'>
+);
+
 export type EventsQueryVariables = Exact<{
   take?: Maybe<Scalars['Int']>;
 }>;
@@ -851,7 +877,8 @@ export type AllStaffQuery = (
 );
 
 export type StaffByIdQueryVariables = Exact<{
-  id: Scalars['Float'];
+  id?: Maybe<Scalars['Float']>;
+  userId?: Maybe<Scalars['Float']>;
 }>;
 
 
@@ -895,6 +922,10 @@ export type UserByIdQuery = (
   & { user: (
     { __typename?: 'UserQuery' }
     & Pick<UserQuery, 'id' | 'first_name' | 'last_name' | 'email'>
+    & { roles: Array<(
+      { __typename?: 'RoleQuery' }
+      & Pick<RoleQuery, 'id' | 'name'>
+    )> }
   ) }
 );
 
@@ -904,6 +935,17 @@ export type ResendConfirmationQueryVariables = Exact<{ [key: string]: never; }>;
 export type ResendConfirmationQuery = (
   { __typename?: 'Query' }
   & Pick<Query, 'resendConfirmation'>
+);
+
+export type MyProfileQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyProfileQuery = (
+  { __typename?: 'Query' }
+  & { myProfile: (
+    { __typename?: 'UserQuery' }
+    & Pick<UserQuery, 'id' | 'first_name' | 'last_name' | 'email'>
+  ) }
 );
 
 
@@ -1515,6 +1557,37 @@ export function useConfirmationMutation(baseOptions?: Apollo.MutationHookOptions
 export type ConfirmationMutationHookResult = ReturnType<typeof useConfirmationMutation>;
 export type ConfirmationMutationResult = Apollo.MutationResult<ConfirmationMutation>;
 export type ConfirmationMutationOptions = Apollo.BaseMutationOptions<ConfirmationMutation, ConfirmationMutationVariables>;
+export const UpdateMyProfileDocument = gql`
+    mutation UpdateMyProfile($user: MyProfileInput!) {
+  updateMyProfile(user: $user)
+}
+    `;
+export type UpdateMyProfileMutationFn = Apollo.MutationFunction<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
+
+/**
+ * __useUpdateMyProfileMutation__
+ *
+ * To run a mutation, you first call `useUpdateMyProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMyProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMyProfileMutation, { data, loading, error }] = useUpdateMyProfileMutation({
+ *   variables: {
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useUpdateMyProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>(UpdateMyProfileDocument, options);
+      }
+export type UpdateMyProfileMutationHookResult = ReturnType<typeof useUpdateMyProfileMutation>;
+export type UpdateMyProfileMutationResult = Apollo.MutationResult<UpdateMyProfileMutation>;
+export type UpdateMyProfileMutationOptions = Apollo.BaseMutationOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
 export const EventsDocument = gql`
     query Events($take: Int) {
   events(take: $take) {
@@ -1979,8 +2052,8 @@ export type AllStaffQueryHookResult = ReturnType<typeof useAllStaffQuery>;
 export type AllStaffLazyQueryHookResult = ReturnType<typeof useAllStaffLazyQuery>;
 export type AllStaffQueryResult = Apollo.QueryResult<AllStaffQuery, AllStaffQueryVariables>;
 export const StaffByIdDocument = gql`
-    query StaffById($id: Float!) {
-  staff(id: $id) {
+    query StaffById($id: Float, $userId: Float) {
+  staff(id: $id, userId: $userId) {
     id
     userId
     start
@@ -2009,10 +2082,11 @@ export const StaffByIdDocument = gql`
  * const { data, loading, error } = useStaffByIdQuery({
  *   variables: {
  *      id: // value for 'id'
+ *      userId: // value for 'userId'
  *   },
  * });
  */
-export function useStaffByIdQuery(baseOptions: Apollo.QueryHookOptions<StaffByIdQuery, StaffByIdQueryVariables>) {
+export function useStaffByIdQuery(baseOptions?: Apollo.QueryHookOptions<StaffByIdQuery, StaffByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<StaffByIdQuery, StaffByIdQueryVariables>(StaffByIdDocument, options);
       }
@@ -2073,6 +2147,10 @@ export const UserByIdDocument = gql`
     first_name
     last_name
     email
+    roles {
+      id
+      name
+    }
   }
 }
     `;
@@ -2136,3 +2214,40 @@ export function useResendConfirmationLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type ResendConfirmationQueryHookResult = ReturnType<typeof useResendConfirmationQuery>;
 export type ResendConfirmationLazyQueryHookResult = ReturnType<typeof useResendConfirmationLazyQuery>;
 export type ResendConfirmationQueryResult = Apollo.QueryResult<ResendConfirmationQuery, ResendConfirmationQueryVariables>;
+export const MyProfileDocument = gql`
+    query MyProfile {
+  myProfile {
+    id
+    first_name
+    last_name
+    email
+  }
+}
+    `;
+
+/**
+ * __useMyProfileQuery__
+ *
+ * To run a query within a React component, call `useMyProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyProfileQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMyProfileQuery(baseOptions?: Apollo.QueryHookOptions<MyProfileQuery, MyProfileQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyProfileQuery, MyProfileQueryVariables>(MyProfileDocument, options);
+      }
+export function useMyProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyProfileQuery, MyProfileQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyProfileQuery, MyProfileQueryVariables>(MyProfileDocument, options);
+        }
+export type MyProfileQueryHookResult = ReturnType<typeof useMyProfileQuery>;
+export type MyProfileLazyQueryHookResult = ReturnType<typeof useMyProfileLazyQuery>;
+export type MyProfileQueryResult = Apollo.QueryResult<MyProfileQuery, MyProfileQueryVariables>;

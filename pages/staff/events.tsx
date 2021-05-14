@@ -19,9 +19,9 @@ const columns: GridColDef[] = [
     field: 'id',
     headerName: 'Edit',
     renderCell: (params: GridCellParams) => {
-      const link = `/admin/event/${params.value}`;
+      const link = `/staff/event/${params.value}`;
       return (
-        <Link as={link} href="/admin/event/[[...id]]">
+        <Link as={link} href="/staff/event/[[...id]]">
           Edit
         </Link>
       );
@@ -34,7 +34,7 @@ const Events: NextPage = () => {
 
   return (
     <Layout>
-      <Protect roles={['Admin', 'Staff']}>
+      <Protect roles={['Staff']}>
         <Typography
           variant="h4"
           component="h1"
@@ -43,7 +43,7 @@ const Events: NextPage = () => {
         >
           Events
         </Typography>
-        <Link as={'/admin/event'} href="/admin/event/[[...id]]">
+        <Link as={'/staff/event'} href="/staff/event/[[...id]]">
           Add Event
         </Link>
         {data && (

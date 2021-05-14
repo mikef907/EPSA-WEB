@@ -56,10 +56,10 @@ const StaffMembers: NextPage = () => {
       width: 160,
       renderCell: (params: GridCellParams) => {
         if (params?.value) {
-          const link = `/staff/${params.value}`;
+          const link = `/admin/staff/${params.value}`;
           return (
             <>
-              <Link as={link} href="/staff/[id]">
+              <Link as={link} href="/admin/staff/[id]">
                 Edit
               </Link>
               <Divider
@@ -84,7 +84,7 @@ const StaffMembers: NextPage = () => {
 
   return (
     <Layout>
-      <Protect roles={['Admin', 'Staff']}>
+      <Protect roles={['Admin']}>
         <Typography
           variant="h4"
           component="h1"
@@ -93,7 +93,7 @@ const StaffMembers: NextPage = () => {
         >
           Staff
         </Typography>
-        <Link href="/admin/add-staff">Add Staff</Link>
+        <Link href="/admin/staff">Add Staff</Link>
         {data && (
           <DataGrid
             columns={columns}

@@ -80,6 +80,13 @@ const NavBar: React.FC = () => {
                 <MatLink color="inherit" component="button" onClick={logout}>
                   Logout
                 </MatLink>
+                <Link
+                  style={{ float: 'right' }}
+                  color="inherit"
+                  href="/profile"
+                >
+                  Profile
+                </Link>
               </Box>
               <Avatar
                 src={getUserImgLink(user)}
@@ -146,7 +153,7 @@ const NavBar: React.FC = () => {
             </Link>
           </ListItem>
         </List>
-        {checkRoles(user, 'Admin', 'Staff') && (
+        {checkRoles(user, 'Admin') && (
           <>
             <Divider />
             <List>
@@ -160,6 +167,32 @@ const NavBar: React.FC = () => {
                 </Typography>
               </ListItem>
               <ListItem>
+                <Link href="/admin/users" variant="button">
+                  Users
+                </Link>
+              </ListItem>
+              <ListItem>
+                <Link href="/admin/staff-list" variant="button">
+                  Staff
+                </Link>
+              </ListItem>
+            </List>
+          </>
+        )}
+        {checkRoles(user, 'Staff') && (
+          <>
+            <Divider />
+            <List>
+              <ListItem>
+                <Typography
+                  style={{ flexGrow: 1, display: 'flex', margin: 'auto' }}
+                  variant="button"
+                  component="p"
+                >
+                  Staff
+                </Typography>
+              </ListItem>
+              <ListItem>
                 <Link href="/staff/posts" variant="button">
                   Posts
                 </Link>
@@ -170,17 +203,7 @@ const NavBar: React.FC = () => {
                 </Link>
               </ListItem>
               <ListItem>
-                <Link href="/admin/users" variant="button">
-                  Users
-                </Link>
-              </ListItem>
-              <ListItem>
-                <Link href="/admin/staff" variant="button">
-                  Staff
-                </Link>
-              </ListItem>
-              <ListItem>
-                <Link href="/admin/events" variant="button">
+                <Link href="/staff/events" variant="button">
                   Events
                 </Link>
               </ListItem>

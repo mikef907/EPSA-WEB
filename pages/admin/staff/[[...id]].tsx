@@ -1,8 +1,9 @@
+import { Grid } from '@material-ui/core';
 import { NextPage, NextPageContext } from 'next';
 import React from 'react';
-import Layout from '../../components/Layout';
-import Protect from '../../components/Protect';
-import StaffForm from '../../components/StaffForm';
+import Layout from '../../../components/Layout';
+import Protect from '../../../components/Protect';
+import StaffForm from '../../../components/StaffForm';
 
 interface Context extends NextPageContext {
   query: {
@@ -17,8 +18,12 @@ interface IProps {
 const StaffPage: NextPage<IProps> = ({ id }) => {
   return (
     <Layout>
-      <Protect roles={['Admin', 'Staff']}>
-        <StaffForm id={id}></StaffForm>
+      <Protect roles={['Admin']}>
+        <Grid container justify="center">
+          <Grid item md={6}>
+            <StaffForm id={id}></StaffForm>
+          </Grid>
+        </Grid>
       </Protect>
     </Layout>
   );

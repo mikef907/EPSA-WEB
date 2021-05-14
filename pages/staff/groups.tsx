@@ -108,7 +108,7 @@ const Groups: React.FC = () => {
       >
         Groups
       </Typography>
-      <Protect roles={['Admin', 'Staff']}>
+      <Protect roles={['Staff']}>
         <Link as={`/staff/group`} href="/staff/group/[[...id]]">
           Add Group
         </Link>

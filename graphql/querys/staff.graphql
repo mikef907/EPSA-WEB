@@ -13,8 +13,8 @@ query AllStaff {
   }
 }
 
-query StaffById($id: Float!) {
-  staff(id: $id) {
+query StaffById($id: Float, $userId: Float) {
+  staff(id: $id, userId: $userId) {
     id
     userId
     start

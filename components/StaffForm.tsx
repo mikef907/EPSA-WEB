@@ -23,9 +23,11 @@ import { useRouter } from 'next/router';
 import { API, IMGKEY } from '../constants';
 import { useStyles } from '../hooks/styles';
 import InputFormControl from './InputFormControl';
+import ErrorDisplay from './ErrorDisplay';
 
 interface IProps {
   id?: number;
+  userId?: number;
 }
 
 export interface IFormInput {
@@ -36,10 +38,12 @@ export interface IFormInput {
   start: Date;
 }
 
-const StaffForm: React.FC<IProps> = ({ id }) => {
+const StaffForm: React.FC<IProps> = ({ id, userId }) => {
   const classes = useStyles();
 
   const router = useRouter();
+
+  const [isNew] = useState(!(id || userId));
 
   const { user, checkRoles, setUser } = useContext(UserContext);
 
@@ -54,12 +58,12 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
 
   const [staffById, { data, loading }] = useStaffByIdLazyQuery();
 
-  const [updateStaff] = useUpdateStaffMutation();
+  const [updateStaff, { error: updateError }] = useUpdateStaffMutation();
 
-  const [addStaff] = useAddStaffMutation();
+  const [addStaff, { error: addError }] = useAddStaffMutation();
 
   const onSubmit = async (input: IFormInput) => {
-    if (id && data) {
+    if (!isNew && data) {
       await updateStaff({
         variables: {
           staff: {
@@ -75,7 +79,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
           },
         },
       });
-    } else if (!id && newStaff) {
+    } else if (isNew && newStaff) {
       await addStaff({
         variables: {
           staff: {
@@ -115,6 +119,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
 
   useEffect(() => {
     if (id !== undefined) staffById({ variables: { id } });
+    else if (userId !== undefined) staffById({ variables: { userId } });
   }, []);
 
   useEffect(() => {
@@ -131,7 +136,7 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
   }, [data]);
 
   useEffect(() => {
-    if (!id && newStaff) {
+    if (isNew && newStaff) {
       reset({
         firstname: newStaff.first_name,
         lastname: newStaff.last_name,
@@ -143,135 +148,136 @@ const StaffForm: React.FC<IProps> = ({ id }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container justify="center">
-        <Grid item md={6}>
-          <Grid
-            container
-            direction="row"
-            justify="center"
-            spacing={2}
-            style={{ margin: 0 }}
-          >
-            {id && (
-              <Grid container direction="column" alignItems="center">
-                <>
-                  <Grid item md={12}>
-                    <Avatar
-                      className={classes.large}
-                      src={data && `${API}/images/${data?.staff.img}`}
-                      alt="Staff image avatar"
-                    ></Avatar>
-                  </Grid>
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        spacing={2}
+        style={{ margin: 0 }}
+      >
+        {!isNew && (
+          <Grid container direction="column" alignItems="center">
+            <>
+              <Grid item md={12}>
+                <Avatar
+                  className={classes.large}
+                  src={
+                    data?.staff.img
+                      ? `${API}/images/${data?.staff.img}`
+                      : undefined
+                  }
+                  alt="Staff image avatar"
+                ></Avatar>
+              </Grid>
 
-                  <Grid item>
-                    <Typography variant="caption">
-                      Upload avatar here
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <input type="file" onChange={fileUpload}></input>
-                  </Grid>
-                </>
+              <Grid item>
+                <Typography variant="caption">Upload avatar here</Typography>
               </Grid>
-            )}
-            {!id && (
-              <Grid item xs={12} md={12}>
-                <FormControl fullWidth>
-                  <InputLabel id="user-label">Select user to assign</InputLabel>
-                  <UsersPicker
-                    id="user-label"
-                    setUser={setNewStaff}
-                    user={newStaff}
-                  ></UsersPicker>
-                </FormControl>
+              <Grid item>
+                <input type="file" onChange={fileUpload}></input>
               </Grid>
-            )}
-            <Grid item xs={12} md={6}>
-              <InputFormControl
-                control={control}
-                name="firstname"
-                label="First Name"
-                rules={{ required: 'First name is required' }}
-                inputProps={{ maxLength: 50 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <InputFormControl
-                control={control}
-                name="lastname"
-                label="Last Name"
-                rules={{ required: 'Last name is required' }}
-                inputProps={{ maxLength: 50 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <InputFormControl
-                control={control}
-                name="email"
-                label="Email"
-                rules={{ required: 'Email is required' }}
-                inputProps={{ maxLength: 50 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <Controller
-                  name="start"
-                  control={control}
-                  defaultValue={null}
-                  rules={{ required: 'Start required' }}
-                  render={({ field }) => (
-                    <KeyboardDatePicker
-                      inputRef={field.ref}
-                      disableToolbar
-                      autoOk
-                      variant="inline"
-                      format="MM/DD/YYYY"
-                      label="Start Date"
-                      value={field.value}
-                      onChange={field.onChange}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                      }}
-                      disabled={!checkRoles(user, 'Admin')}
-                      error={!!errors.start}
-                      helperText={errors.start?.message}
-                    ></KeyboardDatePicker>
-                  )}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="caption">Description</Typography>
-              <FormControl fullWidth>
-                <Controller
-                  name="description"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <TextareaAutosize
-                      {...field}
-                      rowsMin="4"
-                      maxLength={255}
-                      value={field.value || ''}
-                      onChange={field.onChange}
-                    ></TextareaAutosize>
-                  )}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item>
-              <Button
-                type="submit"
-                style={{ alignSelf: 'flex-end' }}
-                disabled={loading}
-                variant="contained"
-                color="primary"
-              >
-                Save
-              </Button>
-            </Grid>
+            </>
           </Grid>
+        )}
+        {isNew && (
+          <Grid item xs={12} md={12}>
+            <FormControl fullWidth>
+              <InputLabel id="user-label">Select user to assign</InputLabel>
+              <UsersPicker
+                id="user-label"
+                setUser={setNewStaff}
+                user={newStaff}
+              ></UsersPicker>
+            </FormControl>
+          </Grid>
+        )}
+        <Grid item xs={12} md={6}>
+          <InputFormControl
+            control={control}
+            name="firstname"
+            label="First Name"
+            rules={{ required: 'First name is required' }}
+            inputProps={{ maxLength: 50 }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <InputFormControl
+            control={control}
+            name="lastname"
+            label="Last Name"
+            rules={{ required: 'Last name is required' }}
+            inputProps={{ maxLength: 50 }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <InputFormControl
+            control={control}
+            name="email"
+            label="Email"
+            rules={{ required: 'Email is required' }}
+            inputProps={{ maxLength: 50 }}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <FormControl fullWidth>
+            <Controller
+              name="start"
+              control={control}
+              defaultValue={null}
+              rules={{ required: 'Start required' }}
+              render={({ field }) => (
+                <KeyboardDatePicker
+                  inputRef={field.ref}
+                  disableToolbar
+                  autoOk
+                  variant="inline"
+                  format="MM/DD/YYYY"
+                  label="Start Date"
+                  value={field.value}
+                  onChange={field.onChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                  disabled={!checkRoles(user, 'Admin')}
+                  error={!!errors.start}
+                  helperText={errors.start?.message}
+                ></KeyboardDatePicker>
+              )}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="caption">Description</Typography>
+          <FormControl fullWidth>
+            <Controller
+              name="description"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <TextareaAutosize
+                  {...field}
+                  rowsMin="4"
+                  maxLength={255}
+                  value={field.value || ''}
+                  onChange={field.onChange}
+                ></TextareaAutosize>
+              )}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item>
+          <Button
+            type="submit"
+            style={{ alignSelf: 'flex-end' }}
+            disabled={loading}
+            variant="contained"
+            color="primary"
+          >
+            Save
+          </Button>
+        </Grid>
+        <Grid item>
+          <ErrorDisplay error={updateError || addError} />
         </Grid>
       </Grid>
     </form>
