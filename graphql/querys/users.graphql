@@ -36,3 +36,10 @@ query MyProfile {
     email
   }
 }
+
+query Roles {
+  roles {
+    id
+    name
+  }
+}

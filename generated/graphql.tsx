@@ -201,6 +201,8 @@ export type Mutation = {
   confirmation: Scalars['Boolean'];
   resetPassword: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
+  assignRole: Scalars['Boolean'];
+  removeRole: Scalars['Boolean'];
   updateMyProfile: Scalars['Boolean'];
   addUser: Scalars['String'];
   updateUser: Scalars['String'];
@@ -234,6 +236,18 @@ export type MutationResetPasswordArgs = {
 
 export type MutationForgotPasswordArgs = {
   email: Scalars['String'];
+};
+
+
+export type MutationAssignRoleArgs = {
+  roleId: Scalars['Float'];
+  userId: Scalars['Float'];
+};
+
+
+export type MutationRemoveRoleArgs = {
+  roleId: Scalars['Float'];
+  userId: Scalars['Float'];
 };
 
 
@@ -382,6 +396,7 @@ export type Query = {
   groups: Array<GroupQuery>;
   group: GroupQuery;
   joinedGroups: Array<Scalars['Float']>;
+  roles: Array<RoleQuery>;
 };
 
 
@@ -704,6 +719,28 @@ export type UpdateMyProfileMutation = (
   & Pick<Mutation, 'updateMyProfile'>
 );
 
+export type AssignRoleMutationVariables = Exact<{
+  userId: Scalars['Float'];
+  roleId: Scalars['Float'];
+}>;
+
+
+export type AssignRoleMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'assignRole'>
+);
+
+export type RemoveRoleMutationVariables = Exact<{
+  userId: Scalars['Float'];
+  roleId: Scalars['Float'];
+}>;
+
+
+export type RemoveRoleMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'removeRole'>
+);
+
 export type EventsQueryVariables = Exact<{
   take?: Maybe<Scalars['Int']>;
 }>;
@@ -946,6 +983,17 @@ export type MyProfileQuery = (
     { __typename?: 'UserQuery' }
     & Pick<UserQuery, 'id' | 'first_name' | 'last_name' | 'email'>
   ) }
+);
+
+export type RolesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RolesQuery = (
+  { __typename?: 'Query' }
+  & { roles: Array<(
+    { __typename?: 'RoleQuery' }
+    & Pick<RoleQuery, 'id' | 'name'>
+  )> }
 );
 
 
@@ -1588,6 +1636,70 @@ export function useUpdateMyProfileMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateMyProfileMutationHookResult = ReturnType<typeof useUpdateMyProfileMutation>;
 export type UpdateMyProfileMutationResult = Apollo.MutationResult<UpdateMyProfileMutation>;
 export type UpdateMyProfileMutationOptions = Apollo.BaseMutationOptions<UpdateMyProfileMutation, UpdateMyProfileMutationVariables>;
+export const AssignRoleDocument = gql`
+    mutation AssignRole($userId: Float!, $roleId: Float!) {
+  assignRole(userId: $userId, roleId: $roleId)
+}
+    `;
+export type AssignRoleMutationFn = Apollo.MutationFunction<AssignRoleMutation, AssignRoleMutationVariables>;
+
+/**
+ * __useAssignRoleMutation__
+ *
+ * To run a mutation, you first call `useAssignRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignRoleMutation, { data, loading, error }] = useAssignRoleMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      roleId: // value for 'roleId'
+ *   },
+ * });
+ */
+export function useAssignRoleMutation(baseOptions?: Apollo.MutationHookOptions<AssignRoleMutation, AssignRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AssignRoleMutation, AssignRoleMutationVariables>(AssignRoleDocument, options);
+      }
+export type AssignRoleMutationHookResult = ReturnType<typeof useAssignRoleMutation>;
+export type AssignRoleMutationResult = Apollo.MutationResult<AssignRoleMutation>;
+export type AssignRoleMutationOptions = Apollo.BaseMutationOptions<AssignRoleMutation, AssignRoleMutationVariables>;
+export const RemoveRoleDocument = gql`
+    mutation RemoveRole($userId: Float!, $roleId: Float!) {
+  removeRole(userId: $userId, roleId: $roleId)
+}
+    `;
+export type RemoveRoleMutationFn = Apollo.MutationFunction<RemoveRoleMutation, RemoveRoleMutationVariables>;
+
+/**
+ * __useRemoveRoleMutation__
+ *
+ * To run a mutation, you first call `useRemoveRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeRoleMutation, { data, loading, error }] = useRemoveRoleMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      roleId: // value for 'roleId'
+ *   },
+ * });
+ */
+export function useRemoveRoleMutation(baseOptions?: Apollo.MutationHookOptions<RemoveRoleMutation, RemoveRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveRoleMutation, RemoveRoleMutationVariables>(RemoveRoleDocument, options);
+      }
+export type RemoveRoleMutationHookResult = ReturnType<typeof useRemoveRoleMutation>;
+export type RemoveRoleMutationResult = Apollo.MutationResult<RemoveRoleMutation>;
+export type RemoveRoleMutationOptions = Apollo.BaseMutationOptions<RemoveRoleMutation, RemoveRoleMutationVariables>;
 export const EventsDocument = gql`
     query Events($take: Int) {
   events(take: $take) {
@@ -2251,3 +2363,38 @@ export function useMyProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type MyProfileQueryHookResult = ReturnType<typeof useMyProfileQuery>;
 export type MyProfileLazyQueryHookResult = ReturnType<typeof useMyProfileLazyQuery>;
 export type MyProfileQueryResult = Apollo.QueryResult<MyProfileQuery, MyProfileQueryVariables>;
+export const RolesDocument = gql`
+    query Roles {
+  roles {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useRolesQuery__
+ *
+ * To run a query within a React component, call `useRolesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRolesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useRolesQuery(baseOptions?: Apollo.QueryHookOptions<RolesQuery, RolesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RolesQuery, RolesQueryVariables>(RolesDocument, options);
+      }
+export function useRolesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RolesQuery, RolesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RolesQuery, RolesQueryVariables>(RolesDocument, options);
+        }
+export type RolesQueryHookResult = ReturnType<typeof useRolesQuery>;
+export type RolesLazyQueryHookResult = ReturnType<typeof useRolesLazyQuery>;
+export type RolesQueryResult = Apollo.QueryResult<RolesQuery, RolesQueryVariables>;

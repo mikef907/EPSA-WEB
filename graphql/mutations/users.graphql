@@ -21,3 +21,11 @@ mutation Confirmation($token: String!) {
 mutation UpdateMyProfile($user: MyProfileInput!) {
   updateMyProfile(user: $user)
 }
+
+mutation AssignRole($userId: Float!, $roleId: Float!) {
+  assignRole(userId: $userId, roleId: $roleId)
+}
+
+mutation RemoveRole($userId: Float!, $roleId: Float!) {
+  removeRole(userId: $userId, roleId: $roleId)
+}
