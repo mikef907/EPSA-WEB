@@ -4,6 +4,7 @@ import { UserContext } from '../context/UserContext';
 import {
   Avatar,
   Button,
+  CircularProgress,
   FormControl,
   Grid,
   InputLabel,
@@ -49,6 +50,8 @@ const StaffForm: React.FC<IProps> = ({ id, userId }) => {
 
   const [newStaff, setNewStaff] = useState<IUser | null>(null);
 
+  const [loading, setLoading] = useState(false);
+
   const {
     control,
     reset,
@@ -56,11 +59,13 @@ const StaffForm: React.FC<IProps> = ({ id, userId }) => {
     formState: { errors },
   } = useForm();
 
-  const [staffById, { data, loading }] = useStaffByIdLazyQuery();
+  const [staffById, { data, loading: staffLoading }] = useStaffByIdLazyQuery();
 
-  const [updateStaff, { error: updateError }] = useUpdateStaffMutation();
+  const [updateStaff, { error: updateError, loading: updateLoading }] =
+    useUpdateStaffMutation();
 
-  const [addStaff, { error: addError }] = useAddStaffMutation();
+  const [addStaff, { error: addError, loading: addLoading }] =
+    useAddStaffMutation();
 
   const onSubmit = async (input: IFormInput) => {
     if (!isNew && data) {
@@ -95,7 +100,7 @@ const StaffForm: React.FC<IProps> = ({ id, userId }) => {
         },
       });
 
-      router.push(`/admin/staff`);
+      router.push(`/admin/staff-list`);
     }
   };
 
@@ -145,6 +150,10 @@ const StaffForm: React.FC<IProps> = ({ id, userId }) => {
       });
     }
   }, [newStaff]);
+
+  useEffect(() => {
+    setLoading(staffLoading || updateLoading || addLoading);
+  }, [staffLoading, updateLoading, addLoading]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -274,6 +283,9 @@ const StaffForm: React.FC<IProps> = ({ id, userId }) => {
             color="primary"
           >
             Save
+            {(updateLoading || addLoading) && (
+              <CircularProgress color="secondary" size={20} />
+            )}
           </Button>
         </Grid>
         <Grid item>

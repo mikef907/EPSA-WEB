@@ -5,6 +5,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { UserContext, parseUserFromToken } from '../context/UserContext';
 import { useLoginMutation } from '../generated/graphql';
+import ErrorDisplay from './ErrorDisplay';
 import InputFormControl from './InputFormControl';
 import Link from './Link';
 
@@ -87,13 +88,8 @@ const Login: React.FC<IProps> = ({ message, redirect }) => {
                 color="primary"
               >
                 Login
+                {loading && <CircularProgress color="secondary" size={20} />}
               </Button>
-              {loading && (
-                <CircularProgress
-                  size={24}
-                  style={{ position: 'relative', left: '-50px', top: '8px' }}
-                />
-              )}
             </Grid>
           </Grid>
         </Grid>
@@ -107,12 +103,7 @@ const Login: React.FC<IProps> = ({ message, redirect }) => {
             </Grid>
           </Grid>
           <Grid>
-            {error &&
-              error.graphQLErrors.map(({ message }) => (
-                <Alert variant="outlined" severity="error">
-                  {message}
-                </Alert>
-              ))}
+            <ErrorDisplay error={error}></ErrorDisplay>
           </Grid>
         </Grid>
       </Grid>

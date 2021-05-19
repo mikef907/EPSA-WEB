@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   FormControl,
   Grid,
   TextField,
@@ -9,6 +10,7 @@ import { Alert } from '@material-ui/lab';
 import { NextPage } from 'next';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import ErrorDisplay from '../components/ErrorDisplay';
 import Layout from '../components/Layout';
 import { useForgotPasswordMutation } from '../generated/graphql';
 
@@ -18,10 +20,8 @@ interface IFormInput {
 }
 
 const ForgotPassword: NextPage = () => {
-  const [
-    forgotPassword,
-    { loading, error, data },
-  ] = useForgotPasswordMutation();
+  const [forgotPassword, { loading, error, data }] =
+    useForgotPasswordMutation();
 
   const {
     handleSubmit,
@@ -82,6 +82,7 @@ const ForgotPassword: NextPage = () => {
               variant="contained"
             >
               Submit
+              {loading && <CircularProgress color="secondary" size={20} />}
             </Button>
           </Grid>
         </Grid>
@@ -93,12 +94,7 @@ const ForgotPassword: NextPage = () => {
                 folder)!
               </Alert>
             )}
-            {error &&
-              error.graphQLErrors.map(({ message }) => (
-                <Alert variant="outlined" severity="error">
-                  {message}
-                </Alert>
-              ))}
+            <ErrorDisplay error={error}></ErrorDisplay>
           </Grid>
         </Grid>
       </form>

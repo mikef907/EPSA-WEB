@@ -175,17 +175,8 @@ const UserForm: React.FC = () => {
                 color="primary"
               >
                 {isNew ? 'Sign Up' : 'Update'}
+                {loading && <CircularProgress color="secondary" size={20} />}
               </Button>
-              {loading && (
-                <CircularProgress
-                  size={24}
-                  style={{
-                    position: 'relative',
-                    left: '-50px',
-                    top: '8px',
-                  }}
-                />
-              )}
             </Grid>
             <Grid item xs={12}>
               <ErrorDisplay

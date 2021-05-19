@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -18,6 +19,7 @@ import { useRouter } from 'next/router';
 import LanguagePicker from './LanguagePicker';
 import { KeyboardDateTimePicker } from '@material-ui/pickers';
 import InputFormControl from './InputFormControl';
+import ErrorDisplay from './ErrorDisplay';
 
 interface IProps {
   id?: number;
@@ -42,11 +44,16 @@ const EventForm: React.FC<IProps> = ({ id }) => {
 
   const [event, setEvent] = useState<Partial<IEvent>>({});
 
-  const [eventQuery, { data }] = useEventByIdLazyQuery();
+  const [loading, setLoading] = useState(false);
 
-  const [eventUpdate, { loading }] = useUpdateEventMutation();
+  const [eventQuery, { data, loading: queryLoading, error: queryError }] =
+    useEventByIdLazyQuery();
 
-  const [eventAdd] = useAddEventMutation();
+  const [eventUpdate, { loading: updateLoading, error: updateError }] =
+    useUpdateEventMutation();
+
+  const [eventAdd, { loading: addLoading, error: addError }] =
+    useAddEventMutation();
 
   const {
     handleSubmit,
@@ -89,6 +96,10 @@ const EventForm: React.FC<IProps> = ({ id }) => {
       setEvent({ ...event, id: result.data?.addEvent.id });
     }
   };
+
+  useEffect(() => {
+    setLoading(queryLoading || updateLoading || addLoading);
+  }, [queryLoading, updateLoading, addLoading]);
 
   useEffect(() => {
     if (id) {
@@ -249,7 +260,13 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                 color="primary"
               >
                 Save
+                {(updateLoading || addLoading) && (
+                  <CircularProgress color="secondary" size={20} />
+                )}
               </Button>
+            </Grid>
+            <Grid item>
+              <ErrorDisplay error={queryError || updateError || addError} />
             </Grid>
           </Grid>
         </Grid>

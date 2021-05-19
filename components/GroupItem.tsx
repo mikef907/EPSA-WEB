@@ -5,6 +5,7 @@ import {
   Typography,
   Button,
   IconButton,
+  CircularProgress,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Alert } from '@material-ui/lab';
@@ -19,6 +20,7 @@ import {
 import { useLanguageCodeConverter } from '../hooks/language';
 import { useStaffImg } from '../hooks/staffImg';
 import { useStyles } from '../hooks/styles';
+import ErrorDisplay from './ErrorDisplay';
 import Link from './Link';
 
 interface IProps {
@@ -29,23 +31,28 @@ const GroupItem: React.FC<IProps> = ({ group }) => {
   const classes = useStyles();
   const { user } = useContext(UserContext);
   const [joinedGroups, setJoinedGroups] = useState<number[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const [requestToJoin, { error, loading }] = useRequestToJoinGroupMutation({
-    refetchQueries: ['JoinedGroups'],
-  });
+  const [requestToJoin, { error: joinError, loading: joinLoading }] =
+    useRequestToJoinGroupMutation({
+      refetchQueries: ['JoinedGroups'],
+    });
 
-  const [leaveGroup] = useRequestToLeaveGroupMutation({
-    refetchQueries: ['JoinedGroups'],
-  });
+  const [leaveGroup, { error: leaveError, loading: leaveLoading }] =
+    useRequestToLeaveGroupMutation({
+      refetchQueries: ['JoinedGroups'],
+    });
 
-  const [
-    joinedGroupsQuery,
-    { data: joinedGroupsResult },
-  ] = useJoinedGroupsLazyQuery();
+  const [joinedGroupsQuery, { data: joinedGroupsResult }] =
+    useJoinedGroupsLazyQuery();
 
   const isInGroup = (id: number) => joinedGroups.includes(id);
 
   const leave = (id: number) => leaveGroup({ variables: { id } });
+
+  useEffect(() => {
+    setLoading(joinLoading || leaveLoading);
+  }, [joinLoading, leaveLoading]);
 
   useEffect(() => {
     if (user) {
@@ -101,6 +108,9 @@ const GroupItem: React.FC<IProps> = ({ group }) => {
                       }}
                     >
                       Request to join
+                      {loading && (
+                        <CircularProgress color="secondary" size={20} />
+                      )}
                     </Button>
                   )}
                 {user && isInGroup(parseInt(group.id)) && (
@@ -112,6 +122,7 @@ const GroupItem: React.FC<IProps> = ({ group }) => {
                         color="secondary"
                         size="small"
                         aria-label="Leave group"
+                        disabled={loading}
                         onClick={() => {
                           if (confirm('leave this group?')) {
                             leave(parseInt(group.id));
@@ -119,18 +130,16 @@ const GroupItem: React.FC<IProps> = ({ group }) => {
                         }}
                       >
                         <DeleteIcon fontSize="small" />
+                        {loading && (
+                          <CircularProgress color="secondary" size={20} />
+                        )}
                       </IconButton>
                     }
                   >
                     You are in this group!
                   </Alert>
                 )}
-                {error &&
-                  error.graphQLErrors.map(({ message }) => (
-                    <Alert variant="outlined" severity="error">
-                      {message}
-                    </Alert>
-                  ))}
+                <ErrorDisplay error={joinError || leaveError}></ErrorDisplay>
               </>
             }
           />
