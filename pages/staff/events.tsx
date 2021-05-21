@@ -1,4 +1,4 @@
-import { Button, Divider, IconButton, Typography } from '@material-ui/core';
+import { CircularProgress, IconButton, Typography } from '@material-ui/core';
 import React from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
@@ -11,6 +11,7 @@ import Link from '../../components/Link';
 import { NextPage } from 'next';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import ErrorDisplay from '../../components/ErrorDisplay';
 
 const Events: NextPage = () => {
   const { data, loading, error } = useEventsQuery();
@@ -43,12 +44,15 @@ const Events: NextPage = () => {
             </Link>
             <IconButton
               onClick={() => {
-                if (confirm('Delete this event? (this is no undoable)')) {
+                if (confirm('Remove this event? (This is not undoable)')) {
                   deleteEvent({ variables: { id: params.value as number } });
                 }
               }}
             >
               <DeleteIcon fontSize="small"></DeleteIcon>
+              {deleteLoading && (
+                <CircularProgress color="secondary" size={20} />
+              )}
             </IconButton>
           </>
         );
@@ -70,6 +74,8 @@ const Events: NextPage = () => {
         <Link as={'/staff/event'} href="/staff/event/[[...id]]">
           Add Event
         </Link>
+        <ErrorDisplay error={error || deleteError}></ErrorDisplay>
+        {loading && <CircularProgress></CircularProgress>}
         {data && (
           <DataGrid
             columns={columns}

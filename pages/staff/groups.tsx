@@ -1,16 +1,17 @@
-import { Divider, Link as MatLink, Typography } from '@material-ui/core';
+import { CircularProgress, IconButton, Typography } from '@material-ui/core';
 import React from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
 import { DataGrid, GridCellParams, GridColDef } from '@material-ui/data-grid';
 import {
   useAllGroupsQuery,
-  useAllPostsQuery,
   useRemoveGroupMutation,
-  useRemovePostMutation,
 } from '../../generated/graphql';
 import Link from '../../components/Link';
 import dayjs from 'dayjs';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ErrorDisplay from '../../components/ErrorDisplay';
 
 const Groups: React.FC = () => {
   const columns: GridColDef[] = [
@@ -60,43 +61,41 @@ const Groups: React.FC = () => {
     },
     {
       field: 'id',
-      headerName: ' ',
-      width: 160,
+      headerName: 'Action',
+      width: 130,
       renderCell: (params: GridCellParams) => {
         const link = `/staff/group/${params.value}`;
         return (
           <>
             <Link as={link} href="/staff/group/[[...id]]">
-              Edit
+              <IconButton>
+                <EditIcon fontSize="small"></EditIcon>
+              </IconButton>
             </Link>
-            <Divider
-              orientation="vertical"
-              variant="middle"
-              style={{ height: '50%' }}
-            ></Divider>
-            <MatLink
-              component="button"
-              onClick={async () => await removeGroupById(params.row.id as any)}
+            <IconButton
+              onClick={() => {
+                if (confirm('Remove group? (This is not undoable)')) {
+                  removeGroup({ variables: { id: params.value as number } });
+                }
+              }}
             >
-              Remove
-            </MatLink>
+              <DeleteIcon fontSize="small"></DeleteIcon>
+              {removeLoading && (
+                <CircularProgress color="secondary" size={20} />
+              )}
+            </IconButton>
           </>
         );
       },
     },
   ];
 
-  const { data } = useAllGroupsQuery();
+  const { data, error, loading } = useAllGroupsQuery();
 
-  const [removeGroup] = useRemoveGroupMutation({
-    refetchQueries: () => ['AllPosts'],
-  });
-
-  const removeGroupById = async (id: any) => {
-    if (confirm('Remove group? (This is not undoable)')) {
-      await removeGroup({ variables: { id } });
-    }
-  };
+  const [removeGroup, { error: removeError, loading: removeLoading }] =
+    useRemoveGroupMutation({
+      refetchQueries: () => ['AllGroups'],
+    });
 
   return (
     <Layout>
@@ -112,6 +111,8 @@ const Groups: React.FC = () => {
         <Link as={`/staff/group`} href="/staff/group/[[...id]]">
           Add Group
         </Link>
+        <ErrorDisplay error={error || removeError}></ErrorDisplay>
+        {loading && <CircularProgress></CircularProgress>}
         {data && (
           <DataGrid
             columns={columns}

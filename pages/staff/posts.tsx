@@ -1,4 +1,10 @@
-import { Divider, Link as MatLink, Typography } from '@material-ui/core';
+import {
+  CircularProgress,
+  Divider,
+  IconButton,
+  Link as MatLink,
+  Typography,
+} from '@material-ui/core';
 import React, { useContext, useEffect } from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
@@ -9,6 +15,9 @@ import {
 } from '../../generated/graphql';
 import Link from '../../components/Link';
 import { UserContext } from '../../context/UserContext';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ErrorDisplay from '../../components/ErrorDisplay';
 
 const Events: React.FC = () => {
   const { user, checkRoles } = useContext(UserContext);
@@ -41,42 +50,40 @@ const Events: React.FC = () => {
     {
       field: 'id',
       headerName: 'Action',
-      width: 160,
+      width: 130,
       renderCell: (params: GridCellParams) => {
         const link = `/staff/post/${params.value}`;
         return (
           <>
             <Link as={link} href="/staff/post/[[...id]]">
-              Edit
+              <IconButton>
+                <EditIcon fontSize="small"></EditIcon>
+              </IconButton>
             </Link>
-            <Divider
-              orientation="vertical"
-              variant="middle"
-              style={{ height: '50%' }}
-            ></Divider>
-            <MatLink
-              component="button"
-              onClick={async () => await removePostById(params.row.id as any)}
+            <IconButton
+              onClick={() => {
+                if (confirm('Remove post? (This is not undoable)')) {
+                  removePost({ variables: { id: params.value as number } });
+                }
+              }}
             >
-              Remove
-            </MatLink>
+              <DeleteIcon fontSize="small"></DeleteIcon>
+              {removeLoading && (
+                <CircularProgress color="secondary" size={20} />
+              )}
+            </IconButton>
           </>
         );
       },
     },
   ];
 
-  const { data } = useAllPostsQuery();
+  const { data, error, loading } = useAllPostsQuery();
 
-  const [removePost] = useRemovePostMutation({
-    refetchQueries: () => ['AllPosts'],
-  });
-
-  const removePostById = async (id: any) => {
-    if (confirm('Remove post? (This is not undoable)')) {
-      await removePost({ variables: { id } });
-    }
-  };
+  const [removePost, { error: removeError, loading: removeLoading }] =
+    useRemovePostMutation({
+      refetchQueries: ['AllPosts'],
+    });
 
   return (
     <Layout>
@@ -94,6 +101,8 @@ const Events: React.FC = () => {
             Add Post
           </Link>
         )}
+        <ErrorDisplay error={error || removeError}></ErrorDisplay>
+        {loading && <CircularProgress></CircularProgress>}
         {data && (
           <DataGrid
             columns={columns}

@@ -1,4 +1,10 @@
-import { Divider, Link as MatLink, Typography } from '@material-ui/core';
+import {
+  CircularProgress,
+  Divider,
+  IconButton,
+  Link as MatLink,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
 import Layout from '../../components/Layout';
 import Protect from '../../components/Protect';
@@ -9,22 +15,17 @@ import {
 } from '../../generated/graphql';
 import Link from '../../components/Link';
 import { NextPage } from 'next';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ErrorDisplay from '../../components/ErrorDisplay';
 
 const StaffMembers: NextPage = () => {
-  const { data } = useAllStaffQuery();
+  const { data, loading, error } = useAllStaffQuery();
 
-  const [removeStaff] = useRemoveStaffMutation({
-    refetchQueries: () => ['AllStaff'],
-  });
-
-  const removeStaffById = async (id: number) => {
-    if (
-      data?.allStaff &&
-      confirm('Remove staff member? (this is not undoable)')
-    ) {
-      await removeStaff({ variables: { id } });
-    }
-  };
+  const [removeStaff, { loading: removeLoading, error: removeError }] =
+    useRemoveStaffMutation({
+      refetchQueries: () => ['AllStaff'],
+    });
 
   const columns: GridColDef[] = [
     {
@@ -52,29 +53,33 @@ const StaffMembers: NextPage = () => {
     },
     {
       field: 'id',
-      headerName: ' ',
-      width: 160,
+      headerName: 'Action',
+      width: 130,
       renderCell: (params: GridCellParams) => {
         if (params?.value) {
           const link = `/admin/staff/${params.value}`;
           return (
             <>
               <Link as={link} href="/admin/staff/[id]">
-                Edit
+                <IconButton>
+                  <EditIcon fontSize="small"></EditIcon>
+                </IconButton>
               </Link>
-              <Divider
-                orientation="vertical"
-                variant="middle"
-                style={{ height: '50%' }}
-              ></Divider>
-              <MatLink
-                component="button"
-                onClick={async () =>
-                  await removeStaffById(params.row.user.id as any)
-                }
+              <IconButton
+                onClick={() => {
+                  if (confirm('Remove staff member? (this is not undoable)')) {
+                    removeStaff({ variables: { id: params.value as number } });
+                  }
+                }}
               >
-                Remove
-              </MatLink>
+                <DeleteIcon fontSize="small"></DeleteIcon>
+                {removeLoading && (
+                  <CircularProgress
+                    color="secondary"
+                    size={20}
+                  ></CircularProgress>
+                )}
+              </IconButton>
             </>
           );
         } else return <></>;
@@ -94,6 +99,8 @@ const StaffMembers: NextPage = () => {
           Staff
         </Typography>
         <Link href="/admin/staff">Add Staff</Link>
+        <ErrorDisplay error={error || removeError}></ErrorDisplay>
+        {loading && <CircularProgress></CircularProgress>}
         {data && (
           <DataGrid
             columns={columns}
