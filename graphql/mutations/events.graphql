@@ -21,3 +21,7 @@ mutation UpdateEvent($event: EventInput!) {
     end
   }
 }
+
+mutation DeleteEvent($id: Float!) {
+  deleteEvent(id: $id)
+}
