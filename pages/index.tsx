@@ -77,9 +77,9 @@ export async function getStaticProps() {
         return post;
       }),
       events: events.events.map((event: any) => {
-        event.start = dayjs(event.start).format('dddd MMMM Do [at] h:mm a');
+        event.start = dayjs(event.start).format('dddd MMMM D [at] h:mm a');
         event.end = event.end
-          ? dayjs(event.end).format('dddd MMMM Do [at] h:mm a')
+          ? dayjs(event.end).format('dddd MMMM D [at] h:mm a')
           : null;
         event.language = useLanguageCodeConverter(
           event.language.toLocaleLowerCase()
