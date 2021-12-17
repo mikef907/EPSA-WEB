@@ -28,8 +28,8 @@ interface IProps {
 interface IFormInput {
   name: string;
   description?: string;
-  start: Date;
-  end: Date;
+  start: string;
+  end: string;
   allDay: boolean | null;
   zipCode: number;
   language: string;
@@ -232,7 +232,7 @@ const EventForm: React.FC<IProps> = ({ id }) => {
                       <Controller
                         name="language"
                         control={control}
-                        defaultValue={false}
+                        defaultValue={'false'}
                         rules={{ required: true }}
                         render={({ field }) => (
                           <CheckBox

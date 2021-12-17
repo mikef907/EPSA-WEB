@@ -114,7 +114,7 @@ const Group: NextPage<IProps> = ({ id }) => {
                     <Controller
                       name="facilitatorId"
                       control={control}
-                      defaultValue=""
+                      defaultValue={undefined}
                       rules={{ required: 'Facilitator required' }}
                       render={({ field }) => (
                         <>
@@ -197,7 +197,7 @@ const Group: NextPage<IProps> = ({ id }) => {
                     <Controller
                       name="start"
                       control={control}
-                      defaultValue={dayjs(new Date())}
+                      defaultValue={new Date()}
                       rules={{ required: 'Start required' }}
                       render={({ field, fieldState: { error } }) => (
                         <KeyboardDatePicker

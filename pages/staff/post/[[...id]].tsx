@@ -9,10 +9,10 @@ import {
 } from '@material-ui/core';
 import CheckBox from '@material-ui/core/Checkbox';
 import { NextPage, NextPageContext } from 'next';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
 import Layout from '../../../components/Layout';
 import Protect from '../../../components/Protect';
@@ -21,6 +21,10 @@ import {
   usePostByIdLazyQuery,
   useUpdatePostMutation,
 } from '../../../generated/graphql';
+
+const SunEditor = dynamic(() => import('suneditor-react'), {
+  ssr: false,
+});
 
 interface Context extends NextPageContext {
   query: {
